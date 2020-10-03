@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>triss-server</artifactId>
-        <groupId>com.pp</groupId>
-        <version>0.0.1</version>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.pp</groupId>
+		<artifactId>triss-server</artifactId>
+		<version>0.0.1</version>
+	</parent>
+	<version>4.0.0</version>
+	<artifactId>triss-core</artifactId>
 
-    <artifactId>triss-core</artifactId>
+	<properties>
+		<java.version>11</java.version>
+		<kotlin.version>1.3.72</kotlin.version>
+	</properties>
 
 
 </project>
