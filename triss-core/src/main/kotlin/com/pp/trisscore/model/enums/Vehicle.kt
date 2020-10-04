@@ -1,4 +1,4 @@
-package com.pp.trisscore.model
+package com.pp.trisscore.model.enums
 
 /**
  *
@@ -6,10 +6,10 @@ package com.pp.trisscore.model
  * e-mail: marceli.jerzynski@student.put.poznan.pl
  * Date: 03.10.2020
  **/
-enum class PaymentType {
-    cash,
-    blik,
-    card,
-    transfer
-
+enum class Vehicle {
+    Plane,
+    Car,
+    Bus,
+    Train,
+    Other
 }

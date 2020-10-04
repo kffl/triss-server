@@ -1,4 +1,4 @@
-package com.pp.trisscore.model
+package com.pp.trisscore.model.classes
 
 import java.sql.Date
 

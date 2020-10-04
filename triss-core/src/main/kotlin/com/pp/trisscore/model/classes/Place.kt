@@ -1,6 +1,4 @@
-package com.pp.trisscore.model
-
-import java.util.*
+package com.pp.trisscore.model.classes
 
 /**
  *

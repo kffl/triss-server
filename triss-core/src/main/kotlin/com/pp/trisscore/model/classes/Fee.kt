@@ -1,4 +1,6 @@
-package com.pp.trisscore.model
+package com.pp.trisscore.model.classes
+
+import com.pp.trisscore.model.enums.PaymentType
 
 /**
  *

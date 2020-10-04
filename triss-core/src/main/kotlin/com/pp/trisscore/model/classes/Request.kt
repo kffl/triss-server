@@ -1,8 +1,15 @@
-package com.pp.trisscore.model
+package com.pp.trisscore.model.classes
 
+import com.pp.trisscore.model.enums.Vehicle
 import java.sql.Date
 import java.time.LocalDateTime
 
+/**
+ *
+ * author: Marceli Jerzyński
+ * e-mail: marceli.jerzynski@student.put.poznan.pl
+ * Date: 03.10.2020
+ **/
 data class Request(
         val id: Int,
         val employeeId: Int,

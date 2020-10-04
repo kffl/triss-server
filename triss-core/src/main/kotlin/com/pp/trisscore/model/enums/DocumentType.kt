@@ -1,4 +1,4 @@
-package com.pp.trisscore.model
+package com.pp.trisscore.model.enums
 
 /**
  *
@@ -8,7 +8,7 @@ package com.pp.trisscore.model
  **/
 enum class DocumentType {
     IdCard,
-    passport,
-    driverLicense,
-    other
+    Passport,
+    DriverLicense,
+    Other
 }
