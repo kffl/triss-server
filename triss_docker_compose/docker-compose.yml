@@ -1,0 +1,26 @@
+version: '3.8'
+services: 
+    postgres:        
+        container_name: postgresql
+        hostname: postgresql
+        image:  postgres
+        ports: 
+            - 5432:5432
+        environment: 
+            - POSTGRES_USER=admin
+            - POSTGRES_PASSWORD=admin
+            - POSTGRES_DB=postgres
+        volumes: 
+            -   ./database/setup.sql:/docker-entrypoint-initdb.d/setup.sql
+    pgadmin:
+        container_name: pgadmin
+        image:  dpage/pgadmin4
+        ports:
+            - 5050:5050
+        environment: 
+            - PGADMIN_DEFAULT_EMAIL=admin@admin.com
+            - PGADMIN_DEFAULT_PASSWORD=admin
+            - PGADMIN_LISTEN_PORT=5050
+        depends_on:
+            - postgres
+        restart: unless-stopped
