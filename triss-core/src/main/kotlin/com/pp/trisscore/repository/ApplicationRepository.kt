@@ -1,7 +1,6 @@
 package com.pp.trisscore.repository
 
-import com.pp.trisscore.model.classes.Request
-import org.springframework.data.r2dbc.repository.Query
+import com.pp.trisscore.model.classes.Application
 import org.springframework.data.repository.reactive.ReactiveCrudRepository
 import org.springframework.stereotype.Repository
 import reactor.core.publisher.Flux
@@ -13,8 +12,7 @@ import reactor.core.publisher.Flux
  * Date: 06.10.2020
  **/
 @Repository
-interface RequestRepository : ReactiveCrudRepository<Request, Long> {
+interface ApplicationRepository : ReactiveCrudRepository<Application, Long> {
 
-    @Query("SELECT * FROM Requests WHERE employeeId = :employeeId")
-    fun getByEmployeeId(employeeId: Long): Flux<Request>
+    fun getAllByEmployeeId(employeeId: Long): Flux<Application>
 }

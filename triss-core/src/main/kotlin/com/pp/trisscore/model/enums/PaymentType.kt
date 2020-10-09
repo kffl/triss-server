@@ -11,5 +11,4 @@ enum class PaymentType {
     Blik,
     Card,
     Transfer
-
 }
