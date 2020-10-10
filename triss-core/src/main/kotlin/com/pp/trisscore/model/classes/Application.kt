@@ -64,5 +64,7 @@ data class Application(
         @Column("identityDocumentID")
         val identityDocumentID: Long,
         @Column("comments")
-        val comments: String
+        val comments: String,
+        @Column("status")
+        val status: String
 )

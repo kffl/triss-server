@@ -1,5 +1,5 @@
 CREATE TABLE Employee(
- id bigint PRIMARY KEY,
+ id BIGINT PRIMARY KEY,
  firstName varchar(255),
  surname varchar(255),
  birthDate DATE,
@@ -16,37 +16,55 @@ VALUES
 CREATE TYPE mood AS ENUM ('sad', 'ok', 'happy');
 
 CREATE TABLE Application(
-    id bigint PRIMARY KEY,
-    employeeId bigint,
+    id BIGINT PRIMARY KEY,
+    employeeId BIGINT,
     createdOn DATE,
-    placeId bigint,
+    placeId BIGINT,
     conferenceStartDate DATE,
     conferenceEndDate DATE,
     purpose VARCHAR(255),
     description VARCHAR(255),
     subject VARCHAR(255),
-    financialSourceId bigint,
+    financialSourceId BIGINT,
     vehicleList VARCHAR(255),
     routeList VARCHAR(255),
-    departureTime timestamp,
+    departureTime TIMESTAMP,
     carrier VARCHAR(255),
     abroadStartDate DATE NULL,
     abroadEndDate DATE NULL,
     selfInsured BOOL,
-    advanceRequestId bigint,
-    prepaymentId bigint,
-    identityDocumentID bigint,
-    comments VARCHAR(255)
+    advanceRequestId BIGINT,
+    prepaymentId BIGINT,
+    identityDocumentID BIGINT,
+    comments VARCHAR(255),
+    status VARCHAR(255)
 );
+
+CREATE TABLE Place(
+    id BIGINT PRIMARY KEY,
+    country VARCHAR(255),
+    city VARCHAR(255),
+    Address VARCHAR (255)
+);
+
+INSERT INTO Place
+VALUES
+( 1, 'U.S.A', 'Los Angeles', '3466 Division C.T' ),
+( 2, 'Poland', 'Pobiedziska', 'Lesna 54 62-010');
 
 INSERT INTO Application
 VALUES
 (1, 1, '2008-11-11', 1, '2008-11-11', '2008-11-11', 'purpose', 'description',
  'subject', 1, 'vehicleList', 'routeList', '2008-11-11 13:23:44', 'carrier', NULL, NULL,
- false, 1, 1, 1, 'comments'),
-(2, 1, '2008-11-11', 1, '2008-11-11', '2008-11-11', 'purpose', 'description',
+ false, 1, 1, 1, 'comments', 'Odrzucono'),
+(2, 1, '2008-11-11', 2, '2008-11-11', '2008-11-11', 'purpose', 'description',
     'subject', 1, 'vehicleList', 'routeList', '2008-11-11 13:23:44', 'carrier', NULL, NULL,
-    false, 1, 1, 1, 'comments'),
-(3, 3, '2008-11-11', 1, '2008-11-11', '2008-11-11', 'purpose', 'description',
+    false, 1, 1, 1, 'comments', 'Oczekiwanie na decyzję Dyrektora'),
+(3, 3, '2008-11-11', 2, '2008-11-11', '2008-11-11', 'purpose', 'description',
     'subject', 1, 'vehicleList', 'routeList', '2008-11-11 13:23:44', 'carrier', NULL, NULL,
-    false, 1, 1, 1, 'comments')
+    false, 1, 1, 1, 'comments', 'Zatwierdzono');
+
+CREATE VIEW ApplicationRow AS
+SELECT id, employeeId, country, city, abroadStartDate, abroadEndDate, status
+FROM Application JOIN Place
+ON Place.id = Application.placeId
