@@ -1,4 +1,4 @@
-package com.pp.trisscore.model.requestbody
+package com.pp.trisscore.model.architecture
 
 import com.pp.trisscore.model.rows.ApplicationRow
 import reactor.core.publisher.Flux

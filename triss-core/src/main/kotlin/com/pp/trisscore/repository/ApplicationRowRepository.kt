@@ -28,13 +28,19 @@ interface ApplicationRowRepository : ReactiveCrudRepository<ApplicationRow, Long
             "AND city = :city "+
             "AND abroadStartDate = :abroadStartDate "+
             "AND abroadEndDate = :abroadEndDate "+
-            "AND status = :status ")
-    fun getAllByFilter(employeeId: Long?,
-                       country: String?,
-                       city: String?,
-                       abroadStartDate: Date?,
-                       abroadEndDate: Date?,
-                       status: String?): Flux<ApplicationRow>
+            "AND status = :status " +
+            "ORDER BY :orderBy :asc" +
+            "LIMIT :pageSize")
+    fun getAllByFilter(
+                        pageSize: Int,
+                        orderBy: String,
+                        asc: String,
+                        employeeId: Long?,
+                        country: String?,
+                        city: String?,
+                        abroadStartDate: Date?,
+                        abroadEndDate: Date?,
+                        status: String?): Flux<ApplicationRow>
 
     @Query("SELECT COUNT(*)"+
             "FROM ApplicationRow "+

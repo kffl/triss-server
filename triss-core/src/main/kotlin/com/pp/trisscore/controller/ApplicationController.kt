@@ -1,6 +1,7 @@
 package com.pp.trisscore.controller
 
-import com.pp.trisscore.model.requestbody.RESTResponse
+import com.pp.trisscore.model.architecture.PageInfo
+import com.pp.trisscore.model.architecture.RESTResponse
 import com.pp.trisscore.model.rows.ApplicationRow
 import com.pp.trisscore.service.ApplicationService
 import org.springframework.web.bind.annotation.*
@@ -16,12 +17,12 @@ import org.springframework.web.bind.annotation.*
 class ApplicationController(val applicationService: ApplicationService) {
 
     @PostMapping("/get")
-    fun getByEmployeeId(@RequestBody applicationRow: ApplicationRow): RESTResponse<ApplicationRow> {
+    fun getByEmployeeId(@RequestBody pageInfo: PageInfo<ApplicationRow>): RESTResponse<ApplicationRow> {
         var response: RESTResponse<ApplicationRow>
         try {
             response = RESTResponse(
-                    data = applicationService.getAllByFilter(applicationRow),
-                    count = applicationService.getCountByFilter(applicationRow),
+                    data = applicationService.getAllByFilter(pageInfo),
+                    count = applicationService.getCountByFilter(pageInfo),
                     isSuccess = true
             )
         }

@@ -1,5 +1,6 @@
 package com.pp.trisscore.service
 
+import com.pp.trisscore.model.architecture.PageInfo
 import com.pp.trisscore.model.rows.ApplicationRow
 import com.pp.trisscore.repository.ApplicationRepository
 import com.pp.trisscore.repository.ApplicationRowRepository
@@ -17,20 +18,31 @@ import reactor.core.publisher.Mono
 class ApplicationService(
         val applicationRepository: ApplicationRepository,
         val applicationRowRepository: ApplicationRowRepository) {
+    val ASC: String = "ASC"
+    val DESC: String = "DESC"
 
-    fun getAllByFilter(applicationRow: ApplicationRow): Flux<ApplicationRow> =
-            applicationRowRepository.getAllByFilter(applicationRow.employeeId,
-                                                        applicationRow.country,
-                                                        applicationRow.city,
-                                                        applicationRow.abroadStartDate,
-                                                        applicationRow.abroadEndDate,
-                                                        applicationRow.status)
+    fun getAllByFilter(pageInfo: PageInfo<ApplicationRow>): Flux<ApplicationRow> {
+        var asc = DESC
+        if (pageInfo.asc) {
+            asc = ASC
+        }
+        return applicationRowRepository.getAllByFilter(
+                pageInfo.pageSize,
+                pageInfo.orderBy,
+                asc,
+                pageInfo.filter.employeeId,
+                pageInfo.filter.country,
+                pageInfo.filter.city,
+                pageInfo.filter.abroadStartDate,
+                pageInfo.filter.abroadEndDate,
+                pageInfo.filter.status)
+    }
 
-    fun getCountByFilter(applicationRow: ApplicationRow) =
-            applicationRowRepository.getCountByFilter(applicationRow.employeeId,
-                    applicationRow.country,
-                    applicationRow.city,
-                    applicationRow.abroadStartDate,
-                    applicationRow.abroadEndDate,
-                    applicationRow.status)
+    fun getCountByFilter(pageInfo: PageInfo<ApplicationRow>) =
+            applicationRowRepository.getCountByFilter(pageInfo.filter.employeeId,
+                    pageInfo.filter.country,
+                    pageInfo.filter.city,
+                    pageInfo.filter.abroadStartDate,
+                    pageInfo.filter.abroadEndDate,
+                    pageInfo.filter.status)
 }
