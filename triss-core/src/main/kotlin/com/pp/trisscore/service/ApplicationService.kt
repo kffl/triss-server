@@ -18,31 +18,13 @@ import reactor.core.publisher.Mono
 class ApplicationService(
         val applicationRepository: ApplicationRepository,
         val applicationRowRepository: ApplicationRowRepository) {
-    val ASC: String = "ASC"
-    val DESC: String = "DESC"
 
-    fun getAllByFilter(pageInfo: PageInfo<ApplicationRow>): Flux<ApplicationRow> {
-        var asc = DESC
-        if (pageInfo.asc) {
-            asc = ASC
-        }
-        return applicationRowRepository.getAllByFilter(
-                pageInfo.pageSize,
+    //TODO Long will be changed to filter object in future
+    fun getAllByFilter(pageInfo: PageInfo<Long>): Flux<ApplicationRow> = applicationRowRepository.getAllByFilter(
+                pageInfo.filter,
                 pageInfo.orderBy,
-                asc,
-                pageInfo.filter.employeeId,
-                pageInfo.filter.country,
-                pageInfo.filter.city,
-                pageInfo.filter.abroadStartDate,
-                pageInfo.filter.abroadEndDate,
-                pageInfo.filter.status)
-    }
-
-    fun getCountByFilter(pageInfo: PageInfo<ApplicationRow>) =
-            applicationRowRepository.getCountByFilter(pageInfo.filter.employeeId,
-                    pageInfo.filter.country,
-                    pageInfo.filter.city,
-                    pageInfo.filter.abroadStartDate,
-                    pageInfo.filter.abroadEndDate,
-                    pageInfo.filter.status)
+                pageInfo.pageSize,
+                pageInfo.pageNumber * pageInfo.pageSize)
+    //TODO PageInfo will be changed to filter object in future
+    fun getCountByFilter(pageInfo: PageInfo<Long>) = applicationRowRepository.getCountByFilter(pageInfo.filter)
 }

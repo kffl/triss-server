@@ -5,6 +5,7 @@ import com.pp.trisscore.model.rows.ApplicationRow
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.PropertySource
+import org.springframework.data.domain.Pageable
 import org.springframework.data.r2dbc.repository.Query
 import org.springframework.data.repository.reactive.ReactiveCrudRepository
 import org.springframework.stereotype.Repository
@@ -24,36 +25,17 @@ interface ApplicationRowRepository : ReactiveCrudRepository<ApplicationRow, Long
     @Query("SELECT * "+
             "FROM ApplicationRow "+
             "WHERE employeeId = :employeeId "+
-            "AND country = :country "+
-            "AND city = :city "+
-            "AND abroadStartDate = :abroadStartDate "+
-            "AND abroadEndDate = :abroadEndDate "+
-            "AND status = :status " +
-            "ORDER BY :orderBy :asc" +
-            "LIMIT :pageSize")
+            "ORDER BY :orderBy " +
+            "LIMIT :pageSize " +
+            "OFFSET :pageNumber")
     fun getAllByFilter(
-                        pageSize: Int,
-                        orderBy: String,
-                        asc: String,
-                        employeeId: Long?,
-                        country: String?,
-                        city: String?,
-                        abroadStartDate: Date?,
-                        abroadEndDate: Date?,
-                        status: String?): Flux<ApplicationRow>
+                employeeId: Long,
+                orderBy: String,
+                pageSize: Int,
+                pageNumber: Int): Flux<ApplicationRow>
 
-    @Query("SELECT COUNT(*)"+
+    @Query("SELECT COUNT(*) "+
             "FROM ApplicationRow "+
-            "WHERE employeeId = :employeeId "+
-            "AND country = :country "+
-            "AND city = :city "+
-            "AND abroadStartDate = :abroadStartDate "+
-            "AND abroadEndDate = :abroadEndDate "+
-            "AND status = :status ")
-    fun getCountByFilter(employeeId: Long?,
-                         country: String?,
-                         city: String?,
-                         abroadStartDate: Date?,
-                         abroadEndDate: Date?,
-                         status: String?): Mono<Int>
+            "WHERE employeeId = :employeeId ")
+    fun getCountByFilter(employeeId: Long): Mono<Int>
 }

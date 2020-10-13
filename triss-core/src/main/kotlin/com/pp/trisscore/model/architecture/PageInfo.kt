@@ -9,6 +9,6 @@ package com.pp.trisscore.model.architecture
 data class PageInfo<T> (
      val filter: T,
      val orderBy: String,
-     val asc: Boolean,
-     val pageSize: Int
+     val pageSize: Int,
+     val pageNumber: Int
 )

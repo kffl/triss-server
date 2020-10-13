@@ -55,16 +55,16 @@ VALUES
 INSERT INTO Application
 VALUES
 (1, 1, '2008-11-11', 1, '2008-11-11', '2008-11-11', 'purpose', 'description',
- 'subject', 1, 'vehicleList', 'routeList', '2008-11-11 13:23:44', 'carrier', NULL, NULL,
+ 'subject', 1, 'vehicleList', 'routeList', '2008-11-11 13:23:44', 'carrier', '2008-11-12', '2021-12-12',
  false, 1, 1, 1, 'comments', 'Odrzucono'),
 (2, 1, '2008-11-11', 2, '2008-11-11', '2008-11-11', 'purpose', 'description',
-    'subject', 1, 'vehicleList', 'routeList', '2008-11-11 13:23:44', 'carrier', NULL, NULL,
+    'subject', 1, 'vehicleList', 'routeList', '2008-11-11 13:23:44', 'carrier', '2018-05-4', '2018-05-07',
     false, 1, 1, 1, 'comments', 'Oczekiwanie na decyzję Dyrektora'),
 (3, 3, '2008-11-11', 2, '2008-11-11', '2008-11-11', 'purpose', 'description',
-    'subject', 1, 'vehicleList', 'routeList', '2008-11-11 13:23:44', 'carrier', NULL, NULL,
+    'subject', 1, 'vehicleList', 'routeList', '2008-11-11 13:23:44', 'carrier', '2008-9-11', '2008-11-11',
     false, 1, 1, 1, 'comments', 'Zatwierdzono');
 
 CREATE VIEW ApplicationRow AS
-SELECT id, employeeId, country, city, abroadStartDate, abroadEndDate, status
+SELECT Application.id, employeeId, country, city, abroadStartDate, abroadEndDate, status
 FROM Application JOIN Place
 ON Place.id = Application.placeId
