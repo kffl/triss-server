@@ -8,7 +8,7 @@ package com.pp.trisscore.model.classes
  **/
 data class Place(
         val id: Int,
-        val country: String, //TODO probably we wnat to have this in db so it should be Country class with one or maybe two fields (name and code)
+        val country: String, //TODO probably we want to have this in db so it should be Country class with one or maybe two fields (name and code)
         val city: String, // - || -
         val address: String
 )
