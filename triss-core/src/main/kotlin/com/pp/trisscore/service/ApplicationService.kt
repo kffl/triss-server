@@ -3,10 +3,11 @@ package com.pp.trisscore.service
 import com.pp.trisscore.model.architecture.PageInfo
 import com.pp.trisscore.model.rows.ApplicationRow
 import com.pp.trisscore.repository.ApplicationRepository
-import com.pp.trisscore.repository.ApplicationRowRepository
+import com.pp.trisscore.repository.ApplicationRowRepositoryManager
+import io.r2dbc.spi.ConnectionFactory
+import org.springframework.data.r2dbc.core.DatabaseClient
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
-import reactor.core.publisher.Mono
 
 /**
  *
@@ -16,15 +17,8 @@ import reactor.core.publisher.Mono
  **/
 @Service
 class ApplicationService(
-        val applicationRepository: ApplicationRepository,
-        val applicationRowRepository: ApplicationRowRepository) {
+        val applicationRowRepositoryManager: ApplicationRowRepositoryManager) {
 
-    //TODO Long will be changed to filter object in future
-    fun getAllByFilter(pageInfo: PageInfo<Long>): Flux<ApplicationRow> = applicationRowRepository.getAllByFilter(
-                pageInfo.filter,
-                pageInfo.orderBy,
-                pageInfo.pageSize,
-                pageInfo.pageNumber * pageInfo.pageSize)
-    //TODO PageInfo will be changed to filter object in future
-    fun getCountByFilter(pageInfo: PageInfo<Long>) = applicationRowRepository.getCountByFilter(pageInfo.filter)
+    fun getAllByFilter(pageInfo: PageInfo<ApplicationRow>): Flux<ApplicationRow> = applicationRowRepositoryManager.getAllByFilter(pageInfo)
+    fun getCountByFilter(pageInfo: PageInfo<ApplicationRow>) = applicationRowRepositoryManager.getCountByFilter(pageInfo)
 }

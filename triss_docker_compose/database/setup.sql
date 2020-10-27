@@ -84,7 +84,7 @@ CREATE TABLE AdvanceApplication(
     residenceDietQuantity BIGINT,
     residenceDietAmount DECIMAL(7,2),
     accommodationQuantity BIGINT,
-    limit VARCHAR(255),
+    aalimit VARCHAR(255),
     travelDietAmount DECIMAL(7,2),
     travelCosts DECIMAL(7,2),
     otherCostsDescription VARCHAR(255),
