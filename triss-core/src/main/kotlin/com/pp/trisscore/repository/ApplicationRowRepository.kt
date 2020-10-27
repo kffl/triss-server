@@ -13,13 +13,17 @@ import reactor.core.publisher.Mono
 
 
 @Repository
-class ApplicationRowRepositoryManager(connectionFactory: ConnectionFactory) {
+class ApplicationRowRepository(connectionFactory: ConnectionFactory) {
 
 
     val template = R2dbcEntityTemplate(DatabaseClient.create(connectionFactory))
 
     fun getAllByFilter(pageInfo: PageInfo<ApplicationRow>): Flux<ApplicationRow> {
-        return template.select(Query.query(getCriteria(pageInfo)).sort(pageInfo.getSort()).limit(pageInfo.pageSize).offset(pageInfo.pageNumber*pageInfo.pageSize), ApplicationRow::class.java)
+        return template.select(Query.query(getCriteria(pageInfo))
+                .sort(pageInfo.getSort())
+                .limit(pageInfo.pageSize)
+                .offset(pageInfo.pageNumber * pageInfo.pageSize),
+                ApplicationRow::class.java)
     }
 
     fun getCountByFilter(pageInfo: PageInfo<ApplicationRow>): Mono<Long> {
