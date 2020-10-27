@@ -29,7 +29,7 @@ data class AdvanceApplication (
         val residenceDietAmount: Double,
         @Column("accommodationQuantity")
         val accommodationQuantity: Int,
-        @Column("limit")
+        @Column("\"limit\"")
         val limit: List<Double>, //TODO: czym jest limit i jak to wrzucić do DB
         @Column("travelDietAmount")
         val travelDietAmount: Double,

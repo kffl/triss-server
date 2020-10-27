@@ -1,5 +1,8 @@
 package com.pp.trisscore.model.architecture
 
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
+
 /**
  *
  * author: Marceli Jerzyński
@@ -8,7 +11,14 @@ package com.pp.trisscore.model.architecture
  **/
 data class PageInfo<T> (
      val filter: T,
+     val desc:Boolean,
      val orderBy: String,
      val pageSize: Int,
-     val pageNumber: Int
-)
+     val pageNumber: Long
+){
+    fun getSort(): Sort {
+        if(desc)
+            return Sort.by(this.orderBy).descending()
+        return Sort.by(this.orderBy)
+    }
+}
