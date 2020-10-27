@@ -17,10 +17,10 @@ import reactor.core.publisher.Mono
 @RequestMapping("/application")
 class ApplicationController(val applicationService: ApplicationService) {
 
-    @PostMapping("/get") //TODO Long will be changed to filter object in future
+    @PostMapping("/get")
     fun getApplicationsByEmployeeId(@RequestBody pageInfo: PageInfo<ApplicationRow>): Flux<ApplicationRow> = applicationService.getAllByFilter(pageInfo);
 
-    @PostMapping("/count") //TODO PageInfo will be changed to filter object in future
+    @PostMapping("/count")
     fun getCountByEmployeeId(@RequestBody pageInfo: PageInfo<ApplicationRow>): Mono<Long> = applicationService.getCountByFilter(pageInfo)
 
 }
