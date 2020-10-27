@@ -5,8 +5,6 @@ import com.pp.trisscore.model.rows.ApplicationRow
 import io.r2dbc.spi.ConnectionFactory
 import org.springframework.data.r2dbc.core.DatabaseClient
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate
-import org.springframework.data.r2dbc.core.select
-import org.springframework.data.r2dbc.query.Criteria.where
 import org.springframework.data.relational.core.query.Criteria
 import org.springframework.data.relational.core.query.Query
 import org.springframework.stereotype.Repository
@@ -15,18 +13,17 @@ import reactor.core.publisher.Mono
 
 
 @Repository
-class ApplicationRowRepositoryManager(val applicationRowRepository: ApplicationRowRepository,
-                                      connectionFactory: ConnectionFactory) {
+class ApplicationRowRepositoryManager(connectionFactory: ConnectionFactory) {
 
 
-    val template =R2dbcEntityTemplate( DatabaseClient.create(connectionFactory))
+    val template = R2dbcEntityTemplate(DatabaseClient.create(connectionFactory))
 
     fun getAllByFilter(pageInfo: PageInfo<ApplicationRow>): Flux<ApplicationRow> {
-        return template.select(Query.query(getCriteria(pageInfo)).sort(pageInfo.getSort()).limit(pageInfo.pageSize).offset(pageInfo.pageNumber),ApplicationRow::class.java)
+        return template.select(Query.query(getCriteria(pageInfo)).sort(pageInfo.getSort()).limit(pageInfo.pageSize).offset(pageInfo.pageNumber*pageInfo.pageSize), ApplicationRow::class.java)
     }
 
     fun getCountByFilter(pageInfo: PageInfo<ApplicationRow>): Mono<Long> {
-        return template.count(Query.query(getCriteria(pageInfo)),ApplicationRow::class.java)
+        return template.count(Query.query(getCriteria(pageInfo)), ApplicationRow::class.java)
     }
 
     fun getCriteria(pageInfo: PageInfo<ApplicationRow>): Criteria {
@@ -42,12 +39,10 @@ class ApplicationRowRepositoryManager(val applicationRowRepository: ApplicationR
             criteria = criteria.and("country").like("%" + filter.country + "%").ignoreCase(true)
         if (filter.status != null)
             criteria = criteria.and("status").like("%" + filter.status + "%").ignoreCase(true)
-        //TODO niepoprawne porównywanie dat!!!
         if (filter.abroadEndDate != null)
-            criteria = criteria.and("abroadEndDate").lessThanOrEquals(java.util.Date(filter.abroadEndDate.time).toInstant())
+            criteria = criteria.and("abroadEndDate").lessThanOrEquals(filter.abroadEndDate.toLocalDate().atStartOfDay())
         if (filter.abroadStartDate != null)
-            criteria = criteria.and("abroadStartDate").greaterThanOrEquals(java.util.Date(filter.abroadStartDate.time).toInstant())
-
+            criteria = criteria.and("abroadStartDate").greaterThanOrEquals(filter.abroadStartDate.toLocalDate().atStartOfDay())
         return criteria
     }
 }
