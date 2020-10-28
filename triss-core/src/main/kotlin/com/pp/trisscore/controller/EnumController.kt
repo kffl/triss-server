@@ -4,6 +4,7 @@ import com.pp.trisscore.service.EnumService
 import org.springframework.web.bind.annotation.*
 
 @RestController
+@CrossOrigin
 @RequestMapping("/enum")
 class EnumController(val enumService: EnumService) {
 
