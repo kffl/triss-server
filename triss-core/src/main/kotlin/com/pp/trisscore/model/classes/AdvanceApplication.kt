@@ -15,9 +15,9 @@ import java.sql.Date
 data class AdvanceApplication (
         @Id
         @Column("id")
-        val id: Int,
+        val id: Int?,
         @Column("placeId")
-        val placeId: Long,
+        val placeId: Long?,
         //val place: Place,
         @Column("startDate")
         val startDate: Date,

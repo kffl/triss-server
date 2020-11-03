@@ -17,7 +17,7 @@ import java.time.LocalDateTime
 data class Application(
         @Id
         @Column("id")
-        val id: Long,
+        val id: Long?,
         @Column("employeeId")
         val employeeId: Long,
 //        val employee: Employee,

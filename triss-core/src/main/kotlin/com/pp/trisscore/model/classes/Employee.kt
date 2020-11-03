@@ -22,7 +22,8 @@ data class Employee (
         @Column("birthDate")
         val birthDate: Date,
         @Column("birthPlace")
-        val birthPlace: String
-//        val documents: List<IdentityDocument>,
-//        val requests: List<Request>
+        val birthPlace: String,
+        @Column("phoneNumber")
+        val phoneNumber: Int
+
 )
