@@ -1,108 +1,129 @@
-CREATE TABLE Employee(
- id BIGINT PRIMARY KEY,
- firstName varchar(255),
- surname varchar(255),
- birthDate DATE,
- birthPlace varchar(255)
+
+CREATE TABLE EmployeeType(
+id SERIAL PRIMARY KEY,
+name VARCHAR(255) UNIQUE NOT NULL
 );
 
-INSERT INTO employee(id,firstName,surname,birthDate,birthPlace) 
-VALUES
-(1,'Andrzej','Kmicic','2000-01-01','Poznan'),
-(2,'Jan','Kowalski','1990-03-21','Wroclaw'),
-(3,'Jerzy','Zbiałowierzy','1980-05-15','Warszawa'),
-(4,'Andrzej','Nowak','1988-07-16','Sosnowiec');
+CREATE TABLE Institute(
+id SERIAL PRIMARY KEY,
+name varchar(255) UNIQUE NOT NULL
+);
 
-CREATE TYPE mood AS ENUM ('sad', 'ok', 'happy');
+CREATE TABLE Place(
+    id SERIAL PRIMARY KEY,
+    city VARCHAR(255) NOT NULL,
+    country VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE PrepaymentFee(
+    id SERIAL PRIMARY KEY,
+    amount DECIMAL(7,2) NOT NULL,
+    paymentType VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE Prepayment(
+    id SERIAL PRIMARY KEY,
+    conferenceFeeId BIGINT,
+    accommodationFeeId BIGINT,
+    CONSTRAINT conferenceFee_fk FOREIGN KEY(conferenceFeeId) REFERENCES PrepaymentFee(id),
+    CONSTRAINT accommodationFee_fk FOREIGN KEY(accommodationFeeId) REFERENCES PrepaymentFee(id)
+);
+
+
+CREATE TABLE Employee(
+ id BIGINT PRIMARY KEY,
+ firstName varchar(255) NOT NULL,
+ surname varchar(255) NOT NULL,
+ birthDate DATE NOT NULL,
+ academicDegree varchar(255) NOT NULL,
+ phoneNumber INTEGER NOT NULL,
+ instituteID BIGINT,
+ employeeTypeID BIGINT,
+ CONSTRAINT institute_fk FOREIGN KEY(instituteID) REFERENCES Institute(id),
+ CONSTRAINT employeeType_fk FOREIGN KEY(employeeTypeID) REFERENCES EmployeeType(id)
+);
+
+
+CREATE TABLE IdentityDocument(
+    id SERIAL PRIMARY KEY,
+    employeeID BIGINT NOT NULL,
+    type VARCHAR(255) NOT NULL,
+    number VARCHAR(255) NOT NULL,
+    CONSTRAINT employee_fk FOREIGN KEY(employeeID) REFERENCES Employee(id)
+);
+
+
+CREATE TABLE FinancialSource
+(
+    id SERIAL PRIMARY KEY,
+    allocationAccount VARCHAR(255) NOT NULL,
+    MPK VARCHAR(255) NOT NULL,
+    financialSource VARCHAR(255) NOT NULL,
+    project VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE AdvanceApplication(
+    id SERIAL PRIMARY KEY,
+    placeId BIGINT NOT NULL,
+    startDate DATE NOT NULL,
+    endDate DATE NOT NULL,
+    residenceDietQuantity INTEGER NOT NULL,
+    residenceDietAmount DECIMAL(7,2) NOT NULL,
+    accommodationQuantity INTEGER NOT NULL,
+    accommodationLimit DECIMAL(7,2) NOT NULL,
+    travelDietAmount DECIMAL(7,2) NOT NULL,
+    travelCosts DECIMAL(7,2) NOT NULL,
+    otherCostsDescription VARCHAR(255) NOT NULL,
+    otherCostsAmount DECIMAL(7,2) NOT NULL,
+    advanceSum DECIMAL(7,2) NOT NULL,
+    CONSTRAINT place_fk FOREIGN KEY(placeId) REFERENCES Place(id)
+);
 
 CREATE TABLE Application(
-    id BIGINT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     employeeId BIGINT,
     createdOn DATE,
     placeId BIGINT,
+    abroadStartDate DATE NOT NULL,
+    abroadEndDate DATE NOT NULL,
+    purpose VARCHAR(255) NOT NULL,
+    conference VARCHAR(255) NOT NULL,
+    subject VARCHAR(255) NOT NULL,
     conferenceStartDate DATE,
     conferenceEndDate DATE,
-    purpose VARCHAR(255),
-    description VARCHAR(255),
-    subject VARCHAR(255),
     financialSourceId BIGINT,
-    vehicleList VARCHAR(255),
-    routeList VARCHAR(255),
-    departureTime TIMESTAMP,
-    carrier VARCHAR(255),
-    abroadStartDate DATE NULL,
-    abroadEndDate DATE NULL,
+    abroadStartDateInsurance DATE,
+    abroadEndDateInsurance DATE,
     selfInsured BOOL,
     advanceRequestId BIGINT,
     prepaymentId BIGINT,
     identityDocumentID BIGINT,
     comments VARCHAR(255),
-    status VARCHAR(255)
+    status VARCHAR(255),
+    CONSTRAINT employee_fk FOREIGN KEY(employeeId) REFERENCES Employee(id),
+    CONSTRAINT place_fk FOREIGN KEY(placeId) REFERENCES Place(id),
+    CONSTRAINT financialSource_fk FOREIGN KEY(financialSourceId) REFERENCES FinancialSource(id),
+    CONSTRAINT advanceRequest_fk FOREIGN KEY(advanceRequestId) REFERENCES AdvanceApplication(id),
+    CONSTRAINT prepayment_fk FOREIGN KEY(prepaymentId) REFERENCES Prepayment(id)
 );
 
-INSERT INTO Application
-VALUES
-(1, 1, '2008-11-11', 1, '2008-11-11', '2008-11-11', 'purpose', 'description',
- 'subject', 1, 'vehicleList', 'routeList', '2008-11-11 13:23:44', 'carrier', '2008-11-12', '2021-12-12',
- false, 1, 1, 1, 'comments', 'Odrzucono'),
-(2, 1, '2008-11-11', 2, '2008-11-11', '2008-11-11', 'purpose', 'description',
- 'subject', 1, 'vehicleList', 'routeList', '2008-11-11 13:23:44', 'carrier', '2018-05-4', '2018-05-07',
- false, 1, 1, 1, 'comments', 'Oczekiwanie na decyzję Dyrektora'),
-(3, 3, '2008-11-11', 2, '2008-11-11', '2008-11-11', 'purpose', 'description',
- 'subject', 1, 'vehicleList', 'routeList', '2008-11-11 13:23:44', 'carrier', '2008-9-11', '2008-11-11',
- false, 1, 1, 1, 'comments', 'Zatwierdzono');
 
-CREATE TABLE Place(
-    id BIGINT PRIMARY KEY,
-    country VARCHAR(255),
-    city VARCHAR(255),
-    Address VARCHAR (255)
+CREATE TABLE TRANSPORT
+(
+ id SERIAL PRIMARY KEY,
+ applicationID BIGINT,
+ destinationFrom VARCHAR(255) NOT NULL,
+ destinationTo VARCHAR(255) NOT NULL,
+ departureDay DATE NOT NULL,
+ departureMinute INTEGER NOT NULL,
+ departureHour INTEGER NOT NULL,
+ carrier VARCHAR(255) NOT NULL,
+ CONSTRAINT application_fk FOREIGN KEY(applicationID) REFERENCES Application(id)
 );
 
-INSERT INTO Place
-VALUES
-( 1, 'U.S.A', 'Los Angeles', '3466 Division C.T' ),
-( 2, 'Poland', 'Pobiedziska', 'Lesna 54 62-010');
 
-CREATE TABLE IdentityDocument(
-    id BIGINT PRIMARY KEY,
-    type VARCHAR(255),
-    name VARCHAR(255),
-    number VARCHAR(255)
-);
 
-INSERT INTO IdentityDocument
-VALUES
-(1, 'IdCard', 'Name1', 'ABC12345'),
-(2, 'Passport', 'Name2', 'ZE8000199');
 
-CREATE TABLE AdvanceApplication(
-    id BIGINT PRIMARY KEY,
-    placeId BIGINT,
-    startDate DATE,
-    endDate DATE,
-    residenceDietQuantity BIGINT,
-    residenceDietAmount DECIMAL(7,2),
-    accommodationQuantity BIGINT,
-    "limit" VARCHAR(255),
-    travelDietAmount DECIMAL(7,2),
-    travelCosts DECIMAL(7,2),
-    otherCostsDescription VARCHAR(255),
-    otherCostsAmount DECIMAL(7,2),
-    advanceSum DECIMAL(7,2)
-);
-
-CREATE TABLE Fee(
-    id BIGINT PRIMARY KEY,
-    amount DECIMAL(7,2),
-    paymentType VARCHAR(255)
-);
-
-CREATE TABLE Prepayment(
-    id BIGINT PRIMARY KEY,
-    conferenceFeeId BIGINT,
-    accommodationFeeId BIGINT
-);
 
 CREATE VIEW ApplicationRow AS
 SELECT Application.id, employeeId, country, city, abroadStartDate, abroadEndDate, status
