@@ -4,8 +4,8 @@ import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
 
-@Table("EmployeeType")
-data class EmployeeType(
+@Table("Institute")
+data class Institute (
         @Id
         @Column("id")
         val id: Long,

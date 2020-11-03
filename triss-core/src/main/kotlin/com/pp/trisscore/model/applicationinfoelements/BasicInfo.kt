@@ -6,7 +6,7 @@ data class BasicInfo (
     val firstName: String,
     val surName:String,
     val academicTitle:String,
-    val phoneNumber:Int,
+    val phoneNumber:String,
     val destination: String,
     val abroadStartDate:Date,
     val abroadEndDate:Date,
@@ -15,5 +15,4 @@ data class BasicInfo (
     val subject : String,
     val conferenceStartDate:Date,
     val conferenceEndDate:Date
-
     )

@@ -21,9 +21,12 @@ data class Employee (
         val surname: String,
         @Column("birthDate")
         val birthDate: Date,
-        @Column("birthPlace")
-        val birthPlace: String,
         @Column("phoneNumber")
-        val phoneNumber: Int
-
+        val phoneNumber: Int,
+        @Column("academicDegree")
+        val academicDegree: String,
+        @Column("instituteID")
+        val instituteID: Long,
+        @Column("employeeTypeID")
+        val employeeTypeID: Long
 )

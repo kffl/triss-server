@@ -1,13 +1,27 @@
 package com.pp.trisscore.model.classes
 
+import org.springframework.data.annotation.Id
+import org.springframework.data.relational.core.mapping.Column
+import org.springframework.data.relational.core.mapping.Table
 import java.sql.Date
 
-data class Transport (
-    var id:Int?,
-    val destinationFrom:String,
-    val destinationTo:String,
-    val departureDay:Date,
-    val departureHour:Int,
-    val departureMinute:Int,
-    val carrier:String
+@Table("Transport")
+data class Transport(
+        @Id
+        @Column("id")
+        val id: Long,
+        @Column("applicationID")
+        val applicationID: Long,
+        @Column("destinationFrom")
+        val destinationFrom: String,
+        @Column("destinationTo")
+        val destinationTo: String,
+        @Column("departureDay")
+        val departureDay: Date,
+        @Column("departureMinute")
+        val departureMinute: Int,
+        @Column("departureHour")
+        val departureHour: Int,
+        @Column("carrier")
+        val carrier: String
 )
