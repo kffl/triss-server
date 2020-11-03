@@ -1,13 +1,29 @@
-
 CREATE TABLE EmployeeType(
 id SERIAL PRIMARY KEY,
 name VARCHAR(255) UNIQUE NOT NULL
 );
 
+INSERT INTO EmployeeType (name) VALUES
+    ('ADIUNKT'),('DYREKTOR'),('REKTOR'),
+    ('PROFESOR'),('ASYSTENT'),('STAŻYSTA'),
+    ('SEKRETARKA'),('DOCENT');
+
 CREATE TABLE Institute(
 id SERIAL PRIMARY KEY,
 name varchar(255) UNIQUE NOT NULL
 );
+
+INSERT INTO Institute (name) VALUES
+    ('Instytut Architektury i Planowania Przestrzennego'),('Instytut Architektury, Urbanistyki i Ochrony Dziedzictwa'),('Instytut Architektury Wnętrz i Wzornictwa Przemysłowego'),
+    ('Instytut Automatyki i Robotyki'),('Instytut Elektrotechniki i Elektroniki Przemysłowej'),('Instytut Matematyki'),('Instytut Robotyki i Inteligencji Maszynowej'),
+    ('Instytut Informatyki'),('Instytut Radiokomunikacji'),('Instytut Sieci Teleinformatycznych '),('Instytut Telekomunikacji Multimedialnej'),
+    ('Instytut Chemii i Elektrochemii Technicznej'),('Instytut Technologii i Inżynierii Chemicznej'),
+    ('Instytut Logistyki'),('Instytut Inżynierii Bezpieczeństwa i Jakości'),('Instytut Zarządzania i Systemów Informacyjnych'),
+    ('Instytut Elektroenergetyki'),('Instytut Energetyki Cieplnej'),('Instytut Inżynierii Środowiska i Instalacji Budowlanych'),
+    ('Instytut Mechaniki Stosowanej'),('Instytut Technologii Mechanicznej'),('Instytut Technologii Materiałów'),('Instytut Konstrukcji Maszyn'),
+    ('Instytut Badań Materiałowych i Inżynierii Kwantowej'),('Instytut Fizyki'),('Instytut Inżynierii Materiałowej'),
+    ('Instytut Analizy Konstrukcji'),('Instytut Budownictwa'),('Instytut Inżynierii Lądowej'),('Instytut Maszyn Roboczych i Pojazdów Samochodowych'),
+    ('Instytut Silników Spalinowych i Napędów'),('Instytut Transportu');
 
 CREATE TABLE Place(
     id SERIAL PRIMARY KEY,
@@ -15,11 +31,17 @@ CREATE TABLE Place(
     country VARCHAR(255) NOT NULL
 );
 
+INSERT INTO Place (city, country) VALUES
+    ('Los Angeles', 'USA'),('Warszawa', 'Polska'),('Cambridge','USA'),('Montreal', 'Kanada');
+
 CREATE TABLE PrepaymentFee(
     id SERIAL PRIMARY KEY,
     amount DECIMAL(7,2) NOT NULL,
     paymentType VARCHAR(255) NOT NULL
 );
+
+INSERT INTO PrepaymentFee (amount, paymentType) VALUES
+    (2500, 'Cash'), (1250, 'Card'), (1400, 'Transfer'), (3000.50, 'Transfer');
 
 CREATE TABLE Prepayment(
     id SERIAL PRIMARY KEY,
@@ -29,6 +51,7 @@ CREATE TABLE Prepayment(
     CONSTRAINT accommodationFee_fk FOREIGN KEY(accommodationFeeId) REFERENCES PrepaymentFee(id)
 );
 
+INSERT INTO Prepayment (conferenceFeeId, accommodationFeeId) VALUES (1,2), (3,4);
 
 CREATE TABLE Employee(
  id BIGINT PRIMARY KEY,
@@ -36,13 +59,18 @@ CREATE TABLE Employee(
  surname varchar(255) NOT NULL,
  birthDate DATE NOT NULL,
  academicDegree varchar(255) NOT NULL,
- phoneNumber INTEGER NOT NULL,
+ phoneNumber varchar(255) NOT NULL,
  instituteID BIGINT,
  employeeTypeID BIGINT,
  CONSTRAINT institute_fk FOREIGN KEY(instituteID) REFERENCES Institute(id),
  CONSTRAINT employeeType_fk FOREIGN KEY(employeeTypeID) REFERENCES EmployeeType(id)
 );
 
+INSERT INTO Employee VALUES
+    (1, 'Andrzej', 'Kmicic', '2000-01-01', 'Prof.' ,'+48 123456789', 1, 2),
+    (2, 'Jan', 'Kowalski', '1990-03-21', 'Prof.', '+48 321456987', 2, 3),
+    (3, 'Jerzy', 'Zbiałowierzy', '1980-05-15', 'Prof.', '+48 541236987', 3, 4),
+    (4, 'Andrzej', 'Nowak', '1988-07-16', 'Prof.', '+48 987456321', 4, 4);
 
 CREATE TABLE IdentityDocument(
     id SERIAL PRIMARY KEY,
@@ -52,6 +80,10 @@ CREATE TABLE IdentityDocument(
     CONSTRAINT employee_fk FOREIGN KEY(employeeID) REFERENCES Employee(id)
 );
 
+INSERT INTO IdentityDocument (employeeID, type, number) VALUES
+    (1, 'IdCard',  'ABC12345'),
+    (1, 'Passport',  'DE6789000'),
+    (2, 'Passport', 'ZE8000199');
 
 CREATE TABLE FinancialSource
 (
@@ -61,6 +93,9 @@ CREATE TABLE FinancialSource
     financialSource VARCHAR(255) NOT NULL,
     project VARCHAR(255) NOT NULL
 );
+
+INSERT INTO FinancialSource (allocationAccount, MPK, financialSource, project) VALUES
+    ('01 2345 6789 0123 4567 8901 2345', 'MPK_1', 'Financial Source 1', 'Project X');
 
 CREATE TABLE AdvanceApplication(
     id SERIAL PRIMARY KEY,
@@ -73,11 +108,16 @@ CREATE TABLE AdvanceApplication(
     accommodationLimit DECIMAL(7,2) NOT NULL,
     travelDietAmount DECIMAL(7,2) NOT NULL,
     travelCosts DECIMAL(7,2) NOT NULL,
-    otherCostsDescription VARCHAR(255) NOT NULL,
-    otherCostsAmount DECIMAL(7,2) NOT NULL,
+    otherCostsDescription VARCHAR(255),
+    otherCostsAmount DECIMAL(7,2),
     advanceSum DECIMAL(7,2) NOT NULL,
     CONSTRAINT place_fk FOREIGN KEY(placeId) REFERENCES Place(id)
 );
+
+INSERT INTO AdvanceApplication (placeId, startDate, endDate, residenceDietQuantity, residenceDietAmount, accommodationQuantity,
+                                accommodationLimit, travelDietAmount, travelCosts, otherCostsDescription, otherCostsAmount, advanceSum) VALUES
+    (1, '2020-12-12', '2020-12-15', 2, 200, 1, 400, 300, 50, NULL, NULL, 1150),
+    (4, '2020-11-10', '2020-11-13', 1, 500, 1, 500, 400, 50, NULL, NULL, 1450);
 
 CREATE TABLE Application(
     id SERIAL PRIMARY KEY,
@@ -107,23 +147,32 @@ CREATE TABLE Application(
     CONSTRAINT prepayment_fk FOREIGN KEY(prepaymentId) REFERENCES Prepayment(id)
 );
 
+INSERT INTO Application (employeeId, createdOn, placeId, abroadStartDate, abroadEndDate, purpose, conference, subject,
+                         conferenceStartDate, conferenceEndDate, financialSourceId, abroadStartDateInsurance, abroadEndDateInsurance,
+                         selfInsured, advanceRequestId, prepaymentId, identityDocumentID, comments, status) VALUES
+    (1, '2020-11-03', 1, '2020-12-12', '2020-12-15', 'Konferencja', 'AntyCovid2020', ' TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą',
+     '2020-12-13','2020-12-14', NULL, '2020-12-12', '2020-12-15', FALSE, 1, 1, 1, NULL, 'Oczekuje na rektora'),
+    (2, '2020-11-04', 4, '2020-11-10', '2020-11-13', 'Konferencja', 'AntyCovid2020', ' TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą',
+     '2020-11-10', '2020-11-13', 1 , '2020-11-10', '2020-11-13', FALSE, 2, 2, 3, NULL, 'Oczekuje na rektora');
 
-CREATE TABLE TRANSPORT
+CREATE TABLE Transport
 (
  id SERIAL PRIMARY KEY,
  applicationID BIGINT,
  destinationFrom VARCHAR(255) NOT NULL,
  destinationTo VARCHAR(255) NOT NULL,
  departureDay DATE NOT NULL,
- departureMinute INTEGER NOT NULL,
  departureHour INTEGER NOT NULL,
+ departureMinute INTEGER NOT NULL,
  carrier VARCHAR(255) NOT NULL,
  CONSTRAINT application_fk FOREIGN KEY(applicationID) REFERENCES Application(id)
 );
 
-
-
-
+INSERT INTO Transport (applicationID, destinationFrom, destinationTo, departureDay, departureHour, departureMinute, carrier) VALUES
+    (1, 'Poznań', 'Los Angeles', '2020-12-12', 6, 30, 'LOT'),
+    (1, 'Los Angeles', 'Poznań', '2020-12-14', 20, 10, 'RyanAir'),
+    (2, 'Poznań', 'Montreal', '2020-11-10', 4, 24, 'LOT'),
+    (2, 'Montreal', 'Poznań', '2020-11-13', 5, 30, 'RyanAir');
 
 CREATE VIEW ApplicationRow AS
 SELECT Application.id, employeeId, country, city, abroadStartDate, abroadEndDate, status
