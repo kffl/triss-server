@@ -5,6 +5,7 @@ import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
 import java.sql.Date
+import java.time.LocalDate
 
 /**
  *
@@ -20,13 +21,13 @@ data class Application(
         @Column("employeeId")
         val employeeId: Long,
         @Column("createdOn")
-        val createdOn: Date,
+        val createdOn: LocalDate,
         @Column("placeId")
         val placeId: Long,
         @Column("abroadStartDate")
-        val abroadStartDate: Date,
+        val abroadStartDate: LocalDate,
         @Column("abroadEndDate")
-        val abroadEndDate: Date,
+        val abroadEndDate: LocalDate,
         @Column("purpose")
         val purpose: String,
         @Column("conference")
@@ -34,15 +35,15 @@ data class Application(
         @Column("subject")
         val subject: String,
         @Column("conferenceStartDate")
-        val conferenceStartDate: Date,
+        val conferenceStartDate: LocalDate,
         @Column("conferenceEndDate")
-        val conferenceEndDate: Date,
+        val conferenceEndDate: LocalDate,
         @Column("financialSourceId")
-        val financialSourceId: Long,
+        val financialSourceId: Long?,
         @Column("abroadStartDateInsurance")
-        val abroadStartDateInsurance: Date,
+        val abroadStartDateInsurance: LocalDate,
         @Column("abroadEndDateInsurance")
-        val abroadEndDateInsurance: Date,
+        val abroadEndDateInsurance: LocalDate,
         @Column("selfInsured")
         val selfInsured:Boolean,
         @Column("advanceRequestId")

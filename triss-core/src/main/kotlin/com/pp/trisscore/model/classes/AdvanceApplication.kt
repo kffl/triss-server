@@ -5,6 +5,7 @@ import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
 import java.math.BigDecimal
 import java.sql.Date
+import java.time.LocalDate
 
 /**
  *
@@ -20,9 +21,9 @@ data class AdvanceApplication (
         @Column("placeId")
         val placeId: Long?,
         @Column("startDate")
-        val startDate: Date,
+        val startDate: LocalDate,
         @Column("endDate")
-        val endDate: Date,
+        val endDate: LocalDate,
         @Column("residenceDietQuantity")
         val residenceDietQuantity: Int,
         @Column("residenceDietAmount")

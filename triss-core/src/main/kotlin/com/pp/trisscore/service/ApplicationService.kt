@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
-import java.sql.Date
 import java.time.LocalDate
 
 /**
@@ -37,39 +36,43 @@ class ApplicationService(
 
 
     @Transactional
-    fun createApplication(applicationInfo: ApplicationInfo): Mono<Long?> {
+    fun createApplication(applicationInfo: ApplicationInfo): Mono<Unit> {
         validateApplication(applicationInfo)
         //TODO SCHOULD BE USERID IN TOKEN
         val userId: Long = 1
         val documentId = identityDocumentService.getIdentityDocument(applicationInfo.identityDocument.copy(employeeID = userId)).map { x -> x.id }
-        documentId.subscribe() {}
+        val prepaymentId = prepaymentService.createPrepayment(applicationInfo.advancePayments).map { x -> x.id }
+
+
         val placeId = placeService.getPlace(Place(
                 id = null,
                 city = applicationInfo.basicInfo.destinationCity,
                 country = applicationInfo.basicInfo.destinationCountry)).map { x -> x.id }
-        val financialSourceId = financialSourceService.createFinancialSource(applicationInfo.financialSource).map { x -> x.id }
-        val prepaymentId = prepaymentService.createPrepayment(applicationInfo.advancePayments).map { x -> x.id }
-        val advanceApplicationId = advanceApplicationService.createAdvanceApplication(applicationInfo.advancePaymentRequest, placeId).map { y -> y.id }
-        val application = fillApplication(applicationInfo, userId, documentId, placeId, financialSourceId, prepaymentId, advanceApplicationId)
-        val applicationId = applicationRepository.save(application).map { x -> x.id }
-        applicationInfo.transport.forEach { x ->
-            transportService.createTransport(
-                    x.copy(applicationID = applicationId))
-        }
 
-        return placeId
+        val advanceApplicationId = placeId.flatMap { x -> advanceApplicationService.createAdvanceApplication(applicationInfo.advancePaymentRequest, x!!).map { y -> y.id } }
+
+        val application = Mono.zip(documentId, placeId, prepaymentId, advanceApplicationId)
+                .flatMap { data ->
+                    applicationRepository.save(fillApplication(applicationInfo, userId, data.t1!!, data.t2!!, data.t3!!, data.t4!!))
+                }
+        var x: Mono<Unit>
+         return application.map { app ->
+            applicationInfo.transport.forEach { oneTransport ->
+                transportService.createTransport(
+                        oneTransport.copy(applicationID = app.id!!))
+            }
+        }
     }
 
     fun fillApplication(applicationInfo: ApplicationInfo,
                         userId: Long,
-                        documentId: Mono<Long?>,
-                        placeId: Mono<Long?>,
-                        financialSourceId: Mono<Long?>,
-                        prepaymentId: Mono<Long?>,
-                        advanceApplicationId: Mono<Long?>): Application {
+                        documentId: Long,
+                        placeId: Long,
+                        prepaymentId: Long,
+                        advanceApplicationId: Long): Application {
         return Application(id = null,
                 employeeId = userId,
-                createdOn = Date.valueOf(LocalDate.now()),
+                createdOn = LocalDate.now(),
                 placeId = placeId,
                 abroadStartDate = applicationInfo.basicInfo.abroadStartDate,
                 abroadEndDate = applicationInfo.basicInfo.abroadEndDate,
@@ -78,7 +81,7 @@ class ApplicationService(
                 subject = applicationInfo.basicInfo.subject,
                 conferenceStartDate = applicationInfo.basicInfo.conferenceStartDate,
                 conferenceEndDate = applicationInfo.basicInfo.conferenceEndDate,
-                financialSourceId = financialSourceId,
+                financialSourceId = null,
                 abroadStartDateInsurance = applicationInfo.insurance.abroadStartDateInsurance,
                 abroadEndDateInsurance = applicationInfo.insurance.abroadEndDateInsurance,
                 selfInsured = applicationInfo.insurance.selfInsuredCheckbox,
@@ -87,7 +90,6 @@ class ApplicationService(
                 identityDocumentID = documentId,
                 comments = applicationInfo.comments,
                 status = Status.WaitingForDirector
-
         )
     }
 

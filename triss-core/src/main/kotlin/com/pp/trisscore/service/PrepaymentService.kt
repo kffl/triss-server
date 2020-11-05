@@ -12,7 +12,7 @@ class PrepaymentService(val prepaymentRepository: PrepaymentRepository,
                         val prepaymentFeeService: PrepaymentFeeService) {
     fun createPrepayment(advancePayments: AdvancePaymentsInfo): Mono<Prepayment> {
 
-        return prepaymentFeeService.createPrepaymentFee(
+        val conferenceFeeId = prepaymentFeeService.createPrepaymentFee(
                 PrepaymentFee(id = null,
                         amount = advancePayments.conferenceFeeValue,
                         paymentType = advancePayments.conferenceFeePaymentTypeSelect)).map { x -> x.id }
@@ -22,9 +22,12 @@ class PrepaymentService(val prepaymentRepository: PrepaymentRepository,
                         amount = advancePayments.depositValue,
                         paymentType = advancePayments.depositPaymentTypeSelect)).map { x -> x.id }
 
-        return prepaymentRepository.save(
-                Prepayment(id = null,
-                        conferenceFeeId = conferenceFeeId.block()!!,
-                        accommodationFeeId = depositFeeId.block()!!))
+        return Mono.zip(conferenceFeeId,depositFeeId).flatMap {
+            data ->
+            prepaymentRepository.save(
+                    Prepayment(id = null,
+                            conferenceFeeId = data.t1!!,
+                            accommodationFeeId = data.t2!!))
+        }
     }
 }

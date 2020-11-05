@@ -1,12 +1,12 @@
 package com.pp.trisscore.model.applicationinfoelements
 
 import java.math.BigDecimal
-import java.sql.Date
+import java.time.LocalDate
 
 data class AdvancePaymentRequestInfo(
         val requestPaymentDestination : String,
-        val requestPaymentStartDate: Date,
-        val requestPaymentEndDate: Date,
+        val requestPaymentStartDate: LocalDate,
+        val requestPaymentEndDate: LocalDate,
         val requestPaymentDays: Int,
         val requestPaymentDaysAmount: BigDecimal,
         val requestPaymentAccommodation: Int,

@@ -89,10 +89,10 @@ INSERT INTO IdentityDocument (employeeID, type, number) VALUES
 CREATE TABLE FinancialSource
 (
     id BIGSERIAL PRIMARY KEY,
-    allocationAccount VARCHAR(255) NOT NULL,
-    MPK VARCHAR(255) NOT NULL,
-    financialSource VARCHAR(255) NOT NULL,
-    project VARCHAR(255) NOT NULL
+    allocationAccount VARCHAR(255),
+    MPK VARCHAR(255),
+    financialSource VARCHAR(255),
+    project VARCHAR(255)
 );
 
 INSERT INTO FinancialSource (allocationAccount, MPK, financialSource, project) VALUES

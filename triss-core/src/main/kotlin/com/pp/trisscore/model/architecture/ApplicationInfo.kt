@@ -10,7 +10,6 @@ import com.pp.trisscore.model.classes.Transport
 
 data class ApplicationInfo (
         val basicInfo: BasicInfo,
-        val financialSource: FinancialSource,
         val transport: List<Transport>,
         val insurance : InsuranceInfo,
         val advancePaymentRequest: AdvancePaymentRequestInfo,
