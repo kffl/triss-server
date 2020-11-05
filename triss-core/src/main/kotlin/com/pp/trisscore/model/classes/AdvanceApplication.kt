@@ -30,7 +30,7 @@ data class AdvanceApplication (
         @Column("accommodationQuantity")
         val accommodationQuantity: Int,
         @Column("accommodationLimit")
-        val accommodationLimit: List<Double>,
+        val accommodationLimit: BigDecimal,
         @Column("travelDietAmount")
         val travelDietAmount: BigDecimal,
         @Column("travelCosts")

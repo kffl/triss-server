@@ -2,6 +2,7 @@ package com.pp.trisscore.controller
 
 import com.pp.trisscore.model.architecture.ApplicationInfo
 import com.pp.trisscore.model.architecture.PageInfo
+import com.pp.trisscore.model.classes.Application
 import com.pp.trisscore.model.rows.ApplicationRow
 import com.pp.trisscore.service.ApplicationService
 import org.springframework.web.bind.annotation.*
@@ -25,5 +26,7 @@ class ApplicationController(val applicationService: ApplicationService) {
     fun getCountByEmployeeId(@RequestBody pageInfo: PageInfo<ApplicationRow>): Mono<Long> = applicationService.getCountByFilter(pageInfo)
 
     @PostMapping("/create")
-    fun createApplication(@RequestBody applicationInfo: ApplicationInfo) = applicationService.createApplication(applicationInfo)
+    fun createApplication(@RequestBody applicationInfo: ApplicationInfo) : Mono<Long?> {
+        return applicationService.createApplication(applicationInfo)
+    }
 }

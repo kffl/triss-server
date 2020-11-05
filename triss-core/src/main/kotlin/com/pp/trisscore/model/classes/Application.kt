@@ -1,5 +1,6 @@
 package com.pp.trisscore.model.classes
 
+import com.pp.trisscore.model.enums.Status
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
@@ -53,5 +54,5 @@ data class Application(
         @Column("comments")
         val comments: String,
         @Column("status")
-        val status: String
+        val status: Status
 )

@@ -14,7 +14,7 @@ import org.springframework.data.relational.core.mapping.Table
 data class Place(
         @Id
         @Column("id")
-        val id: Int,
+        val id: Long?,
         @Column("country")
         val country: String,
         @Column("city")

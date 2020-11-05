@@ -15,9 +15,11 @@ import org.springframework.data.relational.core.mapping.Table
 data class IdentityDocument (
         @Id
         @Column("id")
-        val id: Int?,
+        val id: Long?,
+        @Column("employeeID")
+        val employeeID: Long,
         @Column("type")
-        val Type: DocumentType,
+        val type: Int,
         @Column("number")
-        val Number: String
+        val number: String
 )

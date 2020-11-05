@@ -14,7 +14,7 @@ import org.springframework.data.relational.core.mapping.Table
 data class Prepayment (
         @Id
         @Column("id")
-        val id: Long,
+        val id: Long?,
         @Column("conferenceFeeId")
         val conferenceFeeId: Long,
         @Column("accommodationFeeId")

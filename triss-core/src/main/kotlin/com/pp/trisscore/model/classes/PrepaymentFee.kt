@@ -16,7 +16,7 @@ import java.math.BigDecimal
 data class PrepaymentFee (
         @Id
         @Column("id")
-        val id: Long,
+        val id: Long?,
         @Column("amount")
         val amount: BigDecimal,
         @Column("paymentType")

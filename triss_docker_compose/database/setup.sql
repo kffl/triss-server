@@ -1,5 +1,5 @@
 CREATE TABLE EmployeeType(
-id SERIAL PRIMARY KEY,
+id BIGSERIAL PRIMARY KEY,
 name VARCHAR(255) UNIQUE NOT NULL
 );
 
@@ -9,7 +9,7 @@ INSERT INTO EmployeeType (name) VALUES
     ('SEKRETARKA'),('DOCENT');
 
 CREATE TABLE Institute(
-id SERIAL PRIMARY KEY,
+id BIGSERIAL PRIMARY KEY,
 name varchar(255) UNIQUE NOT NULL
 );
 
@@ -26,16 +26,17 @@ INSERT INTO Institute (name) VALUES
     ('Instytut Silników Spalinowych i Napędów'),('Instytut Transportu');
 
 CREATE TABLE Place(
-    id SERIAL PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     city VARCHAR(255) NOT NULL,
-    country VARCHAR(255) NOT NULL
+    country VARCHAR(255) NOT NULL,
+    UNIQUE(city,country)
 );
 
 INSERT INTO Place (city, country) VALUES
     ('Los Angeles', 'USA'),('Warszawa', 'Polska'),('Cambridge','USA'),('Montreal', 'Kanada');
 
 CREATE TABLE PrepaymentFee(
-    id SERIAL PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     amount DECIMAL(7,2) NOT NULL,
     paymentType VARCHAR(255) NOT NULL
 );
@@ -44,7 +45,7 @@ INSERT INTO PrepaymentFee (amount, paymentType) VALUES
     (2500, 'Cash'), (1250, 'Card'), (1400, 'Transfer'), (3000.50, 'Transfer');
 
 CREATE TABLE Prepayment(
-    id SERIAL PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     conferenceFeeId BIGINT,
     accommodationFeeId BIGINT,
     CONSTRAINT conferenceFee_fk FOREIGN KEY(conferenceFeeId) REFERENCES PrepaymentFee(id),
@@ -73,21 +74,21 @@ INSERT INTO Employee VALUES
     (4, 'Andrzej', 'Nowak', '1988-07-16', 'Prof.', '+48 987456321', 4, 4);
 
 CREATE TABLE IdentityDocument(
-    id SERIAL PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     employeeID BIGINT NOT NULL,
-    type VARCHAR(255) NOT NULL,
+    type Int NOT NULL,
     number VARCHAR(255) NOT NULL,
     CONSTRAINT employee_fk FOREIGN KEY(employeeID) REFERENCES Employee(id)
 );
 
 INSERT INTO IdentityDocument (employeeID, type, number) VALUES
-    (1, 'IdCard',  'ABC12345'),
-    (1, 'Passport',  'DE6789000'),
-    (2, 'Passport', 'ZE8000199');
+    (1, 0,  'ABC12345'),
+    (1, 1,  'DE6789000'),
+    (2, 1, 'ZE8000199');
 
 CREATE TABLE FinancialSource
 (
-    id SERIAL PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     allocationAccount VARCHAR(255) NOT NULL,
     MPK VARCHAR(255) NOT NULL,
     financialSource VARCHAR(255) NOT NULL,
@@ -98,7 +99,7 @@ INSERT INTO FinancialSource (allocationAccount, MPK, financialSource, project) V
     ('01 2345 6789 0123 4567 8901 2345', 'MPK_1', 'Financial Source 1', 'Project X');
 
 CREATE TABLE AdvanceApplication(
-    id SERIAL PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     placeId BIGINT NOT NULL,
     startDate DATE NOT NULL,
     endDate DATE NOT NULL,
@@ -120,7 +121,7 @@ INSERT INTO AdvanceApplication (placeId, startDate, endDate, residenceDietQuanti
     (4, '2020-11-10', '2020-11-13', 1, 500, 1, 500, 400, 50, NULL, NULL, 1450);
 
 CREATE TABLE Application(
-    id SERIAL PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     employeeId BIGINT,
     createdOn DATE,
     placeId BIGINT,
@@ -157,7 +158,7 @@ INSERT INTO Application (employeeId, createdOn, placeId, abroadStartDate, abroad
 
 CREATE TABLE Transport
 (
- id SERIAL PRIMARY KEY,
+ id BIGSERIAL PRIMARY KEY,
  applicationID BIGINT,
  destinationFrom VARCHAR(255) NOT NULL,
  destinationTo VARCHAR(255) NOT NULL,

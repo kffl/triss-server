@@ -6,7 +6,7 @@ import org.springframework.data.relational.core.mapping.Column
 data class FinancialSource(
         @Id
         @Column("id")
-        val id: Int?,
+        val id: Long?,
         @Column("allocationAccount")
         val allocationAccount: String?,
         @Column("MPK")

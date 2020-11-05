@@ -15,5 +15,4 @@ enum class Status(val namePl: String, val nameEng: String) {
     WaitingForWildaAgain("Oczekuje ponownie na Wildę","Waiting again for Wilda"),
     Declined("Odrzucony","Declined"),
     Accepted("Zaakceptowany","Accepted")
-
 }
