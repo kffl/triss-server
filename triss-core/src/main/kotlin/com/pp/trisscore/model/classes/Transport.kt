@@ -4,12 +4,13 @@ import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
 import java.sql.Date
+import java.time.LocalDate
 
 @Table("Transport")
 data class Transport(
         @Id
         @Column("id")
-        val id: Long,
+        val id: Long?,
         @Column("applicationID")
         val applicationID: Long,
         @Column("destinationFrom")
@@ -17,7 +18,7 @@ data class Transport(
         @Column("destinationTo")
         val destinationTo: String,
         @Column("departureDay")
-        val departureDay: Date,
+        val departureDay: LocalDate,
         @Column("departureMinute")
         val departureMinute: Int,
         @Column("departureHour")

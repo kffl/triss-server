@@ -4,6 +4,7 @@ import com.pp.trisscore.model.architecture.ApplicationInfo
 import com.pp.trisscore.model.architecture.PageInfo
 import com.pp.trisscore.model.classes.Application
 import com.pp.trisscore.model.classes.Place
+import com.pp.trisscore.model.classes.Transport
 import com.pp.trisscore.model.enums.Status
 import com.pp.trisscore.model.rows.ApplicationRow
 import com.pp.trisscore.repository.ApplicationRepository
@@ -28,15 +29,14 @@ class ApplicationService(
         val transportService: TransportService,
         val placeService: PlaceService,
         val prepaymentService: PrepaymentService,
-        val identityDocumentService: IdentityDocumentService,
-        val financialSourceService: FinancialSourceService) {
+        val identityDocumentService: IdentityDocumentService) {
 
     fun getAllByFilter(pageInfo: PageInfo<ApplicationRow>): Flux<ApplicationRow> = applicationRowRepository.getAllByFilter(pageInfo)
     fun getCountByFilter(pageInfo: PageInfo<ApplicationRow>) = applicationRowRepository.getCountByFilter(pageInfo)
 
 
     @Transactional
-    fun createApplication(applicationInfo: ApplicationInfo): Mono<Unit> {
+    fun createApplication(applicationInfo: ApplicationInfo): Mono<Transport> {
         validateApplication(applicationInfo)
         //TODO SCHOULD BE USERID IN TOKEN
         val userId: Long = 1
@@ -49,19 +49,12 @@ class ApplicationService(
                 city = applicationInfo.basicInfo.destinationCity,
                 country = applicationInfo.basicInfo.destinationCountry)).map { x -> x.id }
 
-        val advanceApplicationId = placeId.flatMap { x -> advanceApplicationService.createAdvanceApplication(applicationInfo.advancePaymentRequest, x!!).map { y -> y.id } }
-
-        val application = Mono.zip(documentId, placeId, prepaymentId, advanceApplicationId)
+        val advanceApplication = placeId.flatMap { x -> advanceApplicationService.createAdvanceApplication(applicationInfo.advancePaymentRequest, x!!) }
+        val application = Mono.zip(documentId, prepaymentId, advanceApplication)
                 .flatMap { data ->
-                    applicationRepository.save(fillApplication(applicationInfo, userId, data.t1!!, data.t2!!, data.t3!!, data.t4!!))
+                    applicationRepository.save(fillApplication(applicationInfo, userId, data.t3.placeId!!, data.t1!!, data.t2!!, data.t3.id!!))
                 }
-        var x: Mono<Unit>
-         return application.map { app ->
-            applicationInfo.transport.forEach { oneTransport ->
-                transportService.createTransport(
-                        oneTransport.copy(applicationID = app.id!!))
-            }
-        }
+        return application.flatMap { x -> transportService.save(applicationInfo.transport, x.id!!) }
     }
 
     fun fillApplication(applicationInfo: ApplicationInfo,
@@ -92,7 +85,6 @@ class ApplicationService(
                 status = Status.WaitingForDirector
         )
     }
-
 
     fun validateApplication(applicationInfo: ApplicationInfo) {
         //TODO

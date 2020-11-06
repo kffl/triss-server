@@ -6,4 +6,7 @@ import org.springframework.stereotype.Repository
 
 
 @Repository
-interface TransportRepository : ReactiveCrudRepository<Transport,Long> {}
+interface TransportRepository : ReactiveCrudRepository<Transport,Long> {
+
+
+}
