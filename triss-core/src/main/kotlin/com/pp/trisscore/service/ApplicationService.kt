@@ -42,8 +42,6 @@ class ApplicationService(
         val userId: Long = 1
         val documentId = identityDocumentService.getIdentityDocument(applicationInfo.identityDocument.copy(employeeID = userId)).map { x -> x.id }
         val prepaymentId = prepaymentService.createPrepayment(applicationInfo.advancePayments).map { x -> x.id }
-
-
         val placeId = placeService.getPlace(Place(
                 id = null,
                 city = applicationInfo.basicInfo.destinationCity,

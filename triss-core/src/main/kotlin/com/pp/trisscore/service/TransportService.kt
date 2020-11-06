@@ -10,25 +10,14 @@ import reactor.core.publisher.Mono
 @Service
 class TransportService(val transportRepository: TransportRepository) {
 
-    fun saveAll(transportList:List<Transport>,applicationId:Long): Flux<Transport>
-    {
-        return transportRepository.saveAll(transportList)
-    }
-
     fun save(transport: List<Transport>, id: Long): Mono<Transport> {
-        val transportMono =  transportRepository.save(transport.get(0).copy(applicationID = id))
-        val z = 1
-        if(z< transport.size)
-            return save(transport,id,z,transportMono)
+        var transportMono =  transportRepository.save(transport.get(0).copy(applicationID = id))
+        var z = 1
+        while(z<transport.size){
+            val b=z
+            transportMono = transportMono.flatMap { x -> transportRepository.save(transport[b].copy(applicationID = x.applicationID))}
+            z=b+1
+        }
         return transportMono
     }
-    fun save(transport: List<Transport>, id:Long, z:Int,transportMono: Mono<Transport>) :Mono<Transport>
-    {
-        val transportM =  transportMono.flatMap { x -> transportRepository.save(transport.get(z).copy(applicationID = x.applicationID))}
-        val y = z+1
-        if(y< transport.size)
-            return save(transport,id,y,transportM)
-        return transportM
-    }
-
 }
