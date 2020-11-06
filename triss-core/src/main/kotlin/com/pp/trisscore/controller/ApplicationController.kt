@@ -18,11 +18,12 @@ import reactor.core.publisher.Mono
  * Date: 06.10.2020
  **/
 @RestController
+@CrossOrigin
 @RequestMapping("/application")
 class ApplicationController(val applicationService: ApplicationService) {
 
     @PostMapping("/get")
-    fun getApplicationsByEmployeeId(@RequestBody pageInfo: PageInfo<ApplicationRow>): Flux<ApplicationRow> = applicationService.getAllByFilter(pageInfo);
+    fun getApplicationsByEmployeeId(@RequestBody pageInfo: PageInfo<ApplicationRow>): Flux<ApplicationRow> = applicationService.getAllByFilter(pageInfo)
 
     @PostMapping("/count")
     fun getCountByEmployeeId(@RequestBody pageInfo: PageInfo<ApplicationRow>): Mono<Long> = applicationService.getCountByFilter(pageInfo)
