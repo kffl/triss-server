@@ -1,6 +1,7 @@
 package com.pp.trisscore.controller
 
 import ch.qos.logback.classic.pattern.ThrowableHandlingConverter
+import com.pp.trisscore.exceptions.IdNotFoundException
 import com.pp.trisscore.exceptions.WrongDateException
 import com.pp.trisscore.model.architecture.ApplicationInfo
 import com.pp.trisscore.model.architecture.ErrorsDetails
@@ -42,6 +43,11 @@ class ApplicationController(val applicationService: ApplicationService) {
     @ExceptionHandler(value = [WrongDateException::class])
     fun catchWrongDateException(ex: RuntimeException): ResponseEntity<ErrorsDetails> {
         val errorDetails = ErrorsDetails(Date(), "WrongDateException::class", ex.message!!)
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDetails)
+    }
+    @ExceptionHandler(value = [IdNotFoundException::class])
+    fun catchIdNotFoundException(ex: RuntimeException): ResponseEntity<ErrorsDetails> {
+        val errorDetails = ErrorsDetails(Date(), "IdNotFoundException::class", ex.message!!)
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDetails)
     }
 

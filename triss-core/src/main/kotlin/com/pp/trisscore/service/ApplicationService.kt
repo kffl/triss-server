@@ -1,9 +1,11 @@
 package com.pp.trisscore.service
 
+import com.pp.trisscore.exceptions.IdNotFoundException
 import com.pp.trisscore.exceptions.WrongDateException
 import com.pp.trisscore.model.architecture.ApplicationInfo
 import com.pp.trisscore.model.architecture.PageInfo
 import com.pp.trisscore.model.classes.Application
+import com.pp.trisscore.model.classes.IdentityDocument
 import com.pp.trisscore.model.classes.Place
 import com.pp.trisscore.model.classes.Transport
 import com.pp.trisscore.model.enums.Status
@@ -41,7 +43,7 @@ class ApplicationService(
         validateApplication(applicationInfo)
         //TODO SHOULD BE USERID IN TOKEN
         val userId: Long = 1
-        val documentId = identityDocumentService.getIdentityDocument(applicationInfo.identityDocument.copy(employeeID = userId)).map { x -> x.id }
+        val documentId = identityDocumentService.getIdentityDocument(applicationInfo.identityDocument.copy(employeeID = userId)).switchIfEmpty(throw IdNotFoundException("DocumentId not found.")).map { x -> x.id }
         val prepaymentId = prepaymentService.createPrepayment(applicationInfo.advancePayments).map { x -> x.id }
         val placeId = placeService.getPlace(Place(
                 id = null,
@@ -95,7 +97,6 @@ class ApplicationService(
                 applicationInfo.advancePaymentRequest.requestPaymentEndDate, "RequestPaymentStartDate is after RequestPaymentEndDate.")
         checkStartDateBeforeEndDate(applicationInfo.insurance.abroadStartDateInsurance,
                 applicationInfo.insurance.abroadEndDateInsurance, "AbroadStartDateInsurance is after abroadEndDateInsurance")
-
     }
 
     private fun checkStartDateBeforeEndDate(startDate: LocalDate, endDate: LocalDate, message: String) {
