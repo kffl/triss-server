@@ -3,7 +3,9 @@ package com.pp.trisscore.model.classes
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
+import java.math.BigDecimal
 import java.sql.Date
+import java.time.LocalDate
 
 /**
  *
@@ -15,30 +17,29 @@ import java.sql.Date
 data class AdvanceApplication (
         @Id
         @Column("id")
-        val id: Int,
+        val id: Long?,
         @Column("placeId")
-        val placeId: Long,
-        //val place: Place,
+        val placeId: Long?,
         @Column("startDate")
-        val startDate: Date,
+        val startDate: LocalDate,
         @Column("endDate")
-        val endDate: Date,
+        val endDate: LocalDate,
         @Column("residenceDietQuantity")
         val residenceDietQuantity: Int,
         @Column("residenceDietAmount")
-        val residenceDietAmount: Double,
+        val residenceDietAmount: BigDecimal,
         @Column("accommodationQuantity")
         val accommodationQuantity: Int,
-        @Column("\"limit\"")
-        val limit: List<Double>, //TODO: czym jest limit i jak to wrzucić do DB
+        @Column("accommodationLimit")
+        val accommodationLimit: BigDecimal,
         @Column("travelDietAmount")
-        val travelDietAmount: Double,
+        val travelDietAmount: BigDecimal,
         @Column("travelCosts")
-        val travelCosts: Double,
+        val travelCosts: BigDecimal,
         @Column("otherCostsDescription")
         val otherCostsDescription: String,
         @Column("otherCostsAmount")
-        val otherCostsAmount: Double,
+        val otherCostsAmount: BigDecimal,
         @Column("advanceSum")
-        val advanceSum: Double
+        val advanceSum: BigDecimal
 )

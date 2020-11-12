@@ -1,11 +1,11 @@
 package com.pp.trisscore.model.classes
 
-import com.pp.trisscore.model.enums.Vehicle
+import com.pp.trisscore.model.enums.Status
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
 import java.sql.Date
-import java.time.LocalDateTime
+import java.time.LocalDate
 
 /**
  *
@@ -17,54 +17,43 @@ import java.time.LocalDateTime
 data class Application(
         @Id
         @Column("id")
-        val id: Long,
+        val id: Long?,
         @Column("employeeId")
         val employeeId: Long,
-//        val employee: Employee,
         @Column("createdOn")
-        val createdOn: Date,
+        val createdOn: LocalDate,
         @Column("placeId")
         val placeId: Long,
-//        val place: Place,
-        @Column("conferenceStartDate")
-        val conferenceStartDate: Date,
-        @Column("conferenceEndDate")
-        val conferenceEndDate: Date,
+        @Column("abroadStartDate")
+        val abroadStartDate: LocalDate,
+        @Column("abroadEndDate")
+        val abroadEndDate: LocalDate,
         @Column("purpose")
         val purpose: String,
-        @Column("description")
-        val description: String,
+        @Column("conference")
+        val conference: String,
         @Column("subject")
         val subject: String,
+        @Column("conferenceStartDate")
+        val conferenceStartDate: LocalDate,
+        @Column("conferenceEndDate")
+        val conferenceEndDate: LocalDate,
         @Column("financialSourceId")
-        val financialSourceId: Long,
-//        val financialSource: FinancialSource,
-        @Column("vehicleList")
-        val vehicleList: String,
-        //val vehicle: List<Vehicle>,
-        @Column("routeList")
-        val routeList: String,
-        //val route: List<String>,
-        @Column("departureTime")
-        val departureTime: LocalDateTime,
-        @Column("carrier")
-        val carrier: String,
-        @Column("abroadStartDate")
-        val abroadStartDate: Date?,
-        @Column("abroadEndDate")
-        val abroadEndDate: Date?,
+        val financialSourceId: Long?,
+        @Column("abroadStartDateInsurance")
+        val abroadStartDateInsurance: LocalDate,
+        @Column("abroadEndDateInsurance")
+        val abroadEndDateInsurance: LocalDate,
         @Column("selfInsured")
-        val selfInsured: Boolean,
+        val selfInsured:Boolean,
         @Column("advanceRequestId")
         val advanceRequestId: Long,
-//        val advanceApplication: AdvanceApplication,
         @Column("prepaymentId")
         val prepaymentId: Long,
-//        val prepayment: Prepayment,
         @Column("identityDocumentID")
         val identityDocumentID: Long,
         @Column("comments")
         val comments: String,
         @Column("status")
-        val status: String
+        val status: Status
 )

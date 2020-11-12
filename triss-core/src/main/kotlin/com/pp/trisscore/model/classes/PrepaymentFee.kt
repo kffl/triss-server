@@ -4,6 +4,7 @@ import com.pp.trisscore.model.enums.PaymentType
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
+import java.math.BigDecimal
 
 /**
  *
@@ -11,13 +12,13 @@ import org.springframework.data.relational.core.mapping.Table
  * e-mail: marceli.jerzynski@student.put.poznan.pl
  * Date: 03.10.2020
  **/
-@Table("Fee")
-data class Fee (
+@Table("PrepaymentFee")
+data class PrepaymentFee (
         @Id
         @Column("id")
-        val id: Long,
+        val id: Long?,
         @Column("amount")
-        val amount: Double,
+        val amount: BigDecimal,
         @Column("paymentType")
         val paymentType: PaymentType
 )

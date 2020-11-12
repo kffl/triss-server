@@ -4,6 +4,8 @@ import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
 import java.sql.Date
+import java.time.LocalDate
+
 /**
  *
  * author: Marceli Jerzyński
@@ -20,9 +22,13 @@ data class Employee (
         @Column("surname")
         val surname: String,
         @Column("birthDate")
-        val birthDate: Date,
-        @Column("birthPlace")
-        val birthPlace: String
-//        val documents: List<IdentityDocument>,
-//        val requests: List<Request>
+        val birthDate: LocalDate,
+        @Column("phoneNumber")
+        val phoneNumber: Int,
+        @Column("academicDegree")
+        val academicDegree: String,
+        @Column("instituteID")
+        val instituteID: Long,
+        @Column("employeeTypeID")
+        val employeeTypeID: Long
 )
