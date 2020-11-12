@@ -1,11 +1,10 @@
 package com.pp.trisscore.service
 
-import com.pp.trisscore.exceptions.IdNotFoundException
+import com.pp.trisscore.exceptions.ObjectNotFoundException
 import com.pp.trisscore.exceptions.WrongDateException
 import com.pp.trisscore.model.architecture.ApplicationInfo
 import com.pp.trisscore.model.architecture.PageInfo
 import com.pp.trisscore.model.classes.Application
-import com.pp.trisscore.model.classes.IdentityDocument
 import com.pp.trisscore.model.classes.Place
 import com.pp.trisscore.model.classes.Transport
 import com.pp.trisscore.model.enums.Status
@@ -16,7 +15,10 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import reactor.core.publisher.onErrorMap
+import java.lang.RuntimeException
 import java.time.LocalDate
+import java.util.concurrent.CompletableFuture
 
 /**
  *
@@ -43,13 +45,15 @@ class ApplicationService(
         validateApplication(applicationInfo)
         //TODO SHOULD BE USERID IN TOKEN
         val userId: Long = 1
-        val documentId = identityDocumentService.getIdentityDocument(applicationInfo.identityDocument.copy(employeeID = userId)).switchIfEmpty(throw IdNotFoundException("DocumentId not found.")).map { x -> x.id }
-        val prepaymentId = prepaymentService.createPrepayment(applicationInfo.advancePayments).map { x -> x.id }
+        val documentId = identityDocumentService.getIdentityDocument(applicationInfo.identityDocument.copy(employeeID = userId))
+                .map{x-> x.id}
+                .switchIfEmpty(Mono.error(ObjectNotFoundException("documentId")))
+        val prepaymentId = prepaymentService.createPrepayment(applicationInfo.advancePayments)
+                .map{x-> x.id}
         val placeId = placeService.getPlace(Place(
                 id = null,
                 city = applicationInfo.basicInfo.destinationCity,
-                country = applicationInfo.basicInfo.destinationCountry)).map { x -> x.id }
-
+                country = applicationInfo.basicInfo.destinationCountry)).map{x-> x.id}
         val advanceApplication = placeId.flatMap { x -> advanceApplicationService.createAdvanceApplication(applicationInfo.advancePaymentRequest, x!!) }
         val application = Mono.zip(documentId, prepaymentId, advanceApplication)
                 .flatMap { data ->
@@ -64,6 +68,7 @@ class ApplicationService(
                         placeId: Long,
                         prepaymentId: Long,
                         advanceApplicationId: Long): Application {
+
         return Application(id = null,
                 employeeId = userId,
                 createdOn = LocalDate.now(),
@@ -86,6 +91,8 @@ class ApplicationService(
                 status = Status.WaitingForDirector
         )
     }
+
+
 
     fun validateApplication(applicationInfo: ApplicationInfo) {
         //TODO
