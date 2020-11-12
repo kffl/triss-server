@@ -1,5 +1,6 @@
 package com.pp.trisscore.service
 
+import com.pp.trisscore.exceptions.WrongDateException
 import com.pp.trisscore.model.architecture.ApplicationInfo
 import com.pp.trisscore.model.architecture.PageInfo
 import com.pp.trisscore.model.classes.Application
@@ -38,7 +39,7 @@ class ApplicationService(
     @Transactional
     fun createApplication(applicationInfo: ApplicationInfo): Mono<Transport> {
         validateApplication(applicationInfo)
-        //TODO SCHOULD BE USERID IN TOKEN
+        //TODO SHOULD BE USERID IN TOKEN
         val userId: Long = 1
         val documentId = identityDocumentService.getIdentityDocument(applicationInfo.identityDocument.copy(employeeID = userId)).map { x -> x.id }
         val prepaymentId = prepaymentService.createPrepayment(applicationInfo.advancePayments).map { x -> x.id }
@@ -86,5 +87,20 @@ class ApplicationService(
 
     fun validateApplication(applicationInfo: ApplicationInfo) {
         //TODO
+        checkStartDateBeforeEndDate(applicationInfo.basicInfo.abroadStartDate,
+                applicationInfo.basicInfo.abroadEndDate, "AbroadStartDate is after abroadEndDate." )
+        checkStartDateBeforeEndDate(applicationInfo.basicInfo.conferenceStartDate,
+                applicationInfo.basicInfo.conferenceEndDate, "ConferenceStartDate is after conferenceEndDate." )
+        checkStartDateBeforeEndDate(applicationInfo.advancePaymentRequest.requestPaymentStartDate,
+                applicationInfo.advancePaymentRequest.requestPaymentEndDate, "RequestPaymentStartDate is after RequestPaymentEndDate.")
+        checkStartDateBeforeEndDate(applicationInfo.insurance.abroadStartDateInsurance,
+                applicationInfo.insurance.abroadEndDateInsurance, "AbroadStartDateInsurance is after abroadEndDateInsurance")
+
+    }
+
+    private fun checkStartDateBeforeEndDate(startDate: LocalDate, endDate: LocalDate, message: String) {
+        if (startDate.isAfter(endDate)) {
+            throw(WrongDateException(message))
+        }
     }
 }
