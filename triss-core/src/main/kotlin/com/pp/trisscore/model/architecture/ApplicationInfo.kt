@@ -12,10 +12,11 @@ data class ApplicationInfo (
         val basicInfo: BasicInfo,
         val transport: List<Transport>,
         val insurance : InsuranceInfo,
+        val financialSource: FinancialSource?,
         val advancePaymentRequest: AdvancePaymentRequestInfo,
         val advancePayments: AdvancePaymentsInfo,
         val identityDocument : IdentityDocument,
-        val comments: String)
+        val comments: String?)
 
 
 

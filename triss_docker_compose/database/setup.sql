@@ -111,14 +111,16 @@ CREATE TABLE AdvanceApplication(
     travelCosts DECIMAL(7,2) NOT NULL,
     otherCostsDescription VARCHAR(255),
     otherCostsAmount DECIMAL(7,2),
+    residenceDietSum DECIMAL(7,2) NOT NULL,
+    accommodationSum DECIMAL(7,2) NOT NULL,
     advanceSum DECIMAL(7,2) NOT NULL,
     CONSTRAINT place_fk FOREIGN KEY(placeId) REFERENCES Place(id)
 );
 
 INSERT INTO AdvanceApplication (placeId, startDate, endDate, residenceDietQuantity, residenceDietAmount, accommodationQuantity,
-                                accommodationLimit, travelDietAmount, travelCosts, otherCostsDescription, otherCostsAmount, advanceSum) VALUES
-    (1, '2020-12-12', '2020-12-15', 2, 200, 1, 400, 300, 50, NULL, NULL, 1150),
-    (4, '2020-11-10', '2020-11-13', 1, 500, 1, 500, 400, 50, NULL, NULL, 1450);
+                                accommodationLimit, travelDietAmount, travelCosts, otherCostsDescription, otherCostsAmount,residenceDietSum,accommodationSum, advanceSum) VALUES
+    (1, '2020-12-12', '2020-12-15', 2, 200, 1, 400, 300, 50, NULL, NULL,400,400, 1150),
+    (4, '2020-11-10', '2020-11-13', 1, 500, 1, 500, 400, 50, NULL, NULL,500,500,1450);
 
 CREATE TABLE Application(
     id BIGSERIAL PRIMARY KEY,
@@ -178,4 +180,27 @@ INSERT INTO Transport (applicationID, destinationFrom, destinationTo, departureD
 CREATE VIEW ApplicationRow AS
 SELECT Application.id, employeeId, country, city, abroadStartDate, abroadEndDate, status
 FROM Application JOIN Place
-ON Place.id = Application.placeId
+ON Place.id = Application.placeId;
+
+
+CREATE View ApplicationFull AS
+SELECT A.id,E.firstName,E.surname,E.birthDate,E.academicDegree,E.phoneNumber,P.city,P.country, A.purpose,A.conference,
+A.subject,A.conferenceStartDate,A.conferenceEndDate,A.abroadStartDate,A.abroadEndDate,A.selfInsured,
+AA.startDate as requestPaymentStartDate, AA.endDate as requestPaymentEndDate,
+AA.residenceDietQuantity as requestPaymentDays, AA.residenceDietAmount as requestPaymentDaysAmount,
+AA.accommodationQuantity as requestPaymentAccommodation, AA.accommodationLimit as requestPaymentAccommodationLimit,
+AA.travelDietAmount as requestPaymentTravelDiet, AA.travelCosts as requestPaymentLocalTransportCosts,
+AA.otherCostsDescription as requestPaymentOtherExpensesDescription, AA.otherCostsAmount as requestPaymentOtherExpensesValue,
+AA.residenceDietSum as requestPaymentDaysAmountSum, AA.accommodationSum as requestPaymentAccommodationSum,AA.advanceSum as requestPaymentSummarizedCosts,
+PFA.amount as depositValue, PFA.paymentType as depositPaymentTypeSelect,
+PFC.amount as conferenceFeeValue, PFC.paymentType as conferenceFeePaymentTypeSelect,
+ID.Type,ID.Number,ID.employeeID,ID.id as identityID,A.comments,a.financialSourceId,FS.allocationAccount, FS.MPK, FS.financialSource, FS.project
+FROM Application A
+JOIN Employee E on A.employeeId = E.id
+JOIN AdvanceApplication AA on A.advanceRequestId = AA.id
+JOIN Place P on A.placeId = P.id
+JOIN IdentityDocument ID on A.identityDocumentID = ID.id
+JOIN Prepayment P2 on A.prepaymentId = P2.id
+JOIN PrepaymentFee PFA on P2.accommodationFeeId = PFA.id
+JOIN PrepaymentFee PFC on P2.conferenceFeeId = PFC.id
+LEFT JOIN FinancialSource FS on A.financialSourceId = FS.id;

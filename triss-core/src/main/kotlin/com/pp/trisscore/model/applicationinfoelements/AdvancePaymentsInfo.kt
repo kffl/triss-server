@@ -8,5 +8,4 @@ data class AdvancePaymentsInfo (
      val conferenceFeePaymentTypeSelect : PaymentType,
      val depositValue : BigDecimal,
      val depositPaymentTypeSelect : PaymentType
-
 )

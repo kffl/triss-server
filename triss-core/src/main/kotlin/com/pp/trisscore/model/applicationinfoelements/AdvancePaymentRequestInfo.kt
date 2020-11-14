@@ -13,8 +13,8 @@ data class AdvancePaymentRequestInfo(
         val requestPaymentAccommodationLimit: BigDecimal,
         val requestPaymentTravelDiet: BigDecimal,
         val requestPaymentLocalTransportCosts: BigDecimal,
-        val requestPaymentOtherExpensesDescription: String,
-        val requestPaymentOtherExpensesValue: BigDecimal,
+        val requestPaymentOtherExpensesDescription: String?,
+        val requestPaymentOtherExpensesValue: BigDecimal?,
         val requestPaymentDaysAmountSum: BigDecimal,
         val requestPaymentAccommodationSum: BigDecimal,
         val requestPaymentSummarizedCosts: BigDecimal
