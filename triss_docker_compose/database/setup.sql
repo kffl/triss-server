@@ -156,9 +156,9 @@ INSERT INTO Application (employeeId, createdOn, placeId,instituteId, abroadStart
                          conferenceStartDate, conferenceEndDate, financialSourceId, abroadStartDateInsurance, abroadEndDateInsurance,
                          selfInsured, advanceRequestId, prepaymentId, identityDocumentID, comments, status) VALUES
     (1, '2020-11-03', 1,1, '2020-12-12', '2020-12-15', 'Konferencja', 'AntyCovid2020', ' TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą',
-     '2020-12-13','2020-12-14', NULL, '2020-12-12', '2020-12-15', FALSE, 1, 1, 1, NULL, 'Oczekuje na rektora'),
+     '2020-12-13','2020-12-14', NULL, '2020-12-12', '2020-12-15', FALSE, 1, 1, 1, NULL, 'WaitingForRector'),
     (2, '2020-11-04', 4,2,'2020-11-10', '2020-11-13', 'Konferencja', 'AntyCovid2020', ' TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą',
-     '2020-11-10', '2020-11-13', 1 , '2020-11-10', '2020-11-13', FALSE, 2, 2, 3, NULL, 'Oczekuje na rektora');
+     '2020-11-10', '2020-11-13', 1 , '2020-11-10', '2020-11-13', FALSE, 2, 2, 3, NULL, 'WaitingForRector');
 
 CREATE TABLE Transport
 (
@@ -170,14 +170,15 @@ CREATE TABLE Transport
  departureHour INTEGER NOT NULL,
  departureMinute INTEGER NOT NULL,
  carrier VARCHAR(255) NOT NULL,
+ vehicleSelect VARCHAR(255) NOT NULL,
  CONSTRAINT application_fk FOREIGN KEY(applicationID) REFERENCES Application(id)
 );
 
-INSERT INTO Transport (applicationID, destinationFrom, destinationTo, departureDay, departureHour, departureMinute, carrier) VALUES
-    (1, 'Poznań', 'Los Angeles', '2020-12-12', 6, 30, 'LOT'),
-    (1, 'Los Angeles', 'Poznań', '2020-12-14', 20, 10, 'RyanAir'),
-    (2, 'Poznań', 'Montreal', '2020-11-10', 4, 24, 'LOT'),
-    (2, 'Montreal', 'Poznań', '2020-11-13', 5, 30, 'RyanAir');
+INSERT INTO Transport (applicationID, destinationFrom, destinationTo, departureDay, departureHour, departureMinute,vehicleSelect, carrier) VALUES
+    (1, 'Poznań', 'Los Angeles', '2020-12-12', 6, 30,'Plane', 'LOT'),
+    (1, 'Los Angeles', 'Poznań', '2020-12-14', 20, 10,'Plane', 'RyanAir'),
+    (2, 'Poznań', 'Montreal', '2020-11-10', 4, 24,'Plane', 'LOT'),
+    (2, 'Montreal', 'Poznań', '2020-11-13', 5, 30,'Plane', 'RyanAir');
 
 CREATE VIEW ApplicationRow AS
 SELECT Application.id, employeeId, country, city, abroadStartDate, abroadEndDate, status
