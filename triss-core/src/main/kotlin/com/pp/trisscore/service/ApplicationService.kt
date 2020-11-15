@@ -3,6 +3,7 @@ package com.pp.trisscore.service
 import com.pp.trisscore.exceptions.ObjectNotFoundException
 import com.pp.trisscore.exceptions.WrongDateException
 import com.pp.trisscore.model.architecture.ApplicationInfo
+import com.pp.trisscore.model.architecture.GetFullApplicationRequestBody
 import com.pp.trisscore.model.architecture.PageInfo
 import com.pp.trisscore.model.classes.Application
 import com.pp.trisscore.model.classes.Place

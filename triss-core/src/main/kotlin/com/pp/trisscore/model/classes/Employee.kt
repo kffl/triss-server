@@ -16,7 +16,7 @@ import java.time.LocalDate
 data class Employee (
         @Id
         @Column("id")
-        val id: Int,
+        val id: Int?,
         @Column("firstName")
         val firstName: String,
         @Column("surname")

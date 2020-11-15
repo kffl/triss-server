@@ -6,6 +6,6 @@ import java.math.BigDecimal
 data class AdvancePaymentsInfo (
         val conferenceFeeValue : BigDecimal,
         val conferenceFeePaymentTypeSelect : PaymentType,
-        val depositFeeValue : BigDecimal,
-        val depositFeePaymentTypeSelect : PaymentType
+        val accommodationFeeValue : BigDecimal,
+        val accommodationFeePaymentTypeSelect : PaymentType
 )

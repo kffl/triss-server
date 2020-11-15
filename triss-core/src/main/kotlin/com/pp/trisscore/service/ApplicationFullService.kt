@@ -1,17 +1,33 @@
 package com.pp.trisscore.service
 
-import com.pp.trisscore.model.applicationinfoelements.AdvancePaymentsInfo
 import com.pp.trisscore.model.architecture.ApplicationInfo
-import com.pp.trisscore.model.classes.FinancialSource
-import com.pp.trisscore.model.classes.IdentityDocument
-import com.pp.trisscore.model.classes.Transport
-import com.pp.trisscore.model.rows.ApplicationFull
+import com.pp.trisscore.model.architecture.GetFullApplicationRequestBody
 import com.pp.trisscore.repository.ApplicationFullRepository
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
+
 
 @Service
 class ApplicationFullService(val applicationFullRepository: ApplicationFullRepository,
                              val transportService: TransportService) {
 
+
+    fun getFullApplication(requestBody: GetFullApplicationRequestBody): Mono<ApplicationInfo> {
+
+        val applicationFull = applicationFullRepository.findById(requestBody.applicationId)
+        val transportList = transportService.findAllByApplicationID(requestBody.applicationId)
+        return Mono.zip(applicationFull, transportList.collectList()).flatMap { x ->
+            Mono.just(ApplicationInfo(
+                    application = x.t1.getApplication(),
+                    institute = x.t1.getInstitute(),
+                    place = x.t1.getPlace(),
+                    employee = x.t1.getEmployee(),
+                    financialSource = x.t1.getFinancialSource(),
+                    advanceApplication = x.t1.getAdvanceApplication(),
+                    advancePayments = x.t1.getAdvancePaymentsInfo(),
+                    transport = x.t2,
+                    identityDocument = x.t1.getIdentityDocument()
+            ))
+        }
+    }
 }

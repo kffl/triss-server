@@ -1,5 +1,5 @@
 package com.pp.trisscore.model.architecture
 
-data class GetApplicationFullRequestBody(
+data class GetFullApplicationRequestBody(
         val applicationId:Long
 )

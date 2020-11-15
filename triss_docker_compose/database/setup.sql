@@ -185,25 +185,30 @@ FROM Application JOIN Place
 ON Place.id = Application.placeId;
 
 
-CREATE View ApplicationFull AS
-SELECT A.id,E.firstName,E.surname,E.birthDate,E.academicDegree,E.phoneNumber,P.city,P.country, A.purpose,A.conference,I.name as instituteName,
-A.subject,A.conferenceStartDate,A.conferenceEndDate,A.abroadStartDate,A.abroadEndDate,A.selfInsured,
-AA.startDate as requestPaymentStartDate, AA.endDate as requestPaymentEndDate,
-AA.residenceDietQuantity as requestPaymentDays, AA.residenceDietAmount as requestPaymentDaysAmount,
-AA.accommodationQuantity as requestPaymentAccommodation, AA.accommodationLimit as requestPaymentAccommodationLimit,
-AA.travelDietAmount as requestPaymentTravelDiet, AA.travelCosts as requestPaymentLocalTransportCosts,
-AA.otherCostsDescription as requestPaymentOtherExpensesDescription, AA.otherCostsAmount as requestPaymentOtherExpensesValue,
-AA.residenceDietSum as requestPaymentDaysAmountSum, AA.accommodationSum as requestPaymentAccommodationSum,AA.advanceSum as requestPaymentSummarizedCosts,
-PFA.amount as depositValue, PFA.paymentType as depositPaymentTypeSelect,
+
+CREATE VIEW ApplicationFull AS
+SELECT A.id,createdOn, abroadStartDate, abroadEndDate, purpose, conference, subject, conferenceStartDate, conferenceEndDate, abroadStartDateInsurance, abroadEndDateInsurance, selfInsured, comments, status,
+I.name,
+firstName, surname, birthDate, academicDegree, phoneNumber,
+city, country,
+allocationAccount, MPK, financialSource, project,
+startDate, endDate, residenceDietQuantity, residenceDietAmount, accommodationQuantity, accommodationLimit, travelDietAmount, travelCosts, otherCostsDescription, otherCostsAmount, residenceDietSum, accommodationSum, advanceSum,
+PFA.amount as accommodationFeeValue, PFA.paymentType as accommodationFeePaymentTypeSelect,
 PFC.amount as conferenceFeeValue, PFC.paymentType as conferenceFeePaymentTypeSelect,
-ID.Type,ID.Number,ID.employeeID,ID.id as identityID,A.comments,a.financialSourceId,FS.allocationAccount, FS.MPK, FS.financialSource, FS.project
+D.number,D.type
 FROM Application A
 JOIN Institute I on A.instituteId = I.id
 JOIN Employee E on A.employeeId = E.id
-JOIN AdvanceApplication AA on A.advanceRequestId = AA.id
 JOIN Place P on A.placeId = P.id
-JOIN IdentityDocument ID on A.identityDocumentID = ID.id
+LEFT JOIN FinancialSource FS on A.financialSourceId = FS.id
+JOIN AdvanceApplication AA on A.advanceRequestId = AA.id
 JOIN Prepayment P2 on A.prepaymentId = P2.id
 JOIN PrepaymentFee PFA on P2.accommodationFeeId = PFA.id
 JOIN PrepaymentFee PFC on P2.conferenceFeeId = PFC.id
-LEFT JOIN FinancialSource FS on A.financialSourceId = FS.id;
+JOIN IdentityDocument D on A.identityDocumentID=D.id
+
+
+
+
+
+
