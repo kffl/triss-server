@@ -111,36 +111,40 @@ CREATE TABLE AdvanceApplication(
     travelCosts DECIMAL(7,2) NOT NULL,
     otherCostsDescription VARCHAR(255),
     otherCostsAmount DECIMAL(7,2),
+    residenceDietSum DECIMAL(7,2) NOT NULL,
+    accommodationSum DECIMAL(7,2) NOT NULL,
     advanceSum DECIMAL(7,2) NOT NULL,
     CONSTRAINT place_fk FOREIGN KEY(placeId) REFERENCES Place(id)
 );
 
 INSERT INTO AdvanceApplication (placeId, startDate, endDate, residenceDietQuantity, residenceDietAmount, accommodationQuantity,
-                                accommodationLimit, travelDietAmount, travelCosts, otherCostsDescription, otherCostsAmount, advanceSum) VALUES
-    (1, '2020-12-12', '2020-12-15', 2, 200, 1, 400, 300, 50, NULL, NULL, 1150),
-    (4, '2020-11-10', '2020-11-13', 1, 500, 1, 500, 400, 50, NULL, NULL, 1450);
+                                accommodationLimit, travelDietAmount, travelCosts, otherCostsDescription, otherCostsAmount,residenceDietSum,accommodationSum, advanceSum) VALUES
+    (1, '2020-12-12', '2020-12-15', 2, 200, 1, 400, 300, 50, NULL, NULL,400,400, 1150),
+    (4, '2020-11-10', '2020-11-13', 1, 500, 1, 500, 400, 50, NULL, NULL,500,500,1450);
 
 CREATE TABLE Application(
     id BIGSERIAL PRIMARY KEY,
-    employeeId BIGINT,
-    createdOn DATE,
-    placeId BIGINT,
+    employeeId BIGINT NOT NULL,
+    createdOn DATE NOT NULL,
+    placeId BIGINT NOT NULL,
+    instituteId BIGINT NOT NULL,
     abroadStartDate DATE NOT NULL,
     abroadEndDate DATE NOT NULL,
     purpose VARCHAR(255) NOT NULL,
     conference VARCHAR(255) NOT NULL,
     subject VARCHAR(255) NOT NULL,
-    conferenceStartDate DATE,
-    conferenceEndDate DATE,
+    conferenceStartDate DATE NOT NULL,
+    conferenceEndDate DATE NOT NULL,
     financialSourceId BIGINT,
-    abroadStartDateInsurance DATE,
-    abroadEndDateInsurance DATE,
-    selfInsured BOOL,
-    advanceRequestId BIGINT,
-    prepaymentId BIGINT,
-    identityDocumentID BIGINT,
+    abroadStartDateInsurance DATE NOT NULL,
+    abroadEndDateInsurance DATE NOT NULL,
+    selfInsured BOOL NOT NULL,
+    advanceRequestId BIGINT NOT NULL,
+    prepaymentId BIGINT NOT NULL,
+    identityDocumentID BIGINT NOT NULL,
     comments VARCHAR(255),
-    status VARCHAR(255),
+    status VARCHAR(255) NOT NULL,
+    CONSTRAINT institute_fk FOREIGN KEY(instituteId) REFERENCES Institute(id),
     CONSTRAINT employee_fk FOREIGN KEY(employeeId) REFERENCES Employee(id),
     CONSTRAINT place_fk FOREIGN KEY(placeId) REFERENCES Place(id),
     CONSTRAINT financialSource_fk FOREIGN KEY(financialSourceId) REFERENCES FinancialSource(id),
@@ -148,13 +152,13 @@ CREATE TABLE Application(
     CONSTRAINT prepayment_fk FOREIGN KEY(prepaymentId) REFERENCES Prepayment(id)
 );
 
-INSERT INTO Application (employeeId, createdOn, placeId, abroadStartDate, abroadEndDate, purpose, conference, subject,
+INSERT INTO Application (employeeId, createdOn, placeId,instituteId, abroadStartDate, abroadEndDate, purpose, conference, subject,
                          conferenceStartDate, conferenceEndDate, financialSourceId, abroadStartDateInsurance, abroadEndDateInsurance,
                          selfInsured, advanceRequestId, prepaymentId, identityDocumentID, comments, status) VALUES
-    (1, '2020-11-03', 1, '2020-12-12', '2020-12-15', 'Konferencja', 'AntyCovid2020', ' TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą',
-     '2020-12-13','2020-12-14', NULL, '2020-12-12', '2020-12-15', FALSE, 1, 1, 1, NULL, 'Oczekuje na rektora'),
-    (2, '2020-11-04', 4, '2020-11-10', '2020-11-13', 'Konferencja', 'AntyCovid2020', ' TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą',
-     '2020-11-10', '2020-11-13', 1 , '2020-11-10', '2020-11-13', FALSE, 2, 2, 3, NULL, 'Oczekuje na rektora');
+    (1, '2020-11-03', 1,1, '2020-12-12', '2020-12-15', 'Konferencja', 'AntyCovid2020', ' TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą',
+     '2020-12-13','2020-12-14', NULL, '2020-12-12', '2020-12-15', FALSE, 1, 1, 1, NULL, 'WaitingForRector'),
+    (2, '2020-11-04', 4,2,'2020-11-10', '2020-11-13', 'Konferencja', 'AntyCovid2020', ' TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą',
+     '2020-11-10', '2020-11-13', 1 , '2020-11-10', '2020-11-13', FALSE, 2, 2, 3, NULL, 'WaitingForRector');
 
 CREATE TABLE Transport
 (
@@ -166,16 +170,46 @@ CREATE TABLE Transport
  departureHour INTEGER NOT NULL,
  departureMinute INTEGER NOT NULL,
  carrier VARCHAR(255) NOT NULL,
+ vehicleSelect VARCHAR(255) NOT NULL,
  CONSTRAINT application_fk FOREIGN KEY(applicationID) REFERENCES Application(id)
 );
 
-INSERT INTO Transport (applicationID, destinationFrom, destinationTo, departureDay, departureHour, departureMinute, carrier) VALUES
-    (1, 'Poznań', 'Los Angeles', '2020-12-12', 6, 30, 'LOT'),
-    (1, 'Los Angeles', 'Poznań', '2020-12-14', 20, 10, 'RyanAir'),
-    (2, 'Poznań', 'Montreal', '2020-11-10', 4, 24, 'LOT'),
-    (2, 'Montreal', 'Poznań', '2020-11-13', 5, 30, 'RyanAir');
+INSERT INTO Transport (applicationID, destinationFrom, destinationTo, departureDay, departureHour, departureMinute,vehicleSelect, carrier) VALUES
+    (1, 'Poznań', 'Los Angeles', '2020-12-12', 6, 30,'Plane', 'LOT'),
+    (1, 'Los Angeles', 'Poznań', '2020-12-14', 20, 10,'Plane', 'RyanAir'),
+    (2, 'Poznań', 'Montreal', '2020-11-10', 4, 24,'Plane', 'LOT'),
+    (2, 'Montreal', 'Poznań', '2020-11-13', 5, 30,'Plane', 'RyanAir');
 
 CREATE VIEW ApplicationRow AS
 SELECT Application.id, employeeId, country, city, abroadStartDate, abroadEndDate, status
 FROM Application JOIN Place
-ON Place.id = Application.placeId
+ON Place.id = Application.placeId;
+
+
+
+CREATE VIEW ApplicationFull AS
+SELECT A.id,createdOn, abroadStartDate, abroadEndDate, purpose, conference, subject, conferenceStartDate, conferenceEndDate, abroadStartDateInsurance, abroadEndDateInsurance, selfInsured, comments, status,
+I.name,
+firstName, surname, birthDate, academicDegree, phoneNumber,
+city, country,
+allocationAccount, MPK, financialSource, project,
+startDate, endDate, residenceDietQuantity, residenceDietAmount, accommodationQuantity, accommodationLimit, travelDietAmount, travelCosts, otherCostsDescription, otherCostsAmount, residenceDietSum, accommodationSum, advanceSum,
+PFA.amount as accommodationFeeValue, PFA.paymentType as accommodationFeePaymentTypeSelect,
+PFC.amount as conferenceFeeValue, PFC.paymentType as conferenceFeePaymentTypeSelect,
+D.number,D.type
+FROM Application A
+JOIN Institute I on A.instituteId = I.id
+JOIN Employee E on A.employeeId = E.id
+JOIN Place P on A.placeId = P.id
+LEFT JOIN FinancialSource FS on A.financialSourceId = FS.id
+JOIN AdvanceApplication AA on A.advanceRequestId = AA.id
+JOIN Prepayment P2 on A.prepaymentId = P2.id
+JOIN PrepaymentFee PFA on P2.accommodationFeeId = PFA.id
+JOIN PrepaymentFee PFC on P2.conferenceFeeId = PFC.id
+JOIN IdentityDocument D on A.identityDocumentID=D.id
+
+
+
+
+
+

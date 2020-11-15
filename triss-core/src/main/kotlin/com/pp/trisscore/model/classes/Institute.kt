@@ -8,7 +8,7 @@ import org.springframework.data.relational.core.mapping.Table
 data class Institute (
         @Id
         @Column("id")
-        val id: Long,
+        val id: Long?,
         @Column("name")
         val name: String
 )

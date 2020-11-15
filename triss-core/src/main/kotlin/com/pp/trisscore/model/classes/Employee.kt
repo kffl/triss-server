@@ -16,7 +16,7 @@ import java.time.LocalDate
 data class Employee (
         @Id
         @Column("id")
-        val id: Int,
+        val id: Int?,
         @Column("firstName")
         val firstName: String,
         @Column("surname")
@@ -24,11 +24,11 @@ data class Employee (
         @Column("birthDate")
         val birthDate: LocalDate,
         @Column("phoneNumber")
-        val phoneNumber: Int,
+        val phoneNumber: String,
         @Column("academicDegree")
         val academicDegree: String,
         @Column("instituteID")
-        val instituteID: Long,
+        val instituteID: Long?,
         @Column("employeeTypeID")
-        val employeeTypeID: Long
+        val employeeTypeID: Long?
 )

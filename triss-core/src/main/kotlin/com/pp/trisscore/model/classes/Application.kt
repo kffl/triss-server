@@ -19,15 +19,17 @@ data class Application(
         @Column("id")
         val id: Long?,
         @Column("employeeId")
-        val employeeId: Long,
+        val employeeId: Long?,
         @Column("createdOn")
-        val createdOn: LocalDate,
+        val createdOn: LocalDate?,
         @Column("placeId")
-        val placeId: Long,
+        val placeId: Long?,
         @Column("abroadStartDate")
         val abroadStartDate: LocalDate,
         @Column("abroadEndDate")
         val abroadEndDate: LocalDate,
+        @Column("instituteId")
+        val instituteId: Long?,
         @Column("purpose")
         val purpose: String,
         @Column("conference")
@@ -47,13 +49,13 @@ data class Application(
         @Column("selfInsured")
         val selfInsured:Boolean,
         @Column("advanceRequestId")
-        val advanceRequestId: Long,
+        val advanceRequestId: Long?,
         @Column("prepaymentId")
-        val prepaymentId: Long,
+        val prepaymentId: Long?,
         @Column("identityDocumentID")
-        val identityDocumentID: Long,
+        val identityDocumentID: Long?,
         @Column("comments")
-        val comments: String,
+        val comments: String?,
         @Column("status")
-        val status: Status
+        val status: Status?
 )

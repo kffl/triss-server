@@ -37,9 +37,13 @@ data class AdvanceApplication (
         @Column("travelCosts")
         val travelCosts: BigDecimal,
         @Column("otherCostsDescription")
-        val otherCostsDescription: String,
+        val otherCostsDescription: String?,
         @Column("otherCostsAmount")
-        val otherCostsAmount: BigDecimal,
+        val otherCostsAmount: BigDecimal?,
+        @Column("residenceDietSum")
+        val residenceDietSum: BigDecimal,
+        @Column("accommodationSum")
+        val accommodationSum: BigDecimal,
         @Column("advanceSum")
         val advanceSum: BigDecimal
 )

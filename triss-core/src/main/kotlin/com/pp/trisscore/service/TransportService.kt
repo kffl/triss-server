@@ -20,4 +20,6 @@ class TransportService(val transportRepository: TransportRepository) {
         }
         return transportMono
     }
+
+    fun findAllByApplicationID(applicationId:Long) = transportRepository.findAllByApplicationID(applicationId)
 }
