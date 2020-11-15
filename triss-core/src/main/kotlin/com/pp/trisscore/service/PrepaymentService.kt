@@ -19,8 +19,8 @@ class PrepaymentService(val prepaymentRepository: PrepaymentRepository,
 
         val depositFeeId = prepaymentFeeService.createPrepaymentFee(
                 PrepaymentFee(id = null,
-                        amount = advancePayments.depositValue,
-                        paymentType = advancePayments.depositPaymentTypeSelect)).map { x -> x.id }
+                        amount = advancePayments.depositFeeValue,
+                        paymentType = advancePayments.depositFeePaymentTypeSelect)).map { x -> x.id }
 
         return Mono.zip(conferenceFeeId,depositFeeId).flatMap {
             data ->

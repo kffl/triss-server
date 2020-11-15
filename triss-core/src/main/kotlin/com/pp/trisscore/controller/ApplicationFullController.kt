@@ -12,8 +12,4 @@ import reactor.core.publisher.Mono
 @RequestMapping("/applicationfull")
 class ApplicationFullController(val applicationFullService: ApplicationFullService) {
 
-
-    @PostMapping("/get")
-    fun getApplicationsByEmployeeId(@RequestBody a:GetApplicationFullRequestBody): Mono<ApplicationInfo> = applicationFullService.findById(a.applicationId)
-
 }

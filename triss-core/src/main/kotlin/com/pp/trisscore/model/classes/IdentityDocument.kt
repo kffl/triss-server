@@ -17,7 +17,7 @@ data class IdentityDocument (
         @Column("id")
         val id: Long?,
         @Column("employeeID")
-        val employeeID: Long,
+        val employeeID: Long?,
         @Column("type")
         val type: Int,
         @Column("number")

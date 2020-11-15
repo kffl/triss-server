@@ -124,25 +124,27 @@ INSERT INTO AdvanceApplication (placeId, startDate, endDate, residenceDietQuanti
 
 CREATE TABLE Application(
     id BIGSERIAL PRIMARY KEY,
-    employeeId BIGINT,
-    createdOn DATE,
-    placeId BIGINT,
+    employeeId BIGINT NOT NULL,
+    createdOn DATE NOT NULL,
+    placeId BIGINT NOT NULL,
+    instituteId BIGINT NOT NULL,
     abroadStartDate DATE NOT NULL,
     abroadEndDate DATE NOT NULL,
     purpose VARCHAR(255) NOT NULL,
     conference VARCHAR(255) NOT NULL,
     subject VARCHAR(255) NOT NULL,
-    conferenceStartDate DATE,
-    conferenceEndDate DATE,
+    conferenceStartDate DATE NOT NULL,
+    conferenceEndDate DATE NOT NULL,
     financialSourceId BIGINT,
-    abroadStartDateInsurance DATE,
-    abroadEndDateInsurance DATE,
-    selfInsured BOOL,
-    advanceRequestId BIGINT,
-    prepaymentId BIGINT,
-    identityDocumentID BIGINT,
+    abroadStartDateInsurance DATE NOT NULL,
+    abroadEndDateInsurance DATE NOT NULL,
+    selfInsured BOOL NOT NULL,
+    advanceRequestId BIGINT NOT NULL,
+    prepaymentId BIGINT NOT NULL,
+    identityDocumentID BIGINT NOT NULL,
     comments VARCHAR(255),
-    status VARCHAR(255),
+    status VARCHAR(255) NOT NULL,
+    CONSTRAINT institute_fk FOREIGN KEY(instituteId) REFERENCES Institute(id),
     CONSTRAINT employee_fk FOREIGN KEY(employeeId) REFERENCES Employee(id),
     CONSTRAINT place_fk FOREIGN KEY(placeId) REFERENCES Place(id),
     CONSTRAINT financialSource_fk FOREIGN KEY(financialSourceId) REFERENCES FinancialSource(id),
@@ -150,12 +152,12 @@ CREATE TABLE Application(
     CONSTRAINT prepayment_fk FOREIGN KEY(prepaymentId) REFERENCES Prepayment(id)
 );
 
-INSERT INTO Application (employeeId, createdOn, placeId, abroadStartDate, abroadEndDate, purpose, conference, subject,
+INSERT INTO Application (employeeId, createdOn, placeId,instituteId, abroadStartDate, abroadEndDate, purpose, conference, subject,
                          conferenceStartDate, conferenceEndDate, financialSourceId, abroadStartDateInsurance, abroadEndDateInsurance,
                          selfInsured, advanceRequestId, prepaymentId, identityDocumentID, comments, status) VALUES
-    (1, '2020-11-03', 1, '2020-12-12', '2020-12-15', 'Konferencja', 'AntyCovid2020', ' TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą',
+    (1, '2020-11-03', 1,1, '2020-12-12', '2020-12-15', 'Konferencja', 'AntyCovid2020', ' TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą',
      '2020-12-13','2020-12-14', NULL, '2020-12-12', '2020-12-15', FALSE, 1, 1, 1, NULL, 'Oczekuje na rektora'),
-    (2, '2020-11-04', 4, '2020-11-10', '2020-11-13', 'Konferencja', 'AntyCovid2020', ' TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą',
+    (2, '2020-11-04', 4,2,'2020-11-10', '2020-11-13', 'Konferencja', 'AntyCovid2020', ' TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą',
      '2020-11-10', '2020-11-13', 1 , '2020-11-10', '2020-11-13', FALSE, 2, 2, 3, NULL, 'Oczekuje na rektora');
 
 CREATE TABLE Transport
@@ -184,7 +186,7 @@ ON Place.id = Application.placeId;
 
 
 CREATE View ApplicationFull AS
-SELECT A.id,E.firstName,E.surname,E.birthDate,E.academicDegree,E.phoneNumber,P.city,P.country, A.purpose,A.conference,
+SELECT A.id,E.firstName,E.surname,E.birthDate,E.academicDegree,E.phoneNumber,P.city,P.country, A.purpose,A.conference,I.name as instituteName,
 A.subject,A.conferenceStartDate,A.conferenceEndDate,A.abroadStartDate,A.abroadEndDate,A.selfInsured,
 AA.startDate as requestPaymentStartDate, AA.endDate as requestPaymentEndDate,
 AA.residenceDietQuantity as requestPaymentDays, AA.residenceDietAmount as requestPaymentDaysAmount,
@@ -196,6 +198,7 @@ PFA.amount as depositValue, PFA.paymentType as depositPaymentTypeSelect,
 PFC.amount as conferenceFeeValue, PFC.paymentType as conferenceFeePaymentTypeSelect,
 ID.Type,ID.Number,ID.employeeID,ID.id as identityID,A.comments,a.financialSourceId,FS.allocationAccount, FS.MPK, FS.financialSource, FS.project
 FROM Application A
+JOIN Institute I on A.instituteId = I.id
 JOIN Employee E on A.employeeId = E.id
 JOIN AdvanceApplication AA on A.advanceRequestId = AA.id
 JOIN Place P on A.placeId = P.id

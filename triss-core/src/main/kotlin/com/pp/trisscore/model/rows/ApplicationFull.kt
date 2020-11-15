@@ -65,7 +65,7 @@ data class ApplicationFull(
         @Column("requestPaymentDaysAmountSum")
         val requestPaymentDaysAmountSum: BigDecimal,
         @Column("requestPaymentAccommodationSum")
-        val requestPaymentAccommodationSum:BigDecimal,
+        val requestPaymentAccommodationSum: BigDecimal,
         @Column("requestPaymentSummarizedCosts")
         val requestPaymentSummarizedCosts: BigDecimal,
         @Column("conferenceFeeValue")
@@ -77,7 +77,7 @@ data class ApplicationFull(
         @Column("depositPaymentTypeSelect")
         val depositPaymentTypeSelect: PaymentType,
         @Column("identityID")
-        val identityID:Long,
+        val identityID: Long,
         @Column("employeeID")
         val employeeID: Long,
         @Column("type")
@@ -95,7 +95,7 @@ data class ApplicationFull(
         @Column("project")
         val project: String?,
         @Column("comments")
-        val comments: String?
-
-
-)
+        val comments: String?,
+        @Column("instituteName")
+        val instituteName: String
+        )
