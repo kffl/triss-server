@@ -37,7 +37,7 @@ class ApplicationController(val applicationService: ApplicationService,
     fun getCountByEmployeeId(@RequestBody pageInfo: PageInfo<ApplicationRow>): Mono<Long> = applicationService.getCountByFilter(pageInfo)
 
     @PostMapping("/getFull")
-    fun getFullApplication(@RequestBody requestBody: GetFullApplicationRequestBody)= applicationFullService.getFullApplication(requestBody)
+    fun getFullApplication(@RequestBody id: Long)= applicationFullService.getFullApplication(id)
 
 
     @PostMapping("/create")
