@@ -44,6 +44,8 @@ class ApplicationController(val applicationService: ApplicationService,
     fun createApplication(@RequestBody applicationInfo: ApplicationInfo): Mono<Transport> {
         return applicationService.createApplication(applicationInfo)
     }
+    @GetMapping("/test")
+    fun getTest()=Mono.just("test")
 
     @ExceptionHandler(value = [WrongDateException::class])
     fun catchWrongDateException(ex: RuntimeException): ResponseEntity<ErrorsDetails> {

@@ -1,0 +1,18 @@
+
+
+logging:
+  level:
+    org.springframework.data.r2dbc: DEBUG
+
+spring:
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/postgres?locale=en_US
+    username: admin
+    password: admin
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jws-algorithm: RS256
+          public-key-location: classpath:key.txt
+
