@@ -48,11 +48,6 @@ class ApplicationController(val applicationService: ApplicationService,
         return applicationService.createApplication(applicationInfo)
     }
 
-    @GetMapping("/test")
-    fun getTest(@AuthenticationPrincipal token: JwtAuthenticationToken): TokenData {
-        return tokenService.getEmployeeDataFromToken(token)
-    }
-
     @ExceptionHandler(value = [WrongDateException::class])
     fun catchWrongDateException(ex: RuntimeException): ResponseEntity<ErrorsDetails> {
         val errorDetails = ErrorsDetails(Date(), "WrongDateException::class", ex.message!!)

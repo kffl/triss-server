@@ -8,6 +8,7 @@ INSERT INTO EmployeeType (name) VALUES
     ('PROFESOR'),('ASYSTENT'),('STAŻYSTA'),
     ('SEKRETARKA'),('DOCENT');
 
+
 CREATE TABLE Institute(
 id BIGSERIAL PRIMARY KEY,
 name varchar(255) UNIQUE NOT NULL
@@ -141,7 +142,7 @@ CREATE TABLE Application(
     selfInsured BOOL NOT NULL,
     advanceRequestId BIGINT NOT NULL,
     prepaymentId BIGINT NOT NULL,
-    identityDocumentID BIGINT NOT NULL,
+    identityDocumentId BIGINT NOT NULL,
     comments VARCHAR(255),
     status VARCHAR(255) NOT NULL,
     CONSTRAINT institute_fk FOREIGN KEY(instituteId) REFERENCES Institute(id),
