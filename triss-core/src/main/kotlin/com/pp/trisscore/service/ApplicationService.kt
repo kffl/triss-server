@@ -24,6 +24,7 @@ import java.time.LocalDate
  * e-mail: marceli.jerzynski@student.put.poznan.pl
  * Date: 06.10.2020
  **/
+
 @Service
 class ApplicationService(
         val applicationRowRepository: ApplicationRowRepository,
