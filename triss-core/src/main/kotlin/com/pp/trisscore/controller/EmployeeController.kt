@@ -24,10 +24,6 @@ class EmployeeController(val employeeService: EmployeeService,
         return employeeService.findEmployee(data)
     }
 
-
-
-
-
     @ExceptionHandler(value = [EmployeeNotFoundException::class])
     fun catchEmployeeNotFoundException(ex: RuntimeException): ResponseEntity<ErrorsDetails> {
         val errorDetails = ErrorsDetails(Date(), ex.toString(), ex.message!!)
