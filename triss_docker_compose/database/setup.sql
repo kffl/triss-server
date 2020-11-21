@@ -124,6 +124,8 @@ INSERT INTO AdvanceApplication (placeId, startDate, endDate, residenceDietQuanti
 
 CREATE TABLE Application(
     id BIGSERIAL PRIMARY KEY,
+    name varchar(255) NOT NULL,
+    surname varchar(255) NOT NULL,
     employeeId BIGINT NOT NULL,
     createdOn DATE NOT NULL,
     placeId BIGINT NOT NULL,
@@ -143,6 +145,9 @@ CREATE TABLE Application(
     prepaymentId BIGINT NOT NULL,
     identityDocumentId BIGINT NOT NULL,
     comments VARCHAR(255),
+    wildaComments VARCHAR(255),
+    directorComments VARCHAR(255),
+    rectorComments VARCHAR(255),
     status VARCHAR(255) NOT NULL,
     CONSTRAINT institute_fk FOREIGN KEY(instituteId) REFERENCES Institute(id),
     CONSTRAINT employee_fk FOREIGN KEY(employeeId) REFERENCES Employee(id),
