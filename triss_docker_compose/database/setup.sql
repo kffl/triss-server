@@ -4,9 +4,8 @@ name VARCHAR(255) UNIQUE NOT NULL
 );
 
 INSERT INTO EmployeeType (name) VALUES
-    ('ADIUNKT'),('DYREKTOR'),('REKTOR'),
-    ('PROFESOR'),('ASYSTENT'),('STAŻYSTA'),
-    ('SEKRETARKA'),('DOCENT');
+    ('USER'),('WILDA'),('RECTOR'),
+    ('DIRECTOR');
 
 
 CREATE TABLE Institute(
