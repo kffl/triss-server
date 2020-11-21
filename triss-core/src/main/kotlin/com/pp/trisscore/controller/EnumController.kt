@@ -1,7 +1,10 @@
 package com.pp.trisscore.controller
 
 import com.pp.trisscore.service.EnumService
+import net.minidev.json.JSONArray
+import net.minidev.json.JSONObject
 import org.springframework.web.bind.annotation.*
+import reactor.core.publisher.Mono
 
 @RestController
 @CrossOrigin
@@ -20,5 +23,6 @@ class EnumController(val enumService: EnumService) {
     @GetMapping("/vehicle")
     fun getVehicles() = enumService.getVehicles()
 
-
+    @GetMapping
+    fun getAllEnum() = enumService.getAllEnum()
 }

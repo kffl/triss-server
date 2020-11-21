@@ -10,5 +10,7 @@ data class Institute (
         @Column("id")
         val id: Long?,
         @Column("name")
-        val name: String
+        val name: String,
+        @Column("active")
+        val active: Boolean
 )

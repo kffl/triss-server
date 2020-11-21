@@ -1,14 +1,14 @@
-CREATE TABLE EmployeeType
-(
-    id   BIGSERIAL PRIMARY KEY,
-    name VARCHAR(255) UNIQUE NOT NULL
-);
-
-INSERT INTO EmployeeType (name)
-VALUES ('USER'),
-       ('WILDA'),
-       ('RECTOR'),
-       ('DIRECTOR');
+-- CREATE TABLE EmployeeType
+-- (
+--     id   BIGSERIAL PRIMARY KEY,
+--     name VARCHAR(255) UNIQUE NOT NULL
+-- );
+--
+-- INSERT INTO EmployeeType (name)
+-- VALUES ('USER'),
+--        ('WILDA'),
+--        ('RECTOR'),
+--        ('DIRECTOR');
 
 
 CREATE TABLE Institute
@@ -100,17 +100,16 @@ CREATE TABLE Employee
     birthDate      DATE         NOT NULL,
     academicDegree varchar(255) NOT NULL,
     phoneNumber    varchar(255) NOT NULL,
+    employeeType   varchar(255),
     instituteID    BIGINT,
-    employeeTypeID BIGINT,
-    CONSTRAINT institute_fk FOREIGN KEY (instituteID) REFERENCES Institute (id),
-    CONSTRAINT employeeType_fk FOREIGN KEY (employeeTypeID) REFERENCES EmployeeType (id)
+    CONSTRAINT institute_fk FOREIGN KEY (instituteID) REFERENCES Institute (id)
 );
 
 INSERT INTO Employee
-VALUES (1, 'Andrzej', 'Kmicic', '2000-01-01', 'Prof.', '+48 123456789', 1, 2),
-       (2, 'Jan', 'Kowalski', '1990-03-21', 'Prof.', '+48 321456987', 2, 3),
-       (3, 'Jerzy', 'Zbiałowierzy', '1980-05-15', 'Prof.', '+48 541236987', 3, 4),
-       (4, 'Andrzej', 'Nowak', '1988-07-16', 'Prof.', '+48 987456321', 4, 4);
+VALUES (170387, 'Jan', 'Kowalczyk', '2000-01-01', 'Prof.', '+48 123456789', 'USER', 1),
+       (2, 'Jan', 'Kowalski', '1990-03-21', 'Prof.', '+48 321456987', 'WILDA', 2),
+       (3, 'Jerzy', 'Zbiałowierzy', '1980-05-15', 'Prof.', '+48 541236987', 'RECTOR', 3),
+       (4, 'Andrzej', 'Nowak', '1988-07-16', 'Prof.', '+48 987456321', 'DIRECTOR', 4);
 
 CREATE TABLE IdentityDocument
 (
@@ -122,8 +121,8 @@ CREATE TABLE IdentityDocument
 );
 
 INSERT INTO IdentityDocument (employeeID, type, number)
-VALUES (1, 0, 'ABC12345'),
-       (1, 1, 'DE6789000'),
+VALUES (170387, 0, 'ABC12345'),
+       (170387, 1, 'DE6789000'),
        (2, 1, 'ZE8000199');
 
 CREATE TABLE FinancialSource
@@ -214,7 +213,7 @@ INSERT INTO Application (firstName, surname, birthDate, phoneNumber, academicDeg
                          abroadEndDateInsurance,
                          selfInsured, advanceApplicationId, prepaymentId, comments, wildaComments, directorComments,
                          rectorComments, status)
-VALUES ('Andrzej', 'Kmicic', '2000-01-01', '+48 123456789', 'Prof.', 1, 0, 'ABC12345', '2020-11-03', 1, 1, '2020-12-12',
+VALUES ('Jan', 'Kowalczyk', '2000-01-01', '+48 123456789', 'Prof.', 170387, 0, 'ABC12345', '2020-11-03', 1, 1, '2020-12-12',
         '2020-12-15', 'Konferencja', 'AntyCovid2020',
         ' TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą',
         '2020-12-13', '2020-12-14', NULL, '2020-12-12', '2020-12-15', FALSE, 1, 1, NULL, NULL, NULL, NULL,
@@ -252,23 +251,79 @@ FROM Application
          JOIN Place
               ON Place.id = Application.placeId;
 
-
-
 CREATE VIEW ApplicationFull As
-SELECT a.id, firstName, surname, birthDate, academicDegree, phoneNumber, employeeId, identityDocumentType, identityDocumentNumber, createdOn, a.placeId, instituteId, abroadStartDate, abroadEndDate, purpose, conference, subject, conferenceStartDate, conferenceEndDate, financialSourceId, abroadStartDateInsurance, abroadEndDateInsurance, selfInsured, advanceApplicationId, prepaymentId, comments, wildaComments, directorComments, rectorComments, status,
-       i.id as iId, I.name as iName, I.active as iActive,
-       F.id as fId, allocationAccount as fAllocationAccount, MPK as fMPK, financialSource as ffinancialSource, project as fProject,
-       AA.id as aaId, AA.placeId as aaPlaceId, startDate as aaStartDate, endDate as aaEndDate, residenceDietQuantity as aaResidenceDietQuantity, residenceDietAmount as aaResidenceDietAmount, accommodationQuantity as aaAccommodationQuantity, accommodationLimit as aaAccommodationLimit, travelDietAmount as aaTravelDietAmount, travelCosts as aaTravelCosts, otherCostsDescription as aaOtherCostsDescription, otherCostsAmount as aaOtherCostsAmount, residenceDietSum as aaResidenceDietSum, accommodationSum as aaAccommodationSum, advanceSum as aaAdvanceSum,
-       PA.id as paId, PA.amount as paAmount, PA.paymentType as paPaymentType,
-       PC.id as pcId, PC.amount as pcAmount, PC.paymentType as pcPaymentType
+SELECT a.id,
+       firstName,
+       surname,
+       birthDate,
+       academicDegree,
+       phoneNumber,
+       employeeId,
+       identityDocumentType,
+       identityDocumentNumber,
+       createdOn,
+       a.placeId,
+       instituteId,
+       abroadStartDate,
+       abroadEndDate,
+       purpose,
+       conference,
+       subject,
+       conferenceStartDate,
+       conferenceEndDate,
+       financialSourceId,
+       abroadStartDateInsurance,
+       abroadEndDateInsurance,
+       selfInsured,
+       advanceApplicationId,
+       prepaymentId,
+       comments,
+       wildaComments,
+       directorComments,
+       rectorComments,
+       status,
+       P.id                  as pId,
+       P.city                as pCity,
+       P.country             as pCountry,
+       i.id                  as iId,
+       I.name                as iName,
+       I.active              as iActive,
+       F.id                  as fId,
+       allocationAccount     as fAllocationAccount,
+       MPK                   as fMPK,
+       financialSource       as fFinancialSource,
+       project               as fProject,
+       AA.id                 as aaId,
+       AA.placeId            as aaPlaceId,
+       startDate             as aaStartDate,
+       endDate               as aaEndDate,
+       residenceDietQuantity as aaResidenceDietQuantity,
+       residenceDietAmount   as aaResidenceDietAmount,
+       accommodationQuantity as aaAccommodationQuantity,
+       accommodationLimit    as aaAccommodationLimit,
+       travelDietAmount      as aaTravelDietAmount,
+       travelCosts           as aaTravelCosts,
+       otherCostsDescription as aaOtherCostsDescription,
+       otherCostsAmount      as aaOtherCostsAmount,
+       residenceDietSum      as aaResidenceDietSum,
+       accommodationSum      as aaAccommodationSum,
+       advanceSum            as aaAdvanceSum,
+       PA.id                 as paId,
+       PA.amount             as paAmount,
+       PA.paymentType        as paPaymentType,
+       PC.id                 as pcId,
+       PC.amount             as pcAmount,
+       PC.paymentType        as pcPaymentType
 FROM APPLICATION A
          JOIN Institute I on A.instituteId = I.id
          JOIN Place P on A.placeId = P.id
-         JOIN FinancialSource F on A.financialSourceId = F.id
+         LEFT JOIN FinancialSource F on A.financialSourceId = F.id
          JOIN AdvanceApplication AA on A.advanceApplicationId = AA.id
          JOIN Prepayment PR on A.prepaymentId = PR.id
-        JOIN PrepaymentFee PA on PR.accommodationFeeId = PA.id
-        JOIN PrepaymentFee PC on PR.conferenceFeeId = PC.id;
+         JOIN PrepaymentFee PA on PR.accommodationFeeId = PA.id
+         JOIN PrepaymentFee PC on PR.conferenceFeeId = PC.id;
+
+
 
 
 

@@ -1,5 +1,6 @@
 package com.pp.trisscore.model.classes
 
+import com.pp.trisscore.model.enums.Role
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
@@ -16,7 +17,7 @@ import java.time.LocalDate
 data class Employee (
         @Id
         @Column("id")
-        val id: Int?,
+        val id: Long?,
         @Column("firstName")
         val firstName: String,
         @Column("surname")
@@ -29,6 +30,6 @@ data class Employee (
         val academicDegree: String,
         @Column("instituteID")
         val instituteID: Long?,
-        @Column("employeeTypeID")
-        val employeeTypeID: Long?
+        @Column("employeeType")
+        val employeeType: Role?
 )

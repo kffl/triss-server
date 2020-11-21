@@ -1,5 +1,6 @@
 package com.pp.trisscore.model.classes
 
+import com.pp.trisscore.model.enums.DocumentType
 import com.pp.trisscore.model.enums.Status
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Column
@@ -18,8 +19,22 @@ data class Application(
         @Id
         @Column("id")
         val id: Long?,
+        @Column("firstName")
+        val firstName: String,
+        @Column("surname")
+        val surname: String,
+        @Column("birthDate")
+        val birthDate: LocalDate,
+        @Column("academicDegree")
+        val academicDegree: String,
+        @Column("phoneNumber")
+        val phoneNumber: String,
         @Column("employeeId")
         val employeeId: Long?,
+        @Column("type")
+        val identityDocumentType: DocumentType,
+        @Column("number")
+        val identityDocumentNumber: String,
         @Column("createdOn")
         val createdOn: LocalDate?,
         @Column("placeId")
@@ -48,14 +63,18 @@ data class Application(
         val abroadEndDateInsurance: LocalDate,
         @Column("selfInsured")
         val selfInsured:Boolean,
-        @Column("advanceRequestId")
-        val advanceRequestId: Long?,
+        @Column("advanceApplicationId")
+        val advanceApplicationId: Long?,
         @Column("prepaymentId")
         val prepaymentId: Long?,
-        @Column("identityDocumentID")
-        val identityDocumentID: Long?,
         @Column("comments")
         val comments: String?,
+        @Column("comments")
+        val wildaComments: String?,
+        @Column("comments")
+        val directorComments: String?,
+        @Column("comments")
+        val rectorComments: String?,
         @Column("status")
         val status: Status?
 )
