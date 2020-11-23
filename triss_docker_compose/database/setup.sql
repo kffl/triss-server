@@ -107,9 +107,9 @@ CREATE TABLE Employee
 
 INSERT INTO Employee
 VALUES (170387, 'Jan', 'Kowalczyk', '2000-01-01', 'Prof.', '+48 123456789', 'USER', 1),
-       (2, 'Jan', 'Kowalski', '1990-03-21', 'Prof.', '+48 321456987', 'WILDA', 2),
-       (3, 'Jerzy', 'Zbiałowierzy', '1980-05-15', 'Prof.', '+48 541236987', 'RECTOR', 3),
-       (4, 'Andrzej', 'Nowak', '1988-07-16', 'Prof.', '+48 987456321', 'DIRECTOR', 4);
+       (2, 'Jan', 'Kowalski', '1990-03-21', 'Prof.', '+48 321456987', 'WILDA', 1),
+       (3, 'Jerzy', 'Zbiałowierzy', '1980-05-15', 'Prof.', '+48 541236987', 'RECTOR', 1),
+       (167711, 'Andrzej', 'Nowak', '1988-07-16', 'Prof.', '+48 987456321', 'DIRECTOR', 1);
 
 CREATE TABLE IdentityDocument
 (
@@ -246,10 +246,12 @@ VALUES (1, 'Poznań', 'Los Angeles', '2020-12-12', 6, 30, 'Plane', 'LOT'),
        (2, 'Montreal', 'Poznań', '2020-11-13', 5, 30, 'Plane', 'RyanAir');
 
 CREATE VIEW ApplicationRow AS
-SELECT Application.id, employeeId, country, city, abroadStartDate, abroadEndDate, status
+SELECT Application.id,E.firstName,E.surname, employeeId,I.id as instituteId,I.name as instituteName, country, city, abroadStartDate, abroadEndDate, status
 FROM Application
          JOIN Place
-              ON Place.id = Application.placeId;
+              ON Place.id = Application.placeId
+        JOIN Employee E on Application.employeeId = E.id
+        JOIN Institute I on Application.instituteId = I.id;
 
 CREATE VIEW ApplicationFull As
 SELECT a.id,

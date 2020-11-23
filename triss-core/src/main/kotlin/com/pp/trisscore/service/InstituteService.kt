@@ -9,5 +9,5 @@ import reactor.core.publisher.Mono
 class InstituteService(val instituteRepository: InstituteRepository) {
     fun getInstitute(name:String) = instituteRepository.findByName(name).switchIfEmpty(Mono.error(ObjectNotFoundException("Institute")))
 
-    fun findInstitutebyId(id:Long) = instituteRepository.findById(id).switchIfEmpty(Mono.error(ObjectNotFoundException("Institute")))
+    fun findInstituteById(id:Long) = instituteRepository.findById(id).switchIfEmpty(Mono.error(ObjectNotFoundException("Institute")))
 }

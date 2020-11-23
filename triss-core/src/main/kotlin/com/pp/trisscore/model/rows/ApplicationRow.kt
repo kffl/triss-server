@@ -16,8 +16,16 @@ data class ApplicationRow(
         @Id
         @Column("id")
         val id: Long?,
+        @Column("firstName")
+        val firstName: String?,
+        @Column("surname")
+        val surname: String?,
         @Column("employeeId")
         val employeeId: Long?,
+        @Column("instituteName")
+        val instituteName: String?,
+        @Column("instituteId")
+        val instituteId: Long?,
         @Column("country")
         val country: String?,
         @Column("city")

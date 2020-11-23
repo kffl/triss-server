@@ -21,7 +21,7 @@ class UserController(val userService: UserService) {
                           token: JwtAuthenticationToken) = userService.getMyApplications(token, body)
 
     @PostMapping("application/count")
-    fun getCountByEmployeeId(@RequestBody body: PageInfo<ApplicationRow>,
+    fun getCountByFilter(@RequestBody body: PageInfo<ApplicationRow>,
                              token: JwtAuthenticationToken) = userService.getCountByFilter(token, body)
 
     @PostMapping("application/create")

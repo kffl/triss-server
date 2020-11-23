@@ -50,7 +50,7 @@ class EmployeeService(val employeeRepository: EmployeeRepository,
             throw InvalidRequestBodyException("Employee fistName must equal to name in token")
         if (employee.surname != tokenData.surname)
             throw InvalidRequestBodyException("Employee surname must equal to surname in token")
-        return instituteService.findInstitutebyId(employee.instituteID!!)
+        return instituteService.findInstituteById(employee.instituteID!!)
                 .flatMap { x ->
                     employeeRepository.findById(tokenData.employeeId)
                             .switchIfEmpty(employeeRepository.save(employee.copy(id = tokenData.employeeId)))

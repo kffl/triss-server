@@ -16,4 +16,6 @@ import reactor.core.publisher.Mono
 interface ApplicationRepository : ReactiveCrudRepository<Application, Long> {
 
     fun getAllByEmployeeId(employeeId: Long): Flux<Application>
+
+    fun getByIdAndInstituteId(id: Long, instituteId: Long): Mono<Application>
 }
