@@ -1,5 +1,7 @@
 package com.pp.trisscore.model.enums
 
+import com.fasterxml.jackson.annotation.JsonFormat
+
 /**
  *
  * author: Marceli Jerzyński, Mateusz Tamborski
@@ -8,6 +10,7 @@ package com.pp.trisscore.model.enums
  * Update date: 28.10.2020
  **/
 
+@JsonFormat(shape = JsonFormat.Shape.NUMBER)
 enum class Status(val namePl: String, val nameEng: String) {
     WaitingForDirector("Oczekuje na dyrektora","Waiting for director"),
     WaitingForWilda("Oczekuje na Wildę","Waiting for Wilda"),

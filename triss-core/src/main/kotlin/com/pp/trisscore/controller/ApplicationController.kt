@@ -38,6 +38,9 @@ class ApplicationController(val applicationService: ApplicationService,
     @PostMapping("/getFull")
     fun getFullApplication(@RequestBody id: Long) = applicationFullService.getFullApplication(id)
 
+    @PostMapping("/get")
+    fun getMyApplications(@RequestBody body: PageInfo<ApplicationRow>) = applicationService.getAllByFilter(body)
+
     @ExceptionHandler(value = [WrongDateException::class])
     fun catchWrongDateException(ex: RuntimeException): ResponseEntity<ErrorsDetails> {
         val errorDetails = ErrorsDetails(Date(), "WrongDateException::class", ex.message!!)

@@ -23,7 +23,7 @@ class UserService(val tokenService: TokenService,
         val tokenData = tokenService.getEmployeeDataFromToken(token)
         if (tokenData.employeeId != body.filter.employeeId)
             throw InvalidRequestBodyException("Wrong EmployeeId.")
-        return employeeService.findEmployeeAndCheckRole(tokenData, role)
+        return employeeService.findEmployee(tokenData)
                 .flatMapMany { x -> applicationService.getAllByFilter(body) }
     }
 
@@ -31,7 +31,7 @@ class UserService(val tokenService: TokenService,
         val tokenData = tokenService.getEmployeeDataFromToken(token)
         if (tokenData.employeeId != body.filter.employeeId)
             throw InvalidRequestBodyException("Wrong EmployeeId.")
-        return employeeService.findEmployeeAndCheckRole(tokenData, role)
+        return employeeService.findEmployee(tokenData)
                 .flatMap { x -> applicationService.getCountByFilter(body) }
     }
 

@@ -17,8 +17,7 @@ import java.util.*
 @RestController
 @CrossOrigin
 @RequestMapping("/employee")
-class EmployeeController(val employeeService: EmployeeService,
-                         val applicationService: ApplicationService) {
+class EmployeeController(val employeeService: EmployeeService) {
     @PostMapping("/get")
     fun getEmployee(token: JwtAuthenticationToken): Mono<Employee> {
         return employeeService.getEmployee(token)
