@@ -1,7 +1,9 @@
 package com.pp.trisscore.model.rows
 
 import com.pp.trisscore.model.applicationinfoelements.AdvancePaymentsInfo
+import com.pp.trisscore.model.architecture.ApplicationInfo
 import com.pp.trisscore.model.classes.*
+import com.pp.trisscore.model.enums.DocumentType
 import com.pp.trisscore.model.enums.PaymentType
 import com.pp.trisscore.model.enums.Status
 import org.springframework.data.annotation.Id
@@ -16,36 +18,6 @@ data class ApplicationFull(
         @Id
         @Column("id")
         val id: Long?,
-        @Column("createdOn")
-        val createdOn: LocalDate?,
-        @Column("abroadStartDate")
-        val abroadStartDate: LocalDate,
-        @Column("abroadEndDate")
-        val abroadEndDate: LocalDate,
-        @Column("purpose")
-        val purpose: String,
-        @Column("conference")
-        val conference: String,
-        @Column("subject")
-        val subject: String,
-        @Column("conferenceStartDate")
-        val conferenceStartDate: LocalDate,
-        @Column("conferenceEndDate")
-        val conferenceEndDate: LocalDate,
-        @Column("abroadStartDateInsurance")
-        val abroadStartDateInsurance: LocalDate,
-        @Column("abroadEndDateInsurance")
-        val abroadEndDateInsurance: LocalDate,
-        @Column("selfInsured")
-        val selfInsured: Boolean,
-        @Column("comments")
-        val comments: String?,
-        @Column("status")
-        val status: Status?,
-        //InstituteData
-        @Column("name")
-        val name: String,
-        //EmployeeData
         @Column("firstName")
         val firstName: String,
         @Column("surname")
@@ -56,111 +28,166 @@ data class ApplicationFull(
         val academicDegree: String,
         @Column("phoneNumber")
         val phoneNumber: String,
+        @Column("employeeId")
+        val employeeId: Long?,
+        @Column("identityDocumentType")
+        val identityDocumentType: DocumentType,
+        @Column("identityDocumentNumber")
+        val identityDocumentNumber: String,
+        @Column("createdOn")
+        val createdOn: LocalDate?,
+        @Column("placeId")
+        val placeId: Long?,
+        @Column("abroadStartDate")
+        val abroadStartDate: LocalDate,
+        @Column("abroadEndDate")
+        val abroadEndDate: LocalDate,
+        @Column("instituteId")
+        val instituteId: Long?,
+        @Column("purpose")
+        val purpose: String,
+        @Column("conference")
+        val conference: String,
+        @Column("subject")
+        val subject: String,
+        @Column("conferenceStartDate")
+        val conferenceStartDate: LocalDate,
+        @Column("conferenceEndDate")
+        val conferenceEndDate: LocalDate,
+        @Column("financialSourceId")
+        val financialSourceId: Long?,
+        @Column("abroadStartDateInsurance")
+        val abroadStartDateInsurance: LocalDate,
+        @Column("abroadEndDateInsurance")
+        val abroadEndDateInsurance: LocalDate,
+        @Column("selfInsured")
+        val selfInsured: Boolean,
+        @Column("advanceApplicationId")
+        val advanceApplicationId: Long?,
+        @Column("prepaymentId")
+        val prepaymentId: Long?,
+        @Column("identityDocumentID")
+        val identityDocumentID: Long?,
+        @Column("comments")
+        val comments: String?,
+        @Column("comments")
+        val wildaComments: String?,
+        @Column("comments")
+        val directorComments: String?,
+        @Column("comments")
+        val rectorComments: String?,
+        @Column("status")
+        val status: Status?,
         //PlaceData
-        @Column("country")
-        val country: String,
-        @Column("city")
-        val city: String,
-        //FinancialSourceData
-        @Column("allocationAccount")
-        val allocationAccount: String?,
-        @Column("MPK")
-        val MPK: String?,
-        @Column("financialSource")
-        val financialSource: String?,
-        @Column("project")
-        val project: String?,
-        //AdvanceApplicationData
-        @Column("startDate")
-        val startDate: LocalDate,
-        @Column("endDate")
-        val endDate: LocalDate,
-        @Column("residenceDietQuantity")
-        val residenceDietQuantity: Int,
-        @Column("residenceDietAmount")
-        val residenceDietAmount: BigDecimal,
-        @Column("accommodationQuantity")
-        val accommodationQuantity: Int,
-        @Column("accommodationLimit")
-        val accommodationLimit: BigDecimal,
-        @Column("travelDietAmount")
-        val travelDietAmount: BigDecimal,
-        @Column("travelCosts")
-        val travelCosts: BigDecimal,
-        @Column("otherCostsDescription")
-        val otherCostsDescription: String?,
-        @Column("otherCostsAmount")
-        val otherCostsAmount: BigDecimal?,
-        @Column("residenceDietSum")
-        val residenceDietSum: BigDecimal,
-        @Column("accommodationSum")
-        val accommodationSum: BigDecimal,
-        @Column("advanceSum")
-        val advanceSum: BigDecimal,
-        //AdvancePaymentsData
-        @Column("conferenceFeeValue")
-        val conferenceFeeValue: BigDecimal,
-        @Column("conferenceFeePaymentTypeSelect")
-        val conferenceFeePaymentTypeSelect: PaymentType,
-        @Column("accommodationFeeValue")
-        val accommodationFeeValue: BigDecimal,
-        @Column("accommodationFeePaymentTypeSelect")
-        val accommodationFeePaymentTypeSelect: PaymentType,
-        //IdentityDocumentData
-        @Column("type")
-        val type: Int,
-        @Column("number")
-        val number: String
-
+        @Column("pId")
+        val pId: Long?,
+        @Column("pCountry")
+        val pCountry: String,
+        @Column("pCity")
+        val pCity: String,
+        // InstituteData
+        @Column("iId")
+        val iId: Long?,
+        @Column("iName")
+        val iName: String,
+        @Column("iActive")
+        val iActive: Boolean,
+        // FinancialSource Data
+        @Column("fId")
+        val fId: Long?,
+        @Column("fAllocationAccount")
+        val fAllocationAccount: String?,
+        @Column("fMPK")
+        val fMPK: String?,
+        @Column("fFinancialSource")
+        val fFinancialSource: String?,
+        @Column("fProject")
+        val fProject: String?,
+        //AdvanceApplication DAta
+        @Column("aaId")
+        val aaId: Long?,
+        @Column("aaPlaceId")
+        val aaPlaceId: Long?,
+        @Column("aaStartDate")
+        val aaStartDate: LocalDate,
+        @Column("aaEndDate")
+        val aaEndDate: LocalDate,
+        @Column("aaResidenceDietQuantity")
+        val aaResidenceDietQuantity: Int,
+        @Column("aaResidenceDietAmount")
+        val aaResidenceDietAmount: BigDecimal,
+        @Column("aaAccommodationQuantity")
+        val aaAccommodationQuantity: Int,
+        @Column("aaAccommodationLimit")
+        val aaAccommodationLimit: BigDecimal,
+        @Column("aaTravelDietAmount")
+        val aaTravelDietAmount: BigDecimal,
+        @Column("aaTravelCosts")
+        val aaTravelCosts: BigDecimal,
+        @Column("aaOtherCostsDescription")
+        val aaOtherCostsDescription: String?,
+        @Column("aaOtherCostsAmount")
+        val aaOtherCostsAmount: BigDecimal?,
+        @Column("aaResidenceDietSum")
+        val aaResidenceDietSum: BigDecimal,
+        @Column("aaAccommodationSum")
+        val aaAccommodationSum: BigDecimal,
+        @Column("aaAdvanceSum")
+        val aaAdvanceSum: BigDecimal,
+        //accomodationFeeData
+        @Column("paId")
+        val paId: Long?,
+        @Column("paAmount")
+        val paAmount: BigDecimal,
+        @Column("paPaymentType")
+        val paPaymentType: PaymentType,
+        //conferenceFeeData
+        @Column("pcId")
+        val pcId: Long?,
+        @Column("pcAmount")
+        val pcAmount: BigDecimal,
+        @Column("pcPaymentType")
+        val pcPaymentType: PaymentType
 ) {
+    fun getApplication() = Application(
+            id, firstName, surname, birthDate,
+            academicDegree, phoneNumber, employeeId,
+            identityDocumentType, identityDocumentNumber, createdOn, placeId,
+            abroadStartDate, abroadEndDate,
+            instituteId, purpose, conference,
+            subject, conferenceStartDate,
+            conferenceEndDate, financialSourceId,
+            abroadStartDateInsurance, abroadEndDateInsurance,
+            selfInsured, advanceApplicationId, prepaymentId,
+            comments, wildaComments,
+            directorComments, rectorComments, status
+    )
 
-    fun getApplication() = Application(id = id, employeeId = null,
-            createdOn = createdOn, placeId = null,
-            abroadStartDate = abroadStartDate, abroadEndDate = abroadEndDate,
-            instituteId = null, purpose = purpose,
-            conference = conference, subject = subject,
-            conferenceStartDate = conferenceStartDate, conferenceEndDate = conferenceEndDate,
-            financialSourceId = null, abroadStartDateInsurance = abroadStartDateInsurance,
-            abroadEndDateInsurance = abroadEndDateInsurance, selfInsured = selfInsured,
-            advanceRequestId = null, prepaymentId = null,
-            identityDocumentID = null, comments = comments,
-            status = status)
+    fun getPlace() = Place(pId, pCountry, pCity)
 
-    fun getInstitute() = Institute(id = null, name = name)
-
-    fun getPlace() = Place(id = null, country = country, city = city)
-
-    fun getEmployee() = Employee(firstName = firstName,
-            surname = surname, birthDate = birthDate,
-            academicDegree = academicDegree, phoneNumber = phoneNumber,
-            id = null, instituteID = null,
-            employeeTypeID = null)
+    fun getInstitute() = Institute(
+            iId, iName, iActive
+    )
 
     fun getFinancialSource() = FinancialSource(
-            id = null, allocationAccount = allocationAccount,
-            MPK = MPK, financialSource = financialSource,
-            project = project
+            fId, fAllocationAccount, fMPK, fFinancialSource, fProject
     )
 
     fun getAdvanceApplication() = AdvanceApplication(
-            id = null, placeId = null, startDate = startDate,
-            endDate = endDate, residenceDietQuantity = residenceDietQuantity,
-            residenceDietAmount = residenceDietAmount, accommodationQuantity = accommodationQuantity,
-            accommodationLimit = accommodationLimit, travelDietAmount = travelDietAmount,
-            travelCosts = travelCosts, otherCostsAmount = otherCostsAmount,
-            otherCostsDescription = otherCostsDescription, residenceDietSum = residenceDietSum,
-            accommodationSum = accommodationSum, advanceSum = advanceSum)
-
-    fun getAdvancePaymentsInfo() = AdvancePaymentsInfo(
-            conferenceFeeValue = conferenceFeeValue,
-            conferenceFeePaymentTypeSelect = conferenceFeePaymentTypeSelect,
-            accommodationFeePaymentTypeSelect = accommodationFeePaymentTypeSelect,
-            accommodationFeeValue = accommodationFeeValue
+            aaId, aaPlaceId, aaStartDate, aaEndDate,
+            aaResidenceDietQuantity, aaResidenceDietAmount,
+            aaAccommodationQuantity, aaAccommodationLimit,
+            aaTravelDietAmount, aaTravelCosts, aaOtherCostsDescription,
+            aaOtherCostsAmount, aaResidenceDietSum, aaAccommodationSum,
+            aaAdvanceSum
     )
-        fun getIdentityDocument() = IdentityDocument(
-                id = null,
-                employeeID =null,
-                type = type,
-                number = number
-        )
+
+    fun getAdvancePayments() = AdvancePaymentsInfo(
+            pcAmount, pcPaymentType, paAmount, paPaymentType
+    )
+
+    fun getApplicationInfo(transportList: List<Transport>) = ApplicationInfo(getInstitute(), getPlace(),
+            getApplication(), getFinancialSource(),
+            transportList, getAdvanceApplication(),
+            getAdvancePayments())
 }

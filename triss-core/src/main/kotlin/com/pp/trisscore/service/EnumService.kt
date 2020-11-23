@@ -9,4 +9,12 @@ class EnumService(val enumRepository: EnumRepository) {
     fun getPaymentTypes() = enumRepository.getPaymentTypes()
     fun getStatuses() = enumRepository.getStatuses()
     fun getVehicles() = enumRepository.getVehicles()
+    fun getAllEnum(): Any {
+        val x = HashMap<String, Any>()
+        x["documentTypes"] = enumRepository.getDocumentTypes()
+        x["paymentTypes"] = enumRepository.getPaymentTypes()
+        x["statuses"] = enumRepository.getStatuses()
+        x["vehicles"] = enumRepository.getVehicles()
+        return x
+    }
 }
