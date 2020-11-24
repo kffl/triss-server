@@ -1,5 +1,6 @@
 package com.pp.trisscore.model.rows
 
+import com.pp.trisscore.model.enums.Status
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
@@ -35,5 +36,5 @@ data class ApplicationRow(
         @Column("abroadEndDate")
         val abroadEndDate: Date?,
         @Column("status")
-        val status: String?
+        val status: Status?
 )
