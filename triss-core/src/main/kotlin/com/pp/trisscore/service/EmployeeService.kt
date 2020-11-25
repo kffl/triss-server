@@ -8,13 +8,11 @@ import com.pp.trisscore.model.architecture.TokenData
 import com.pp.trisscore.model.classes.Employee
 import com.pp.trisscore.model.enums.Role
 import com.pp.trisscore.repository.EmployeeRepository
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
 
 @Service
 class EmployeeService(val employeeRepository: EmployeeRepository,
-                      val tokenService: TokenService,
                       val instituteService: InstituteService) {
 
     fun findEmployeeAndCheckRole(tokenData: TokenData, role: Role): Mono<Employee?> {
@@ -33,13 +31,11 @@ class EmployeeService(val employeeRepository: EmployeeRepository,
         return null
     }
 
-    fun getEmployee(token: JwtAuthenticationToken): Mono<Employee> {
-        val tokenData = tokenService.getEmployeeDataFromToken(token)
+    fun getEmployee(tokenData: TokenData): Mono<Employee> {
         return findEmployee(tokenData)
     }
 
-    fun saveEmployee(token: JwtAuthenticationToken, employee: Employee): Mono<Employee> {
-        val tokenData = tokenService.getEmployeeDataFromToken(token)
+    fun saveEmployee(tokenData: TokenData, employee: Employee): Mono<Employee> {
         if (employee.id != tokenData.employeeId)
             throw InvalidRequestBodyException("Id must equal to id in token.")
         if (employee.instituteID == null)
