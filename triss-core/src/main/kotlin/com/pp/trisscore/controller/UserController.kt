@@ -43,7 +43,7 @@ class UserController(val userService: UserService,
 //                         , token: JwtAuthenticationToken
     ): Mono<Long> {
 //        val tokenData = tokenService.getEmployeeDataFromToken(token)
-        return userService.getCountByFilter(tokenData, body)
+        return userService.getCountByFilter(tokenData, body.copy(filter = body.filter.copy(employeeId = tokenData.employeeId)))
     }
 
     @PostMapping("application/getFull")
