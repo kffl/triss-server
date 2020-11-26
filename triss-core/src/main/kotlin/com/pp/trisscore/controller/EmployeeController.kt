@@ -4,6 +4,7 @@ import com.pp.trisscore.exceptions.EmployeeNotFoundException
 import com.pp.trisscore.exceptions.InvalidRequestBodyException
 import com.pp.trisscore.exceptions.ObjectNotFoundException
 import com.pp.trisscore.model.architecture.ErrorsDetails
+import com.pp.trisscore.model.architecture.TokenData
 import com.pp.trisscore.model.classes.Employee
 import com.pp.trisscore.service.EmployeeService
 import com.pp.trisscore.service.TokenService
@@ -20,15 +21,21 @@ import java.util.*
 class EmployeeController(val employeeService: EmployeeService,
                          val tokenService: TokenService) {
 
+
+    val tokenData = TokenData()
     @PostMapping("/get")
-    fun getEmployee(token: JwtAuthenticationToken): Mono<Employee> {
-        val tokenData = tokenService.getEmployeeDataFromToken(token)
+    fun getEmployee(
+//            token: JwtAuthenticationToken
+    ): Mono<Employee> {
+//        val tokenData = tokenService.getEmployeeDataFromToken(token)
         return employeeService.getEmployee(tokenData)
     }
 
     @PostMapping("/update")
-    fun updateEmployee(token: JwtAuthenticationToken, @RequestBody employee: Employee): Mono<Employee> {
-        val tokenData = tokenService.getEmployeeDataFromToken(token)
+    fun updateEmployee(
+//            token: JwtAuthenticationToken,
+                       @RequestBody employee: Employee): Mono<Employee> {
+//        val tokenData = tokenService.getEmployeeDataFromToken(token)
         return employeeService.saveEmployee(tokenData,employee)
     }
 

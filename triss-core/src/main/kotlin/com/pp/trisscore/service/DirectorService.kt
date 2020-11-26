@@ -30,11 +30,11 @@ class DirectorService(val employeeService: EmployeeService,
                 .flatMap { x -> applicationService.getCountByFilter(pageInfo.copy(pageInfo.filter.copy(instituteId = x!!.instituteID!!))) }
     }
 
-    fun approveApplication(tokenBody: TokenData, body: ApplicationInfo): Mono<Application> {
-        validateApprove(body)
-        return employeeService.findEmployeeAndCheckRole(tokenBody, role).switchIfEmpty(Mono.error(UnauthorizedException("")))
-                .flatMap { x -> applicationService.approveApplication(body, x!!) }
-    }
+//    fun approveApplication(tokenBody: TokenData, body: ApplicationInfo): Mono<Application> {
+//        validateApprove(body)
+//        return employeeService.findEmployeeAndCheckRole(tokenBody, role).switchIfEmpty(Mono.error(UnauthorizedException("")))
+//                .flatMap { x -> applicationService.approveApplication(body, x!!) }
+//    }
 
     fun validateApprove(data :ApplicationInfo) {
         if(data.financialSource == null)
