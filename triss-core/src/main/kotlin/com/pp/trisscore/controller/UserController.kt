@@ -7,6 +7,7 @@ import com.pp.trisscore.exceptions.UserNotFoundException
 import com.pp.trisscore.model.architecture.ApplicationInfo
 import com.pp.trisscore.model.architecture.ErrorsDetails
 import com.pp.trisscore.model.architecture.PageInfo
+import com.pp.trisscore.model.architecture.TokenData
 import com.pp.trisscore.model.classes.Transport
 import com.pp.trisscore.model.rows.ApplicationRow
 import com.pp.trisscore.service.TokenService
@@ -26,31 +27,38 @@ import java.util.*
 class UserController(val userService: UserService,
                      val tokenService: TokenService) {
 
+
+    val tokenData = TokenData(170387,"Jan","Kowalczyk")
+
     @PostMapping("application/get")
-    fun getMyApplications(@RequestBody body: PageInfo<ApplicationRow>,
-                          token: JwtAuthenticationToken): Flux<ApplicationRow> {
-        val tokenData = tokenService.getEmployeeDataFromToken(token)
+    fun getMyApplications(@RequestBody body: PageInfo<ApplicationRow>
+//                          , token: JwtAuthenticationToken
+    ): Flux<ApplicationRow> {
+//        val tokenData = tokenService.getEmployeeDataFromToken(token)
         return userService.getMyApplications(tokenData, body)
     }
 
     @PostMapping("application/count")
-    fun getCountByFilter(@RequestBody body: PageInfo<ApplicationRow>,
-                             token: JwtAuthenticationToken): Mono<Long> {
-        val tokenData = tokenService.getEmployeeDataFromToken(token)
+    fun getCountByFilter(@RequestBody body: PageInfo<ApplicationRow>
+//                         , token: JwtAuthenticationToken
+    ): Mono<Long> {
+//        val tokenData = tokenService.getEmployeeDataFromToken(token)
         return userService.getCountByFilter(tokenData, body)
     }
 
     @PostMapping("application/getFull")
-    fun getFullApplication(@RequestBody id: Long,
-                           token: JwtAuthenticationToken): Mono<ApplicationInfo> {
-        val tokenData = tokenService.getEmployeeDataFromToken(token)
+    fun getFullApplication(@RequestBody id: Long
+//                           , token: JwtAuthenticationToken
+    ): Mono<ApplicationInfo> {
+//        val tokenData = tokenService.getEmployeeDataFromToken(token)
         return userService.getMyFullApplication(tokenData, id)
     }
 
     @PostMapping("application/create")
-    fun createApplication(@RequestBody body: ApplicationInfo,
-                          token: JwtAuthenticationToken): Mono<Transport>{
-        val tokenData = tokenService.getEmployeeDataFromToken(token)
+    fun createApplication(@RequestBody body: ApplicationInfo
+//                          , token: JwtAuthenticationToken
+    ): Mono<Transport>{
+//        val tokenData = tokenService.getEmployeeDataFromToken(token)
         return userService.createApplication(tokenData, body)
     }
 
