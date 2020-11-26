@@ -27,14 +27,13 @@ import java.util.*
 class DirectorController (val directorService: DirectorService,
                           val tokenService: TokenService) {
 
-    val tokenBody = TokenData(170387,"Jan","Kowalczyk")
+    val tokenBody = TokenData(167711,"Andrzej","Nowak")
 
     @PostMapping("application/get")
     fun getApplications(
 //            token: JwtAuthenticationToken,
                            @RequestBody pageInfo: PageInfo<ApplicationRow>): Flux<ApplicationRow> {
 //        val tokenBody = tokenService.getEmployeeDataFromToken(token)
-
         return directorService.getApplications(pageInfo, tokenBody)
     }
 
@@ -46,12 +45,13 @@ class DirectorController (val directorService: DirectorService,
         return directorService.getCountByFilter(tokenBody, body)
     }
 
-//    @PostMapping("application/approve")
-//    fun approveApplication(@RequestBody body: ApplicationInfo,
-//                          token: JwtAuthenticationToken): Mono<Application> {
+    @PostMapping("application/approve")
+    fun approveApplication(@RequestBody body: ApplicationInfo
+//                           , token: JwtAuthenticationToken
+    ): Mono<Application> {
 //        val tokenBody = tokenService.getEmployeeDataFromToken(token)
-////        return directorService.approveApplication(tokenBody, body)
-//    }
+        return directorService.approveApplication(tokenBody, body)
+    }
 
     @PostMapping("application/getFull")
     fun getFullApplication(@RequestBody id: Long
