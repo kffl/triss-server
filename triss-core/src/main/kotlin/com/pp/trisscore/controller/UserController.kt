@@ -35,7 +35,7 @@ class UserController(val userService: UserService,
 //                          , token: JwtAuthenticationToken
     ): Flux<ApplicationRow> {
 //        val tokenData = tokenService.getEmployeeDataFromToken(token)
-        return userService.getMyApplications(tokenData, body)
+        return userService.getMyApplications(tokenData, body.copy(filter = body.filter.copy(employeeId = tokenData.employeeId)))
     }
 
     @PostMapping("application/count")
