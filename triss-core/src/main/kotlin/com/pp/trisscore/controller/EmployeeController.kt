@@ -22,7 +22,8 @@ class EmployeeController(val employeeService: EmployeeService,
                          val tokenService: TokenService) {
 
 
-    val tokenData = TokenData()
+    val tokenData = TokenData(170387,"Jan","Kowalczyk")
+
     @PostMapping("/get")
     fun getEmployee(
 //            token: JwtAuthenticationToken

@@ -27,7 +27,7 @@ import java.util.*
 class DirectorController (val directorService: DirectorService,
                           val tokenService: TokenService) {
 
-    val tokenBody = TokenData()
+    val tokenBody = TokenData(170387,"Jan","Kowalczyk")
 
     @PostMapping("application/get")
     fun getApplications(
@@ -35,7 +35,7 @@ class DirectorController (val directorService: DirectorService,
                            @RequestBody pageInfo: PageInfo<ApplicationRow>): Flux<ApplicationRow> {
 //        val tokenBody = tokenService.getEmployeeDataFromToken(token)
 
-        return directorService.getApplications(pageInfo, TokenData() )//tokenBody)
+        return directorService.getApplications(pageInfo, tokenBody)
     }
 
     @PostMapping("application/count")
