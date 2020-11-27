@@ -3,6 +3,7 @@ package com.pp.trisscore.service
 import com.pp.trisscore.exceptions.InvalidRequestBodyException
 import com.pp.trisscore.exceptions.UnauthorizedException
 import com.pp.trisscore.model.applicationinfoelements.AdvancePaymentsInfo
+import com.pp.trisscore.model.architecture.ApplicationInfo
 import com.pp.trisscore.model.classes.*
 import com.pp.trisscore.model.enums.Role
 import com.pp.trisscore.model.enums.Status
@@ -10,13 +11,23 @@ import org.springframework.stereotype.Service
 
 @Service
 class ComparisonService {
+    fun compareApplicationsInfo(dbApplicationInfo: ApplicationInfo, reqApplicationInfo: ApplicationInfo, role:Role)
+    {
+        compareApplications(dbApplicationInfo.application,reqApplicationInfo.application,role)
+        compareInstitutes(dbApplicationInfo.institute,reqApplicationInfo.institute)
+        if(role!=Role.DIRECTOR)
+            compareFinancialSources(dbApplicationInfo.financialSource!!,reqApplicationInfo.financialSource!!)
+        compareAdvanceApplication(dbApplicationInfo.advanceApplication,reqApplicationInfo.advanceApplication)
+        compareAdvancePayments(dbApplicationInfo.advancePayments,reqApplicationInfo.advancePayments)
+    }
+
     fun compareInstitutes(dbInstitute: Institute, reqInstitute: Institute) {
         if(dbInstitute.id != reqInstitute.id)
             throw InvalidRequestBodyException("InstituteId in DB differs from the request's InstituteId ")
         if(dbInstitute.name != reqInstitute.name)
             throw InvalidRequestBodyException("InstituteName in DB differs from the request's InstituteName")
-        if(dbInstitute.active != reqInstitute.active)
-            throw InvalidRequestBodyException("InstituteActive in DB differs from the request's InstituteActive")
+//        if(dbInstitute.active != reqInstitute.active)
+//            throw InvalidRequestBodyException("InstituteActive in DB differs from the request's InstituteActive")
     }
 
     fun comparePlaces(dbPlace: Place, reqPlace: Place){
@@ -120,7 +131,7 @@ class ComparisonService {
             throw InvalidRequestBodyException("FinancialSourceId in DB differs from the request's one")
         if(dbFinancialSource.allocationAccount != reqFinancialSource.allocationAccount)
             throw InvalidRequestBodyException("FinancialSourceAllocationAccount in DB differs from the request's one")
-        if(dbFinancialSource.MPK != reqFinancialSource.MPK)
+        if(dbFinancialSource.mpk != reqFinancialSource.mpk)
             throw InvalidRequestBodyException("FinancialSourceMPK in DB differs from the request's one")
         if(dbFinancialSource.financialSource != reqFinancialSource.financialSource)
             throw InvalidRequestBodyException("FinancialSource in DB differs from the request's one")

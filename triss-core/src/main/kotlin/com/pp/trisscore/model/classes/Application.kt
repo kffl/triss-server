@@ -31,9 +31,9 @@ data class Application(
         val phoneNumber: String,
         @Column("employeeId")
         val employeeId: Long?,
-        @Column("type")
+        @Column("identityDocumentType")
         val identityDocumentType: DocumentType,
-        @Column("number")
+        @Column("identityDocumentNumber")
         val identityDocumentNumber: String,
         @Column("createdOn")
         val createdOn: LocalDate?,

@@ -58,6 +58,12 @@ class ApplicationService(
         return application.flatMap { x -> transportService.save(applicationInfo.transport, x.id!!) }
     }
 
+
+    fun updateApplication(application:Application) : Mono<Application> = applicationRepository.findById(application.id!!)
+            .flatMap { x -> applicationRepository.save(x.copy(financialSourceId = application.financialSourceId,
+            directorComments = application.directorComments,
+            status = application.status))}
+
     private fun fillApplication(applicationInfo: ApplicationInfo, userId: Long, placeId: Long, prepaymentId: Long, advanceApplicationId: Long, instituteId: Long): Application {
         return applicationInfo.application.copy(createdOn = LocalDate.now(), employeeId = userId, placeId = placeId,
                 prepaymentId = prepaymentId, advanceApplicationId = advanceApplicationId, instituteId = instituteId, status = Status.WaitingForDirector)

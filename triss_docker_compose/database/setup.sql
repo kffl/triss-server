@@ -115,26 +115,26 @@ CREATE TABLE IdentityDocument
 (
     id         BIGSERIAL PRIMARY KEY,
     employeeID BIGINT       NOT NULL,
-    type       Int          NOT NULL,
+    type       VARCHAR(255) NOT NULL,
     number     VARCHAR(255) NOT NULL,
     CONSTRAINT employee_fk FOREIGN KEY (employeeID) REFERENCES Employee (id)
 );
 
 INSERT INTO IdentityDocument (employeeID, type, number)
-VALUES (170387, 0, 'ABC12345'),
-       (170387, 1, 'DE6789000'),
-       (2, 1, 'ZE8000199');
+VALUES (170387, 'IdCard', 'ABC12345'),
+       (170387, 'Passport', 'DE6789000'),
+       (2, 'Passport', 'ZE8000199');
 
 CREATE TABLE FinancialSource
 (
-    id                BIGSERIAL PRIMARY KEY,
-    allocationAccount VARCHAR(255),
-    MPK               VARCHAR(255),
-    financialSource   VARCHAR(255),
-    project           VARCHAR(255)
+    id                   BIGSERIAL PRIMARY KEY,
+    allocationAccount    VARCHAR(255),
+    MPK                  VARCHAR(255),
+    financialSourceValue VARCHAR(255),
+    project              VARCHAR(255)
 );
 
-INSERT INTO FinancialSource (allocationAccount, MPK, financialSource, project)
+INSERT INTO FinancialSource (allocationAccount, MPK, financialSourceValue, project)
 VALUES ('01 2345 6789 0123 4567 8901 2345', 'MPK_1', 'Financial Source 1', 'Project X');
 
 CREATE TABLE AdvanceApplication
@@ -175,7 +175,7 @@ CREATE TABLE Application
     phoneNumber              varchar(255) NOT NULL,
     employeeId               BIGINT       NOT NULL,
 --  Document Info
-    identityDocumentType     Int          NOT NULL,
+    identityDocumentType     VARCHAR(255) NOT NULL,
     identityDocumentNumber   VARCHAR(255) NOT NULL,
     createdOn                DATE         NOT NULL,
     placeId                  BIGINT       NOT NULL,
@@ -213,16 +213,18 @@ INSERT INTO Application (firstName, surname, birthDate, phoneNumber, academicDeg
                          abroadEndDateInsurance,
                          selfInsured, advanceApplicationId, prepaymentId, comments, wildaComments, directorComments,
                          rectorComments, status)
-VALUES ('Jan', 'Kowalczyk', '2000-01-01', '+48 123456789', 'Prof.', 170387, 0, 'ABC12345', '2020-11-03', 1, 1, '2020-12-12',
+VALUES ('Jan', 'Kowalczyk', '2000-01-01', '+48 123456789', 'Prof.', 170387, 'IdCard', 'ABC12345', '2020-11-03', 1, 1,
+        '2020-12-12',
         '2020-12-15', 'Konferencja', 'AntyCovid2020',
         ' TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą',
         '2020-12-13', '2020-12-14', NULL, '2020-12-12', '2020-12-15', FALSE, 1, 1, NULL, NULL, NULL, NULL,
-        'WaitingForRector'),
-       ('Jan', 'Kowalski', '1990-03-21', '+48 321456987', 'Prof.', 2, 1, 'DE6789000', '2020-11-04', 4, 2, '2020-11-10',
+        'WaitingForDirector'),
+       ('Jan', 'Kowalski', '1990-03-21', '+48 321456987', 'Prof.', 2, 'Passport', 'DE6789000', '2020-11-04', 4, 2,
+        '2020-11-10',
         '2020-11-13', 'Konferencja', 'AntyCovid2020',
         ' TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą',
         '2020-11-10', '2020-11-13', 1, '2020-11-10', '2020-11-13', FALSE, 2, 2, NULL, NULL, NULL, NULL,
-        'WaitingForRector');
+        'WaitingForDirector');
 
 CREATE TABLE Transport
 (
@@ -246,12 +248,22 @@ VALUES (1, 'Poznań', 'Los Angeles', '2020-12-12', 6, 30, 'Plane', 'LOT'),
        (2, 'Montreal', 'Poznań', '2020-11-13', 5, 30, 'Plane', 'RyanAir');
 
 CREATE VIEW ApplicationRow AS
-SELECT Application.id,E.firstName,E.surname, employeeId,I.id as instituteId,I.name as instituteName, country, city, abroadStartDate, abroadEndDate, status
+SELECT Application.id,
+       E.firstName,
+       E.surname,
+       employeeId,
+       I.id   as instituteId,
+       I.name as instituteName,
+       country,
+       city,
+       abroadStartDate,
+       abroadEndDate,
+       status
 FROM Application
          JOIN Place
               ON Place.id = Application.placeId
-        JOIN Employee E on Application.employeeId = E.id
-        JOIN Institute I on Application.instituteId = I.id;
+         JOIN Employee E on Application.employeeId = E.id
+         JOIN Institute I on Application.instituteId = I.id;
 
 CREATE VIEW ApplicationFull As
 SELECT a.id,
@@ -293,7 +305,7 @@ SELECT a.id,
        F.id                  as fId,
        allocationAccount     as fAllocationAccount,
        MPK                   as fMPK,
-       financialSource       as fFinancialSource,
+       financialSourceValue  as fFinancialSource,
        project               as fProject,
        AA.id                 as aaId,
        AA.placeId            as aaPlaceId,

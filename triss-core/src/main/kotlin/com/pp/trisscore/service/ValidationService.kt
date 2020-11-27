@@ -10,13 +10,13 @@ class ValidationService {
     fun validateFinancialSource(financialSource: FinancialSource?) {
         if (financialSource == null)
             throw InvalidRequestBodyException("")
-        if (financialSource.MPK != null)
+        if (financialSource.mpk == null)
             throw InvalidRequestBodyException("")
-        if (financialSource.allocationAccount != null)
+        if (financialSource.allocationAccount == null)
             throw InvalidRequestBodyException("")
-        if (financialSource.financialSource != null)
+        if (financialSource.financialSource == null)
             throw InvalidRequestBodyException("")
-        if (financialSource.project != null)
+        if (financialSource.project == null)
             throw InvalidRequestBodyException("")
     }
 

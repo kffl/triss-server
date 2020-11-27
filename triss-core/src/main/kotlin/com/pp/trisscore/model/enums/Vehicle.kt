@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonFormat
  * Update date: 28.10.2020
  **/
 
-@JsonFormat(shape = JsonFormat.Shape.NUMBER)
+@JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
 enum class Vehicle(val namePl: String, val nameEng: String) {
     Plane("Samolot", "Plane"),
     Car("Samochód", "Car"),

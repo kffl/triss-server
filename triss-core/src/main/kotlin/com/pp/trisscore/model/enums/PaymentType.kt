@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonFormat
  * Update date: 28.10.2020
  **/
 
-@JsonFormat(shape = JsonFormat.Shape.NUMBER)
+@JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
 enum class PaymentType(val namePl: String, val nameEng: String) {
     Cash("Gotówka", "Cash"),
     Blik("Blik","Blik"),
