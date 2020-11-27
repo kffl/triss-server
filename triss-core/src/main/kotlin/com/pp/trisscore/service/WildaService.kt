@@ -42,4 +42,9 @@ class WildaService(val employeeService: EmployeeService,
         return applicationService.updateApplication(reqApplicationInfo.application)
     }
 
+    fun getFullApplication(tokenBody: TokenData, id: Long): Mono<ApplicationInfo> {
+        return employeeService.findEmployeeAndCheckRole(tokenBody, role).switchIfEmpty(Mono.error(UnauthorizedException("")))
+                .flatMap { x -> applicationFullService.getFullApplication(id) }
+    }
+
 }

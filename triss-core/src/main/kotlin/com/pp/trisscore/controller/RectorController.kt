@@ -51,6 +51,14 @@ class RectorController(val rectorService: RectorService,
         return rectorService.approveApplication(tokenBody, body)
     }
 
+    @PostMapping("application/getFull")
+    fun getFullApplication(@RequestBody id: Long
+//                           , token: JwtAuthenticationToken
+    ) : Mono<ApplicationInfo>{
+//        val tokenBody = tokenService.getEmployeeDataFromToken(token)
+        return rectorService.getFullApplication(tokenBody, id)
+    }
+
 
     @ExceptionHandler(value = [InvalidRequestBodyException::class])
     fun catchInvalidRequestBodyException(ex: RuntimeException): ResponseEntity<ErrorsDetails> {

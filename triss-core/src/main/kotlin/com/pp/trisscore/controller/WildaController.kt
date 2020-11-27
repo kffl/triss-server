@@ -34,6 +34,14 @@ class WildaController(val wildaService: WildaService) {
         return wildaService.getCountByFilter(tokenBody, body)
     }
 
+    @PostMapping("application/getFull")
+    fun getFullApplication(@RequestBody id: Long
+//                           , token: JwtAuthenticationToken
+    ) : Mono<ApplicationInfo>{
+//        val tokenBody = tokenService.getEmployeeDataFromToken(token)
+        return wildaService.getFullApplication(tokenBody, id)
+    }
+
     @PostMapping("application/approve")
     fun approveApplication(@RequestBody body: ApplicationInfo
 //                           , token: JwtAuthenticationToken
