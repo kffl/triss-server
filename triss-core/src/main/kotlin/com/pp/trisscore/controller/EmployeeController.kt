@@ -4,9 +4,10 @@ import com.pp.trisscore.exceptions.EmployeeNotFoundException
 import com.pp.trisscore.exceptions.InvalidRequestBodyException
 import com.pp.trisscore.exceptions.ObjectNotFoundException
 import com.pp.trisscore.model.architecture.ErrorsDetails
+import com.pp.trisscore.model.architecture.TokenData
 import com.pp.trisscore.model.classes.Employee
-import com.pp.trisscore.service.ApplicationService
 import com.pp.trisscore.service.EmployeeService
+import com.pp.trisscore.service.TokenService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
@@ -17,17 +18,27 @@ import java.util.*
 @RestController
 @CrossOrigin
 @RequestMapping("/employee")
-class EmployeeController(val employeeService: EmployeeService) {
+class EmployeeController(val employeeService: EmployeeService,
+                         val tokenService: TokenService) {
+
+
+    val tokenData = TokenData(170387,"Jan","Kowalczyk")
+
     @PostMapping("/get")
-    fun getEmployee(token: JwtAuthenticationToken): Mono<Employee> {
-        return employeeService.getEmployee(token)
+    fun getEmployee(
+//            token: JwtAuthenticationToken
+    ): Mono<Employee> {
+//        val tokenData = tokenService.getEmployeeDataFromToken(token)
+        return employeeService.getEmployee(tokenData)
     }
 
     @PostMapping("/update")
-    fun updateEmployee(token: JwtAuthenticationToken, @RequestBody employee: Employee): Mono<Employee> {
-        return employeeService.saveEmployee(token,employee)
+    fun updateEmployee(
+//            token: JwtAuthenticationToken,
+                       @RequestBody employee: Employee): Mono<Employee> {
+//        val tokenData = tokenService.getEmployeeDataFromToken(token)
+        return employeeService.saveEmployee(tokenData,employee)
     }
-
 
     @ExceptionHandler(value = [InvalidRequestBodyException::class])
     fun catchInvalidRequestBodyException(ex: RuntimeException): ResponseEntity<ErrorsDetails> {
@@ -46,10 +57,4 @@ class EmployeeController(val employeeService: EmployeeService) {
         val errorDetails = ErrorsDetails(Date(), ex.toString(), ex.message!!)
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorDetails)
     }
-
-
-
-
-
-
 }

@@ -11,6 +11,7 @@
 --        ('DIRECTOR');
 
 
+
 CREATE TABLE Institute
 (
     id     BIGSERIAL PRIMARY KEY,
@@ -73,11 +74,11 @@ CREATE TABLE PrepaymentFee
     paymentType VARCHAR(255)  NOT NULL
 );
 
-INSERT INTO PrepaymentFee (amount, paymentType)
-VALUES (2500, 'Cash'),
-       (1250, 'Card'),
-       (1400, 'Transfer'),
-       (3000.50, 'Transfer');
+-- INSERT INTO PrepaymentFee (amount, paymentType)
+-- VALUES (2500, 'Cash'),
+--        (1250, 'Card'),
+--        (1400, 'Transfer'),
+--        (3000.50, 'Transfer');
 
 CREATE TABLE Prepayment
 (
@@ -88,9 +89,9 @@ CREATE TABLE Prepayment
     CONSTRAINT accommodationFee_fk FOREIGN KEY (accommodationFeeId) REFERENCES PrepaymentFee (id)
 );
 
-INSERT INTO Prepayment (conferenceFeeId, accommodationFeeId)
-VALUES (1, 2),
-       (3, 4);
+-- INSERT INTO Prepayment (conferenceFeeId, accommodationFeeId)
+-- VALUES (1, 2),
+--        (3, 4);
 
 CREATE TABLE Employee
 (
@@ -107,35 +108,35 @@ CREATE TABLE Employee
 
 INSERT INTO Employee
 VALUES (170387, 'Jan', 'Kowalczyk', '2000-01-01', 'Prof.', '+48 123456789', 'USER', 1),
-       (2, 'Jan', 'Kowalski', '1990-03-21', 'Prof.', '+48 321456987', 'WILDA', 2),
-       (3, 'Jerzy', 'Zbiałowierzy', '1980-05-15', 'Prof.', '+48 541236987', 'RECTOR', 3),
-       (4, 'Andrzej', 'Nowak', '1988-07-16', 'Prof.', '+48 987456321', 'DIRECTOR', 4);
+       (2, 'Jan', 'Kowalski', '1990-03-21', 'Prof.', '+48 321456987', 'WILDA', 1),
+       (3, 'Jerzy', 'Zbiałowierzy', '1980-05-15', 'Prof.', '+48 541236987', 'RECTOR', 1),
+       (167711, 'Andrzej', 'Nowak', '1988-07-16', 'Prof.', '+48 987456321', 'DIRECTOR', 1);
 
 CREATE TABLE IdentityDocument
 (
     id         BIGSERIAL PRIMARY KEY,
     employeeID BIGINT       NOT NULL,
-    type       Int          NOT NULL,
+    type       VARCHAR(255) NOT NULL,
     number     VARCHAR(255) NOT NULL,
     CONSTRAINT employee_fk FOREIGN KEY (employeeID) REFERENCES Employee (id)
 );
 
 INSERT INTO IdentityDocument (employeeID, type, number)
-VALUES (170387, 0, 'ABC12345'),
-       (170387, 1, 'DE6789000'),
-       (2, 1, 'ZE8000199');
+VALUES (170387, 'IdCard', 'ABC12345'),
+       (170387, 'Passport', 'DE6789000'),
+       (2, 'Passport', 'ZE8000199');
 
 CREATE TABLE FinancialSource
 (
-    id                BIGSERIAL PRIMARY KEY,
-    allocationAccount VARCHAR(255),
-    MPK               VARCHAR(255),
-    financialSource   VARCHAR(255),
-    project           VARCHAR(255)
+    id                   BIGSERIAL PRIMARY KEY,
+    allocationAccount    VARCHAR(255),
+    MPK                  VARCHAR(255),
+    financialSourceValue VARCHAR(255),
+    project              VARCHAR(255)
 );
 
-INSERT INTO FinancialSource (allocationAccount, MPK, financialSource, project)
-VALUES ('01 2345 6789 0123 4567 8901 2345', 'MPK_1', 'Financial Source 1', 'Project X');
+-- INSERT INTO FinancialSource (allocationAccount, MPK, financialSourceValue, project)
+-- VALUES ('01 2345 6789 0123 4567 8901 2345', 'MPK_1', 'Financial Source 1', 'Project X');
 
 CREATE TABLE AdvanceApplication
 (
@@ -157,12 +158,12 @@ CREATE TABLE AdvanceApplication
     CONSTRAINT place_fk FOREIGN KEY (placeId) REFERENCES Place (id)
 );
 
-INSERT INTO AdvanceApplication (placeId, startDate, endDate, residenceDietQuantity, residenceDietAmount,
-                                accommodationQuantity,
-                                accommodationLimit, travelDietAmount, travelCosts, otherCostsDescription,
-                                otherCostsAmount, residenceDietSum, accommodationSum, advanceSum)
-VALUES (1, '2020-12-12', '2020-12-15', 2, 200, 1, 400, 300, 50, NULL, NULL, 400, 400, 1150),
-       (4, '2020-11-10', '2020-11-13', 1, 500, 1, 500, 400, 50, NULL, NULL, 500, 500, 1450);
+-- INSERT INTO AdvanceApplication (placeId, startDate, endDate, residenceDietQuantity, residenceDietAmount,
+--                                 accommodationQuantity,
+--                                 accommodationLimit, travelDietAmount, travelCosts, otherCostsDescription,
+--                                 otherCostsAmount, residenceDietSum, accommodationSum, advanceSum)
+-- VALUES (1, '2020-12-12', '2020-12-15', 2, 200, 1, 400, 300, 50, NULL, NULL, 400, 400, 1150),
+--        (4, '2020-11-10', '2020-11-13', 1, 500, 1, 500, 400, 50, NULL, NULL, 500, 500, 1450);
 
 CREATE TABLE Application
 (
@@ -175,7 +176,7 @@ CREATE TABLE Application
     phoneNumber              varchar(255) NOT NULL,
     employeeId               BIGINT       NOT NULL,
 --  Document Info
-    identityDocumentType     Int          NOT NULL,
+    identityDocumentType     VARCHAR(255) NOT NULL,
     identityDocumentNumber   VARCHAR(255) NOT NULL,
     createdOn                DATE         NOT NULL,
     placeId                  BIGINT       NOT NULL,
@@ -206,23 +207,25 @@ CREATE TABLE Application
     CONSTRAINT prepayment_fk FOREIGN KEY (prepaymentId) REFERENCES Prepayment (id)
 );
 
-INSERT INTO Application (firstName, surname, birthDate, phoneNumber, academicDegree, employeeId, identityDocumentType,
-                         identityDocumentNumber, createdOn, placeId, instituteId, abroadStartDate, abroadEndDate,
-                         purpose, conference, subject,
-                         conferenceStartDate, conferenceEndDate, financialSourceId, abroadStartDateInsurance,
-                         abroadEndDateInsurance,
-                         selfInsured, advanceApplicationId, prepaymentId, comments, wildaComments, directorComments,
-                         rectorComments, status)
-VALUES ('Jan', 'Kowalczyk', '2000-01-01', '+48 123456789', 'Prof.', 170387, 0, 'ABC12345', '2020-11-03', 1, 1, '2020-12-12',
-        '2020-12-15', 'Konferencja', 'AntyCovid2020',
-        ' TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą',
-        '2020-12-13', '2020-12-14', NULL, '2020-12-12', '2020-12-15', FALSE, 1, 1, NULL, NULL, NULL, NULL,
-        'WaitingForRector'),
-       ('Jan', 'Kowalski', '1990-03-21', '+48 321456987', 'Prof.', 2, 1, 'DE6789000', '2020-11-04', 4, 2, '2020-11-10',
-        '2020-11-13', 'Konferencja', 'AntyCovid2020',
-        ' TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą',
-        '2020-11-10', '2020-11-13', 1, '2020-11-10', '2020-11-13', FALSE, 2, 2, NULL, NULL, NULL, NULL,
-        'WaitingForRector');
+-- INSERT INTO Application (firstName, surname, birthDate, phoneNumber, academicDegree, employeeId, identityDocumentType,
+--                          identityDocumentNumber, createdOn, placeId, instituteId, abroadStartDate, abroadEndDate,
+--                          purpose, conference, subject,
+--                          conferenceStartDate, conferenceEndDate, financialSourceId, abroadStartDateInsurance,
+--                          abroadEndDateInsurance,
+--                          selfInsured, advanceApplicationId, prepaymentId, comments, wildaComments, directorComments,
+--                          rectorComments, status)
+-- VALUES ('Jan', 'Kowalczyk', '2000-01-01', '+48 123456789', 'Prof.', 170387, 'IdCard', 'ABC12345', '2020-11-03', 1, 1,
+--         '2020-12-12',
+--         '2020-12-15', 'Konferencja', 'AntyCovid2020',
+--         ' TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą',
+--         '2020-12-13', '2020-12-14', NULL, '2020-12-12', '2020-12-15', FALSE, 1, 1, NULL, NULL, NULL, NULL,
+--         'WaitingForDirector'),
+--        ('Jan', 'Kowalski', '1990-03-21', '+48 321456987', 'Prof.', 2, 'Passport', 'DE6789000', '2020-11-04', 4, 2,
+--         '2020-11-10',
+--         '2020-11-13', 'Konferencja', 'AntyCovid2020',
+--         ' TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą',
+--         '2020-11-10', '2020-11-13', 1, '2020-11-10', '2020-11-13', FALSE, 2, 2, NULL, NULL, NULL, NULL,
+--         'WaitingForDirector');
 
 CREATE TABLE Transport
 (
@@ -238,18 +241,30 @@ CREATE TABLE Transport
     CONSTRAINT application_fk FOREIGN KEY (applicationID) REFERENCES Application (id)
 );
 
-INSERT INTO Transport (applicationID, destinationFrom, destinationTo, departureDay, departureHour, departureMinute,
-                       vehicleSelect, carrier)
-VALUES (1, 'Poznań', 'Los Angeles', '2020-12-12', 6, 30, 'Plane', 'LOT'),
-       (1, 'Los Angeles', 'Poznań', '2020-12-14', 20, 10, 'Plane', 'RyanAir'),
-       (2, 'Poznań', 'Montreal', '2020-11-10', 4, 24, 'Plane', 'LOT'),
-       (2, 'Montreal', 'Poznań', '2020-11-13', 5, 30, 'Plane', 'RyanAir');
+-- INSERT INTO Transport (applicationID, destinationFrom, destinationTo, departureDay, departureHour, departureMinute,
+--                        vehicleSelect, carrier)
+-- VALUES (1, 'Poznań', 'Los Angeles', '2020-12-12', 6, 30, 'Plane', 'LOT'),
+--        (1, 'Los Angeles', 'Poznań', '2020-12-14', 20, 10, 'Plane', 'RyanAir'),
+--        (2, 'Poznań', 'Montreal', '2020-11-10', 4, 24, 'Plane', 'LOT'),
+--        (2, 'Montreal', 'Poznań', '2020-11-13', 5, 30, 'Plane', 'RyanAir');
 
 CREATE VIEW ApplicationRow AS
-SELECT Application.id, employeeId, country, city, abroadStartDate, abroadEndDate, status
+SELECT Application.id,
+       E.firstName,
+       E.surname,
+       employeeId,
+       I.id   as instituteId,
+       I.name as instituteName,
+       country,
+       city,
+       abroadStartDate,
+       abroadEndDate,
+       status
 FROM Application
          JOIN Place
-              ON Place.id = Application.placeId;
+              ON Place.id = Application.placeId
+         JOIN Employee E on Application.employeeId = E.id
+         JOIN Institute I on Application.instituteId = I.id;
 
 CREATE VIEW ApplicationFull As
 SELECT a.id,
@@ -291,7 +306,7 @@ SELECT a.id,
        F.id                  as fId,
        allocationAccount     as fAllocationAccount,
        MPK                   as fMPK,
-       financialSource       as fFinancialSource,
+       financialSourceValue  as fFinancialSource,
        project               as fProject,
        AA.id                 as aaId,
        AA.placeId            as aaPlaceId,

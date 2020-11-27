@@ -66,8 +66,6 @@ data class ApplicationFull(
         val advanceApplicationId: Long?,
         @Column("prepaymentId")
         val prepaymentId: Long?,
-        @Column("identityDocumentID")
-        val identityDocumentID: Long?,
         @Column("comments")
         val comments: String?,
         @Column("comments")

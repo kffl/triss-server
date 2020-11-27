@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonFormat
  * Date: 03.10.2020
  * Update date: 28.10.2020
  **/
-@JsonFormat(shape = JsonFormat.Shape.NUMBER)
+@JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
 enum class DocumentType (val namePl: String, val nameEng: String) {
     IdCard("Dowód osobisty","ID card"),
     Passport("Paszport","Passport"),

@@ -39,12 +39,11 @@ class ApplicationService(
     fun getAllByFilter(pageInfo: PageInfo<ApplicationRow>): Flux<ApplicationRow> = applicationRowRepository.getAllByFilter(pageInfo)
     fun getCountByFilter(pageInfo: PageInfo<ApplicationRow>) = applicationRowRepository.getCountByFilter(pageInfo)
 
-
     @Transactional
     fun createApplication(applicationInfo: ApplicationInfo, user: Employee?): Mono<Transport> {
         if (user == null)
             throw EmployeeNotFoundException("User Not Found")
-        validateApplication(applicationInfo,user)
+        validateApplication(applicationInfo, user)
         val institute = instituteService.getInstitute(applicationInfo.institute.name)
         val prepaymentId = prepaymentService.createPrepayment(applicationInfo.advancePayments)
                 .map { x -> x.id }
@@ -58,6 +57,12 @@ class ApplicationService(
                 }
         return application.flatMap { x -> transportService.save(applicationInfo.transport, x.id!!) }
     }
+
+
+    fun updateApplication(application:Application) : Mono<Application> = applicationRepository.findById(application.id!!)
+            .flatMap { x -> applicationRepository.save(x.copy(financialSourceId = application.financialSourceId,
+            directorComments = application.directorComments,
+            status = application.status))}
 
     private fun fillApplication(applicationInfo: ApplicationInfo, userId: Long, placeId: Long, prepaymentId: Long, advanceApplicationId: Long, instituteId: Long): Application {
         return applicationInfo.application.copy(createdOn = LocalDate.now(), employeeId = userId, placeId = placeId,
@@ -77,26 +82,16 @@ class ApplicationService(
             throw(InvalidRequestBodyException("FirstName is not equal first name in database"))
         if (applicationInfo.application.surname != user.surname)
             throw(InvalidRequestBodyException("Surname is not equal surname in database"))
-        if(applicationInfo.application.directorComments!=null)
+        if (applicationInfo.application.directorComments != null)
             throw(InvalidRequestBodyException("Director comments must be null"))
-        if(applicationInfo.application.rectorComments!=null)
+        if (applicationInfo.application.rectorComments != null)
             throw(InvalidRequestBodyException("Rector comments must be null"))
-        if(applicationInfo.application.wildaComments!=null)
+        if (applicationInfo.application.wildaComments != null)
             throw(InvalidRequestBodyException("Wilda comments must be null"))
-        if(applicationInfo.financialSource!=null)
+        if (applicationInfo.financialSource != null)
             throw(InvalidRequestBodyException("FinancialSource must be null"))
-        if(applicationInfo.application.id!=null)
+        if (applicationInfo.application.id != null)
             throw(InvalidRequestBodyException("Application Id must be null"))
-
-
-
-
-
-
-
-
-
-
 
 
         //TODO więcej walidacji do zrobienia
@@ -107,4 +102,15 @@ class ApplicationService(
             throw(WrongDateException(message))
         }
     }
+
+
+//    @Transactional
+//    fun approveApplication(applicationInfo: ApplicationInfo, x: Employee): Mono<Application> {
+//        if (applicationInfo.application.id == null)
+//            throw InvalidRequestBodyException("ApplicationId cannot be null")
+//        val application = applicationRepository.getByIdAndInstituteId(applicationInfo.application.id, x.id!!)
+//                .switchIfEmpty(Mono.error(ObjectNotFoundException("")))
+////        return application.flatMap { x -> validateDirectorApplicationAndSave(x, applicationInfo) }
+//    }
+
 }

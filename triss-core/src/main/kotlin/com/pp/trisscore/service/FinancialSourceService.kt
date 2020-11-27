@@ -11,9 +11,7 @@ class FinancialSourceService(val financialSourceRepository: FinancialSourceRepos
 
 
 
-    fun createFinancialSource(financialSource: FinancialSource): Mono<FinancialSource>
-    {
-        return financialSourceRepository.save(financialSource)
-    }
+    fun save(financialSource: FinancialSource): Mono<FinancialSource>
+            =financialSourceRepository.save(financialSource)
 
 }
