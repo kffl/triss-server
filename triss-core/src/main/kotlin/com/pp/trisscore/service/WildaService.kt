@@ -13,23 +13,22 @@ import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
 @Service
-class RectorService(
-        private val employeeService: EmployeeService,
-        private val applicationService: ApplicationService,
-        private val applicationFullService: ApplicationFullService,
-        val comparisonService: ComparisonService) {
+class WildaService(val employeeService: EmployeeService,
+                   val applicationService: ApplicationService,
+                   val applicationFullService: ApplicationFullService,
+                   val comparisonService: ComparisonService) {
 
-    private val role = Role.RECTOR
 
-    //get applications which are waiting for Rector acceptation
+    private val role = Role.WILDA
+
     fun getApplications(pageInfo: PageInfo<ApplicationRow>, tokenBody: TokenData): Flux<ApplicationRow> {
         return employeeService.findEmployeeAndCheckRole(tokenBody, role).switchIfEmpty(Mono.error(UnauthorizedException("You do not have permission to perform this action")))
-                .flatMapMany { x -> applicationService.getAllByFilter(pageInfo.copy(pageInfo.filter.copy(status = Status.WaitingForRector))) }
+                .flatMapMany { x -> applicationService.getAllByFilter(pageInfo.copy(pageInfo.filter.copy(status = Status.WaitingForWilda))) }
     }
 
     fun getCountByFilter(tokenBody: TokenData, pageInfo: PageInfo<ApplicationRow>): Mono<Long> {
         return employeeService.findEmployeeAndCheckRole(tokenBody, role).switchIfEmpty(Mono.error(UnauthorizedException("You do not have permission to perform this action")))
-                .flatMap { x -> applicationService.getCountByFilter(pageInfo.copy(pageInfo.filter.copy(status = Status.WaitingForRector))) }
+                .flatMap { x -> applicationService.getCountByFilter(pageInfo.copy(pageInfo.filter.copy(status = Status.WaitingForWilda))) }
     }
 
     fun approveApplication(tokenBody: TokenData, body: ApplicationInfo): Mono<Application> {
@@ -39,7 +38,7 @@ class RectorService(
     }
 
     private fun validateApproveAndSaveApplication(dbApplicationInfo: ApplicationInfo?, reqApplicationInfo: ApplicationInfo): Mono<out Application>? {
-        comparisonService.compareApplicationsInfo(dbApplicationInfo!!,reqApplicationInfo,role)
+        comparisonService.compareApplicationsInfo(dbApplicationInfo!!, reqApplicationInfo, role)
         return applicationService.updateApplication(reqApplicationInfo.application)
     }
 

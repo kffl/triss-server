@@ -98,7 +98,9 @@ class ComparisonService {
                     throw InvalidRequestBodyException("ApplicationDirectorComments in DB differs from the request's one")
                 if (dbApplication.rectorComments != reqApplication.rectorComments)
                     throw InvalidRequestBodyException("ApplicationRectorComments in DB differs from the request's one")
-                if (dbApplication.status != Status.WaitingForWilda || dbApplication.status!= Status.WaitingForWildaAgain)
+                if (dbApplication.status != Status.WaitingForWilda)
+                    throw InvalidRequestBodyException("ApplicationStatus in DB differs from the request's one")
+                if(reqApplication.status!= Status.WaitingForRector)
                     throw InvalidRequestBodyException("ApplicationStatus in DB differs from the request's one")
                 return
             }
@@ -109,6 +111,8 @@ class ComparisonService {
                     throw InvalidRequestBodyException("ApplicationRectorComments in DB differs from the request's one")
                 if (dbApplication.status != Status.WaitingForDirector)
                     throw InvalidRequestBodyException("ApplicationStatus in DB differs from the request's one")
+                if(reqApplication.status!= Status.WaitingForWilda)
+                    throw InvalidRequestBodyException("ApplicationStatus in DB differs from the request's one")
                 return
             }
             Role.RECTOR -> {
@@ -118,8 +122,9 @@ class ComparisonService {
                     throw InvalidRequestBodyException("ApplicationDirectorComments in DB differs from the request's one")
                 if (dbApplication.wildaComments != reqApplication.wildaComments)
                     throw InvalidRequestBodyException("ApplicationWildaComments in DB differs from the request's one")
-                if (dbApplication.status != Status.WaitingForDirector)
+                if (dbApplication.status != Status.WaitingForRector)
                     throw InvalidRequestBodyException("ApplicationStatus in DB differs from the request's one")
+                if (reqApplication.status!=Status.Accepted)
                 return
             }
             Role.USER -> {throw UnauthorizedException("You do not have permission to perform this action")}

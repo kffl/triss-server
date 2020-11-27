@@ -40,7 +40,6 @@ class EmployeeController(val employeeService: EmployeeService,
         return employeeService.saveEmployee(tokenData,employee)
     }
 
-
     @ExceptionHandler(value = [InvalidRequestBodyException::class])
     fun catchInvalidRequestBodyException(ex: RuntimeException): ResponseEntity<ErrorsDetails> {
         val errorDetails = ErrorsDetails(Date(), ex.toString(), ex.message!!)
