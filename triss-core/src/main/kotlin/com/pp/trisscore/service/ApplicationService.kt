@@ -27,36 +27,11 @@ import java.time.LocalDate
 @Service
 class ApplicationService(
         val applicationRowRepository: ApplicationRowRepository,
-        val applicationRepository: ApplicationRepository,
-        val advanceApplicationService: AdvanceApplicationService,
-        val transportService: TransportService,
-        val placeService: PlaceService,
-        val prepaymentService: PrepaymentService,
-        val instituteService: InstituteService,
-        val validationService: ValidationService) {
+        val applicationRepository: ApplicationRepository) {
 
     fun getAllByFilter(pageInfo: PageInfo<ApplicationRow>): Flux<ApplicationRow> = applicationRowRepository.getAllByFilter(pageInfo)
+
     fun getCountByFilter(pageInfo: PageInfo<ApplicationRow>) = applicationRowRepository.getCountByFilter(pageInfo)
-
-    @Transactional
-    fun createApplication(applicationInfo: ApplicationInfo, user: Employee?): Mono<Transport> {
-        if (user == null)
-            throw EmployeeNotFoundException("User Not Found")
-        validationService.validateUserApplication(applicationInfo, user)
-        val institute = instituteService.getInstitute(applicationInfo.institute.name)
-        val prepaymentId = prepaymentService.createPrepayment(applicationInfo.advancePayments)
-                .map { x -> x.id }
-                .switchIfEmpty(Mono.error(ObjectNotFoundException("PrepaymentId")))
-        val placeId = placeService.getPlace(applicationInfo.place).map { x -> x.id }
-                .switchIfEmpty(Mono.error(ObjectNotFoundException("PlaceId")))
-        val advanceApplication = placeId.flatMap { x -> advanceApplicationService.createAdvanceApplication(applicationInfo.advanceApplication, x!!) }
-        val application = Mono.zip(prepaymentId, advanceApplication, institute)
-                .flatMap { data ->
-                    applicationRepository.save(fillApplication(applicationInfo, user.eLoginId!!, data.t2.placeId!!, data.t1!!, data.t2.id!!, data.t3.id!!))
-                }
-        return application.flatMap { x -> transportService.save(applicationInfo.transport, x.id!!) }
-    }
-
 
     fun saveApplication(application: Application): Mono<Application> = applicationRepository.save(application)
 

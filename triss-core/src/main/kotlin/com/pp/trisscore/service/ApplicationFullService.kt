@@ -24,7 +24,7 @@ class ApplicationFullService(val applicationFullRepository: ApplicationFullRepos
     }
 
     fun getFullUserApplication(id: Long, tokenData: TokenData): Mono<ApplicationInfo> {
-        val applicationFull = applicationFullRepository.findByIdAndEmployeeId(id, tokenData.employeeId)
+        val applicationFull = applicationFullRepository.findByIdAndEmployeeId(id, tokenData.eLoginId)
                 .switchIfEmpty(Mono.error(ObjectNotFoundException("Application")))
         val transportList = transportService.findAllByApplicationID(id)
                 .switchIfEmpty(Mono.error(ObjectNotFoundException("Transport")))

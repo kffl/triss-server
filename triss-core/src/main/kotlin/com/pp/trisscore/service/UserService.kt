@@ -29,14 +29,14 @@ class UserService(val employeeService: EmployeeService,
     val role: Role = Role.USER
 
     fun getMyApplications(tokenData: TokenData, body: PageInfo<ApplicationRow>): Flux<ApplicationRow> {
-        if (tokenData.employeeId != body.filter.employeeId)
+        if (tokenData.eLoginId != body.filter.employeeId)
             throw InvalidRequestBodyException("Wrong EmployeeId.")
         return employeeService.findEmployee(tokenData)
                 .flatMapMany { x -> applicationService.getAllByFilter(body) }
     }
 
     fun getCountByFilter(tokenData: TokenData, body: PageInfo<ApplicationRow>): Mono<Long> {
-        if (tokenData.employeeId != body.filter.employeeId)
+        if (tokenData.eLoginId != body.filter.employeeId)
             throw InvalidRequestBodyException("Wrong EmployeeId.")
         return employeeService.findEmployee(tokenData)
                 .flatMap { x -> applicationService.getCountByFilter(body) }
@@ -48,7 +48,7 @@ class UserService(val employeeService: EmployeeService,
 
     fun createApplication(tokenData: TokenData, body: ApplicationInfo): Mono<Transport> {
         return employeeService.findEmployeeAndCheckRole(tokenData, role)
-                .flatMap { x -> applicationService.createApplication(body, x) }
+                .flatMap { x -> createApplication(body, x) }
     }
 
     @Transactional

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class ComparisonService {
+
     fun compareApplicationsInfo(dbApplicationInfo: ApplicationInfo, reqApplicationInfo: ApplicationInfo, role:Role)
     {
         compareApplications(dbApplicationInfo.application,reqApplicationInfo.application,role)

@@ -10,5 +10,5 @@ import reactor.core.publisher.Mono
 
 @Repository
 interface EmployeeRepository : ReactiveCrudRepository<Employee,Long> {
-    fun findByIdAndFirstNameAndSurname(id:Long,firstName:String,surname:String) : Mono<Employee>
+    fun findByELoginId(ELoginId:Long) : Mono<Employee>
 }

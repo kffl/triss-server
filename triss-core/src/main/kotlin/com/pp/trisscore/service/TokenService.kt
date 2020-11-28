@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service
 class TokenService {
 
     fun getEmployeeDataFromToken(token: JwtAuthenticationToken): TokenData = TokenData(
-            employeeId = token.tokenAttributes["uid"] as Long,
+            eLoginId = token.tokenAttributes["uid"] as Long,
             name = token.tokenAttributes["gnm"] as String,
             surname = token.tokenAttributes["snm"] as String
     )
