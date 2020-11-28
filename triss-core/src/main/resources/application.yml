@@ -16,3 +16,15 @@ spring:
           jws-algorithm: RS256
           public-key-location: classpath:key.txt
 
+
+#spring:
+#  r2dbc:
+#    url: r2dbc:h2:mem:///testdb;MODE=PostgreSQL
+#    username: admin
+#    password: admin
+#  security:
+#    oauth2:
+#      resourceserver:
+#        jwt:
+#          jws-algorithm: RS256
+#          public-key-location: classpath:key.txt

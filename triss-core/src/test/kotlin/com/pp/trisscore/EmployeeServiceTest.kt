@@ -20,7 +20,7 @@ import reactor.test.StepVerifier
 import java.time.LocalDate
 
 @SpringBootTest
-class EmployeeTest(@Autowired val employeeService: EmployeeService,
+class EmployeeServiceTest(@Autowired val employeeService: EmployeeService,
                    @Autowired val connectionFactory: ConnectionFactory) {
 
     val tokenData = TokenData(1999, "Marcel", "TOLEN")
