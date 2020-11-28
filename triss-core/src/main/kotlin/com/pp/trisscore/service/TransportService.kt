@@ -11,7 +11,7 @@ import reactor.core.publisher.Mono
 class TransportService(val transportRepository: TransportRepository) {
 
     fun save(transport: List<Transport>, id: Long): Mono<Transport> {
-        var transportMono =  transportRepository.save(transport.get(0).copy(applicationID = id))
+        var transportMono =  transportRepository.save(transport[0].copy(applicationID = id))
         var z = 1
         while(z<transport.size){
             val b=z

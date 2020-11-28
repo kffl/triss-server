@@ -18,6 +18,8 @@ data class Employee (
         @Id
         @Column("id")
         val id: Long?,
+        @Column("eLoginId")
+        val eLoginId: Long?,
         @Column("firstName")
         val firstName: String,
         @Column("surname")

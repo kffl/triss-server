@@ -21,9 +21,8 @@ class EmployeeService(val employeeRepository: EmployeeRepository,
     }
 
     fun findEmployee(t: TokenData) =
-            employeeRepository.findById(t.employeeId)
+            employeeRepository.findByELoginId(t.eLoginId)
                     .switchIfEmpty(Mono.error(EmployeeNotFoundException("Employee not Found")))
-
 
     fun checkRole(employee: Employee, role: Role): Employee? {
         if (employee.employeeType == role)
@@ -31,32 +30,26 @@ class EmployeeService(val employeeRepository: EmployeeRepository,
         return null
     }
 
-    fun getEmployee(tokenData: TokenData): Mono<Employee> {
-        return findEmployee(tokenData)
-    }
-
     fun saveEmployee(tokenData: TokenData, employee: Employee): Mono<Employee> {
-        if (employee.id != tokenData.employeeId)
+        if (employee.eLoginId != tokenData.eLoginId)
             throw InvalidRequestBodyException("Id must equal to id in token.")
         if (employee.instituteID == null)
             throw InvalidRequestBodyException("InstituteId cannot be null")
-        if (employee.employeeType != Role.USER)
-            throw InvalidRequestBodyException("employeeType must be USER")
         if (employee.firstName != tokenData.name)
             throw InvalidRequestBodyException("Employee fistName must equal to name in token")
         if (employee.surname != tokenData.surname)
             throw InvalidRequestBodyException("Employee surname must equal to surname in token")
-        return instituteService.findInstituteById(employee.instituteID!!)
-                .flatMap { x ->
-                    employeeRepository.findById(tokenData.employeeId)
-                            .switchIfEmpty(employeeRepository.save(employee.copy(id = tokenData.employeeId)))
-                            .flatMap { x -> updateEmployee(x, employee) }
-                }
+        return instituteService.findInstituteById(employee.instituteID)
+                .switchIfEmpty(Mono.error(ObjectNotFoundException("Institute Not Exists.")))
+                .flatMap {
+                    employeeRepository.findByELoginId(tokenData.eLoginId)
+                            .flatMap { actualEmployee -> updateEmployee(actualEmployee, employee) } }
+                            .switchIfEmpty( newEmployee(employee))
     }
 
-    private fun updateEmployee(actualEmployee: Employee?, newEmployee: Employee): Mono<Employee> {
-        if (actualEmployee == null)
-            throw ObjectNotFoundException("Employee")
+    private fun updateEmployee(actualEmployee: Employee, newEmployee: Employee): Mono<Employee> {
+        if (actualEmployee.employeeType != newEmployee.employeeType)
+            throw InvalidRequestBodyException("employeeType cannot be changed by user")
         val employeeToSave = actualEmployee.copy(
                 firstName = newEmployee.firstName,
                 surname = newEmployee.surname,
@@ -66,6 +59,12 @@ class EmployeeService(val employeeRepository: EmployeeRepository,
                 instituteID = newEmployee.instituteID
         )
         return employeeRepository.save(employeeToSave)
+    }
+
+    private fun newEmployee(newEmployee: Employee): Mono<Employee> {
+        if (newEmployee.employeeType != Role.USER)
+            throw InvalidRequestBodyException("employeeType must be USER")
+        return employeeRepository.save(newEmployee)
     }
 
 

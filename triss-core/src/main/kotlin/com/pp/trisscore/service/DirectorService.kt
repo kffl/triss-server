@@ -43,7 +43,7 @@ class DirectorService(val employeeService: EmployeeService,
     fun validateApproveAndSaveApplication(dbApplication: ApplicationInfo, reqApplication: ApplicationInfo): Mono<Application> {
         comparisonService.compareApplicationsInfo(dbApplication, reqApplication, Role.DIRECTOR)
         return financialSourceService.save(reqApplication.financialSource!!)
-                .flatMap { x -> applicationService.updateApplication(reqApplication.application.copy(financialSourceId = x.id)) }
+                .flatMap { x -> applicationService.saveApplication(reqApplication.application.copy(financialSourceId = x.id)) }
     }
 
 

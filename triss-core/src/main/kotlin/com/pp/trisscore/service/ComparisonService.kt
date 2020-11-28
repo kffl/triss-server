@@ -11,31 +11,29 @@ import org.springframework.stereotype.Service
 
 @Service
 class ComparisonService {
-    fun compareApplicationsInfo(dbApplicationInfo: ApplicationInfo, reqApplicationInfo: ApplicationInfo, role:Role)
-    {
-        compareApplications(dbApplicationInfo.application,reqApplicationInfo.application,role)
-        compareInstitutes(dbApplicationInfo.institute,reqApplicationInfo.institute)
-        if(role!=Role.DIRECTOR)
-            compareFinancialSources(dbApplicationInfo.financialSource!!,reqApplicationInfo.financialSource!!)
-        compareAdvanceApplication(dbApplicationInfo.advanceApplication,reqApplicationInfo.advanceApplication)
-        compareAdvancePayments(dbApplicationInfo.advancePayments,reqApplicationInfo.advancePayments)
+
+    fun compareApplicationsInfo(dbApplicationInfo: ApplicationInfo, reqApplicationInfo: ApplicationInfo, role: Role) {
+        compareApplications(dbApplicationInfo.application, reqApplicationInfo.application, role)
+        compareInstitutes(dbApplicationInfo.institute, reqApplicationInfo.institute)
+        if (role != Role.DIRECTOR)
+            compareFinancialSources(dbApplicationInfo.financialSource!!, reqApplicationInfo.financialSource!!)
+        compareAdvanceApplication(dbApplicationInfo.advanceApplication, reqApplicationInfo.advanceApplication)
+        compareAdvancePayments(dbApplicationInfo.advancePayments, reqApplicationInfo.advancePayments)
     }
 
     fun compareInstitutes(dbInstitute: Institute, reqInstitute: Institute) {
-        if(dbInstitute.id != reqInstitute.id)
+        if (dbInstitute.id != reqInstitute.id)
             throw InvalidRequestBodyException("InstituteId in DB differs from the request's InstituteId ")
-        if(dbInstitute.name != reqInstitute.name)
+        if (dbInstitute.name != reqInstitute.name)
             throw InvalidRequestBodyException("InstituteName in DB differs from the request's InstituteName")
-//        if(dbInstitute.active != reqInstitute.active)
-//            throw InvalidRequestBodyException("InstituteActive in DB differs from the request's InstituteActive")
     }
 
-    fun comparePlaces(dbPlace: Place, reqPlace: Place){
-        if(dbPlace.id != reqPlace.id)
+    fun comparePlaces(dbPlace: Place, reqPlace: Place) {
+        if (dbPlace.id != reqPlace.id)
             throw InvalidRequestBodyException("PlaceId in DB differs from the request's PlaceId")
-        if(dbPlace.country != reqPlace.country)
+        if (dbPlace.country != reqPlace.country)
             throw InvalidRequestBodyException("PlaceCountry in DB differs from the request's PlaceCountry")
-        if(dbPlace.city != reqPlace.city)
+        if (dbPlace.city != reqPlace.city)
             throw InvalidRequestBodyException("PlaceCity in DB differs from the request's PlaceCity")
     }
 
@@ -100,7 +98,7 @@ class ComparisonService {
                     throw InvalidRequestBodyException("ApplicationRectorComments in DB differs from the request's one")
                 if (dbApplication.status != Status.WaitingForWilda)
                     throw InvalidRequestBodyException("ApplicationStatus in DB differs from the request's one")
-                if(reqApplication.status!= Status.WaitingForRector)
+                if (reqApplication.status != Status.WaitingForRector)
                     throw InvalidRequestBodyException("ApplicationStatus in DB differs from the request's one")
                 return
             }
@@ -111,7 +109,7 @@ class ComparisonService {
                     throw InvalidRequestBodyException("ApplicationRectorComments in DB differs from the request's one")
                 if (dbApplication.status != Status.WaitingForDirector)
                     throw InvalidRequestBodyException("ApplicationStatus in DB differs from the request's one")
-                if(reqApplication.status!= Status.WaitingForWilda)
+                if (reqApplication.status != Status.WaitingForWilda)
                     throw InvalidRequestBodyException("ApplicationStatus in DB differs from the request's one")
                 return
             }
@@ -124,88 +122,90 @@ class ComparisonService {
                     throw InvalidRequestBodyException("ApplicationWildaComments in DB differs from the request's one")
                 if (dbApplication.status != Status.WaitingForRector)
                     throw InvalidRequestBodyException("ApplicationStatus in DB differs from the request's one")
-                if (reqApplication.status!=Status.Accepted)
-                return
+                if (reqApplication.status != Status.Accepted)
+                    return
             }
-            Role.USER -> {throw UnauthorizedException("You do not have permission to perform this action")}
+            Role.USER -> {
+                throw UnauthorizedException("You do not have permission to perform this action")
+            }
         }
     }
 
-    fun compareFinancialSources(dbFinancialSource: FinancialSource, reqFinancialSource: FinancialSource){
-        if(dbFinancialSource.id != reqFinancialSource.id)
+    fun compareFinancialSources(dbFinancialSource: FinancialSource, reqFinancialSource: FinancialSource) {
+        if (dbFinancialSource.id != reqFinancialSource.id)
             throw InvalidRequestBodyException("FinancialSourceId in DB differs from the request's one")
-        if(dbFinancialSource.allocationAccount != reqFinancialSource.allocationAccount)
+        if (dbFinancialSource.allocationAccount != reqFinancialSource.allocationAccount)
             throw InvalidRequestBodyException("FinancialSourceAllocationAccount in DB differs from the request's one")
-        if(dbFinancialSource.mpk != reqFinancialSource.mpk)
+        if (dbFinancialSource.mpk != reqFinancialSource.mpk)
             throw InvalidRequestBodyException("FinancialSourceMPK in DB differs from the request's one")
-        if(dbFinancialSource.financialSource != reqFinancialSource.financialSource)
+        if (dbFinancialSource.financialSource != reqFinancialSource.financialSource)
             throw InvalidRequestBodyException("FinancialSource in DB differs from the request's one")
-        if(dbFinancialSource.project != reqFinancialSource.project)
+        if (dbFinancialSource.project != reqFinancialSource.project)
             throw InvalidRequestBodyException("FinancialSourceProject in DB differs from the request's one")
     }
 
-    fun compareTransports(dbTransport: Transport, reqTransport: Transport){
-        if(dbTransport.id != reqTransport.id)
+    fun compareTransports(dbTransport: Transport, reqTransport: Transport) {
+        if (dbTransport.id != reqTransport.id)
             throw InvalidRequestBodyException("TransportId in DB differs from the request's one")
-        if(dbTransport.applicationID != reqTransport.applicationID)
+        if (dbTransport.applicationID != reqTransport.applicationID)
             throw InvalidRequestBodyException("TransportApplicationID in DB differs from the request's one")
-        if(dbTransport.destinationFrom != reqTransport.destinationFrom)
+        if (dbTransport.destinationFrom != reqTransport.destinationFrom)
             throw InvalidRequestBodyException("TransportDestinationFrom in DB differs from the request's one")
-        if(dbTransport.destinationTo != reqTransport.destinationTo)
+        if (dbTransport.destinationTo != reqTransport.destinationTo)
             throw InvalidRequestBodyException("TransportDestinationTo in DB differs from the request's one")
-        if(dbTransport.departureDay != reqTransport.departureDay)
+        if (dbTransport.departureDay != reqTransport.departureDay)
             throw InvalidRequestBodyException("TransportDepartureDay in DB differs from the request's one")
-        if(dbTransport.departureMinute != reqTransport.departureMinute)
+        if (dbTransport.departureMinute != reqTransport.departureMinute)
             throw InvalidRequestBodyException("TransportDepartureMinute in DB differs from the request's one")
-        if(dbTransport.departureHour != reqTransport.departureHour)
+        if (dbTransport.departureHour != reqTransport.departureHour)
             throw InvalidRequestBodyException("TransportDepartureHour in DB differs from the request's one")
-        if(dbTransport.vehicleSelect != reqTransport.vehicleSelect)
+        if (dbTransport.vehicleSelect != reqTransport.vehicleSelect)
             throw InvalidRequestBodyException("TransportVehicleSelect in DB differs from the request's one")
-        if(dbTransport.carrier != reqTransport.carrier)
+        if (dbTransport.carrier != reqTransport.carrier)
             throw InvalidRequestBodyException("TransportCarrier in DB differs from the request's one")
     }
 
-    fun compareAdvanceApplication(dbAdvanceApplication: AdvanceApplication, reqAdvanceApplication: AdvanceApplication){
-        if(dbAdvanceApplication.id != reqAdvanceApplication.id)
+    fun compareAdvanceApplication(dbAdvanceApplication: AdvanceApplication, reqAdvanceApplication: AdvanceApplication) {
+        if (dbAdvanceApplication.id != reqAdvanceApplication.id)
             throw InvalidRequestBodyException("AdvanceApplicationId in DB differs from the request's one")
-        if(dbAdvanceApplication.placeId != reqAdvanceApplication.placeId)
+        if (dbAdvanceApplication.placeId != reqAdvanceApplication.placeId)
             throw InvalidRequestBodyException("AdvanceApplicationPlaceId in DB differs from the request's one")
-        if(dbAdvanceApplication.startDate != reqAdvanceApplication.startDate)
+        if (dbAdvanceApplication.startDate != reqAdvanceApplication.startDate)
             throw InvalidRequestBodyException("AdvanceApplicationStartDate in DB differs from the request's one")
-        if(dbAdvanceApplication.endDate != reqAdvanceApplication.endDate)
+        if (dbAdvanceApplication.endDate != reqAdvanceApplication.endDate)
             throw InvalidRequestBodyException("AdvanceApplicationEndDate in DB differs from the request's one")
-        if(dbAdvanceApplication.residenceDietQuantity != reqAdvanceApplication.residenceDietQuantity)
+        if (dbAdvanceApplication.residenceDietQuantity != reqAdvanceApplication.residenceDietQuantity)
             throw InvalidRequestBodyException("AdvanceApplicationResidenceDietQuantity in DB differs from the request's one")
-        if(dbAdvanceApplication.residenceDietAmount != reqAdvanceApplication.residenceDietAmount)
+        if (dbAdvanceApplication.residenceDietAmount != reqAdvanceApplication.residenceDietAmount)
             throw InvalidRequestBodyException("AdvanceApplicationResidenceDietAmount in DB differs from the request's one")
-        if(dbAdvanceApplication.accommodationQuantity != reqAdvanceApplication.accommodationQuantity)
+        if (dbAdvanceApplication.accommodationQuantity != reqAdvanceApplication.accommodationQuantity)
             throw InvalidRequestBodyException("AdvanceApplicationAccommodationQuantity in DB differs from the request's one")
-        if(dbAdvanceApplication.accommodationLimit != reqAdvanceApplication.accommodationLimit)
+        if (dbAdvanceApplication.accommodationLimit != reqAdvanceApplication.accommodationLimit)
             throw InvalidRequestBodyException("AdvanceApplicationAccommodationLimit in DB differs from the request's one")
-        if(dbAdvanceApplication.travelDietAmount != reqAdvanceApplication.travelDietAmount)
+        if (dbAdvanceApplication.travelDietAmount != reqAdvanceApplication.travelDietAmount)
             throw InvalidRequestBodyException("AdvanceApplicationTravelDietAmount in DB differs from the request's one")
-        if(dbAdvanceApplication.travelCosts != reqAdvanceApplication.travelCosts)
+        if (dbAdvanceApplication.travelCosts != reqAdvanceApplication.travelCosts)
             throw InvalidRequestBodyException("AdvanceApplicationTravelCosts in DB differs from the request's one")
-        if(dbAdvanceApplication.otherCostsDescription != reqAdvanceApplication.otherCostsDescription)
+        if (dbAdvanceApplication.otherCostsDescription != reqAdvanceApplication.otherCostsDescription)
             throw InvalidRequestBodyException("AdvanceApplicationOtherCostsDescription in DB differs from the request's one")
-        if(dbAdvanceApplication.otherCostsAmount != reqAdvanceApplication.otherCostsAmount)
+        if (dbAdvanceApplication.otherCostsAmount != reqAdvanceApplication.otherCostsAmount)
             throw InvalidRequestBodyException("AdvanceApplicationOtherCostsAmount in DB differs from the request's one")
-        if(dbAdvanceApplication.residenceDietSum != reqAdvanceApplication.residenceDietSum)
+        if (dbAdvanceApplication.residenceDietSum != reqAdvanceApplication.residenceDietSum)
             throw InvalidRequestBodyException("AdvanceApplicationResidenceDietSum in DB differs from the request's one")
-        if(dbAdvanceApplication.accommodationSum != reqAdvanceApplication.accommodationSum)
+        if (dbAdvanceApplication.accommodationSum != reqAdvanceApplication.accommodationSum)
             throw InvalidRequestBodyException("AdvanceApplicationAccommodationSum in DB differs from the request's one")
-        if(dbAdvanceApplication.advanceSum != reqAdvanceApplication.advanceSum)
+        if (dbAdvanceApplication.advanceSum != reqAdvanceApplication.advanceSum)
             throw InvalidRequestBodyException("AdvanceApplicationAdvanceSum in DB differs from the request's one")
     }
 
-    fun compareAdvancePayments(dbAdvancePaymentsInfo: AdvancePaymentsInfo, reqAdvancePaymentsInfo: AdvancePaymentsInfo){
-        if(dbAdvancePaymentsInfo.conferenceFeeValue != reqAdvancePaymentsInfo.conferenceFeeValue)
+    fun compareAdvancePayments(dbAdvancePaymentsInfo: AdvancePaymentsInfo, reqAdvancePaymentsInfo: AdvancePaymentsInfo) {
+        if (dbAdvancePaymentsInfo.conferenceFeeValue != reqAdvancePaymentsInfo.conferenceFeeValue)
             throw InvalidRequestBodyException("AdvancePaymentsConferenceFeeValue in DB differs from the request's one")
-        if(dbAdvancePaymentsInfo.conferenceFeePaymentTypeSelect != reqAdvancePaymentsInfo.conferenceFeePaymentTypeSelect)
+        if (dbAdvancePaymentsInfo.conferenceFeePaymentTypeSelect != reqAdvancePaymentsInfo.conferenceFeePaymentTypeSelect)
             throw InvalidRequestBodyException("AdvancePaymentsConferenceFeePaymentTypeSelect in DB differs from the request's one")
-        if(dbAdvancePaymentsInfo.accommodationFeeValue != reqAdvancePaymentsInfo.accommodationFeeValue)
+        if (dbAdvancePaymentsInfo.accommodationFeeValue != reqAdvancePaymentsInfo.accommodationFeeValue)
             throw InvalidRequestBodyException("AdvancePaymentsAccommodationFeeValue in DB differs from the request's one")
-        if(dbAdvancePaymentsInfo.accommodationFeePaymentTypeSelect != reqAdvancePaymentsInfo.accommodationFeePaymentTypeSelect)
+        if (dbAdvancePaymentsInfo.accommodationFeePaymentTypeSelect != reqAdvancePaymentsInfo.accommodationFeePaymentTypeSelect)
             throw InvalidRequestBodyException("AdvancePaymentsAccommodationFeePaymentTypeSelect in DB differs from the request's one")
     }
 }

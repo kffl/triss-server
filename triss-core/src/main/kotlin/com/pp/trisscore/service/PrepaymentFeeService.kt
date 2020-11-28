@@ -9,8 +9,6 @@ import reactor.core.publisher.Mono
 class PrepaymentFeeService(val prepaymentFeeRepository: PrepaymentFeeRepository) {
 
 
-    fun createPrepaymentFee(fee:PrepaymentFee): Mono<PrepaymentFee>
-    {
-        return prepaymentFeeRepository.save(fee)
-    }
+    fun createPrepaymentFee(fee: PrepaymentFee): Mono<PrepaymentFee> = prepaymentFeeRepository.save(fee)
+
 }
