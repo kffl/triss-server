@@ -39,7 +39,7 @@ class WildaService(val employeeService: EmployeeService,
 
     private fun validateApproveAndSaveApplication(dbApplicationInfo: ApplicationInfo?, reqApplicationInfo: ApplicationInfo): Mono<out Application>? {
         comparisonService.compareApplicationsInfo(dbApplicationInfo!!, reqApplicationInfo, role)
-        return applicationService.updateApplication(reqApplicationInfo.application)
+        return applicationService.saveApplication(reqApplicationInfo.application)
     }
 
     fun getFullApplication(tokenBody: TokenData, id: Long): Mono<ApplicationInfo> {

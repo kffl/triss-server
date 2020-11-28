@@ -21,31 +21,30 @@ class RectorService(
 
     private val role = Role.RECTOR
 
-    //get applications which are waiting for Rector acceptation
     fun getApplications(pageInfo: PageInfo<ApplicationRow>, tokenBody: TokenData): Flux<ApplicationRow> {
         return employeeService.findEmployeeAndCheckRole(tokenBody, role).switchIfEmpty(Mono.error(UnauthorizedException("You do not have permission to perform this action")))
-                .flatMapMany { x -> applicationService.getAllByFilter(pageInfo.copy(pageInfo.filter.copy(status = Status.WaitingForRector))) }
+                .flatMapMany { applicationService.getAllByFilter(pageInfo.copy(pageInfo.filter.copy(status = Status.WaitingForRector))) }
     }
 
     fun getCountByFilter(tokenBody: TokenData, pageInfo: PageInfo<ApplicationRow>): Mono<Long> {
         return employeeService.findEmployeeAndCheckRole(tokenBody, role).switchIfEmpty(Mono.error(UnauthorizedException("You do not have permission to perform this action")))
-                .flatMap { x -> applicationService.getCountByFilter(pageInfo.copy(pageInfo.filter.copy(status = Status.WaitingForRector))) }
+                .flatMap { applicationService.getCountByFilter(pageInfo.copy(pageInfo.filter.copy(status = Status.WaitingForRector))) }
     }
 
     fun approveApplication(tokenBody: TokenData, body: ApplicationInfo): Mono<Application> {
         return employeeService.findEmployeeAndCheckRole(tokenBody, role).switchIfEmpty(Mono.error(UnauthorizedException("")))
-                .flatMap { x -> applicationFullService.getFullApplication(body.application.id!!) }
+                .flatMap { applicationFullService.getFullApplication(body.application.id!!) }
                 .flatMap { x -> validateApproveAndSaveApplication(x, body) }
     }
 
     private fun validateApproveAndSaveApplication(dbApplicationInfo: ApplicationInfo?, reqApplicationInfo: ApplicationInfo): Mono<out Application>? {
-        comparisonService.compareApplicationsInfo(dbApplicationInfo!!,reqApplicationInfo,role)
-        return applicationService.updateApplication(reqApplicationInfo.application)
+        comparisonService.compareApplicationsInfo(dbApplicationInfo!!, reqApplicationInfo, role)
+        return applicationService.saveApplication(reqApplicationInfo.application)
     }
 
     fun getFullApplication(tokenBody: TokenData, id: Long): Mono<ApplicationInfo> {
         return employeeService.findEmployeeAndCheckRole(tokenBody, role).switchIfEmpty(Mono.error(UnauthorizedException("")))
-                .flatMap { x -> applicationFullService.getFullApplication(id) }
+                .flatMap { applicationFullService.getFullApplication(id) }
     }
 
 }

@@ -7,9 +7,6 @@ import reactor.core.publisher.Mono
 
 @Service
 class PlaceService(val placeRepository: PlaceRepository) {
-    fun getPlace(place: Place): Mono<Place>
-    {
-        return placeRepository.findByCityAndCountry(place.city,place.country)
-                .switchIfEmpty(placeRepository.save(place))
-    }
+    fun getPlace(place: Place): Mono<Place> = placeRepository.findByCityAndCountry(place.city, place.country)
+            .switchIfEmpty(placeRepository.save(place))
 }

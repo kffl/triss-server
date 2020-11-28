@@ -22,14 +22,14 @@ class EmployeeController(val employeeService: EmployeeService,
                          val tokenService: TokenService) {
 
 
-    val tokenData = TokenData(170387,"Jan","Kowalczyk")
+    val tokenData = TokenData(2121,"Andrzej","Jerzy")
 
     @PostMapping("/get")
     fun getEmployee(
 //            token: JwtAuthenticationToken
     ): Mono<Employee> {
 //        val tokenData = tokenService.getEmployeeDataFromToken(token)
-        return employeeService.getEmployee(tokenData)
+        return employeeService.findEmployee(tokenData)
     }
 
     @PostMapping("/update")
