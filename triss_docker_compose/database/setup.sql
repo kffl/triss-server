@@ -1,16 +1,16 @@
--- CREATE TABLE EmployeeType
--- (
---     id   BIGSERIAL PRIMARY KEY,
---     name VARCHAR(255) UNIQUE NOT NULL
--- );
---
--- INSERT INTO EmployeeType (name)
--- VALUES ('USER'),
---        ('WILDA'),
---        ('RECTOR'),
---        ('DIRECTOR');
 
-
+DROP VIEW IF EXISTS  ApplicationFull;
+DROP VIEW IF EXISTS  ApplicationRow;
+DROP TABLE IF EXISTS  TRANSPORT;
+DROP TABLE IF EXISTS Application;
+DROP TABLE IF EXISTS AdvanceApplication;
+DROP TABLE IF EXISTS FinancialSource;
+DROP TABLE IF EXISTS IdentityDocument;
+DROP TABLE IF EXISTS Employee;
+DROP TABLE IF EXISTS Place;
+DROP TABLE IF EXISTS Prepayment;
+DROP TABLE IF EXISTS PrepaymentFee;
+DROP TABLE IF EXISTS Institute;
 
 CREATE TABLE Institute
 (
@@ -242,12 +242,12 @@ CREATE TABLE Transport
     CONSTRAINT application_fk FOREIGN KEY (applicationID) REFERENCES Application (id)
 );
 
-INSERT INTO Transport (applicationID, destinationFrom, destinationTo, departureDay, departureHour, departureMinute,
+INSERT INTO Transport (destinationFrom, destinationTo, departureDay, departureHour, departureMinute,
                        vehicleSelect, carrier)
-VALUES (1, 'Poznań', 'Los Angeles', '2020-12-12', 6, 30, 'Plane', 'LOT'),
-       (1, 'Los Angeles', 'Poznań', '2020-12-14', 20, 10, 'Plane', 'RyanAir'),
-       (2, 'Poznań', 'Montreal', '2020-11-10', 4, 24, 'Plane', 'LOT'),
-       (2, 'Montreal', 'Poznań', '2020-11-13', 5, 30, 'Plane', 'RyanAir');
+VALUES ('Poznań', 'Los Angeles', '2020-12-12', 6, 30, 'Plane', 'LOT'),
+       ('Los Angeles', 'Poznań', '2020-12-14', 20, 10, 'Plane', 'RyanAir'),
+       ('Poznań', 'Montreal', '2020-11-10', 4, 24, 'Plane', 'LOT'),
+       ('Montreal', 'Poznań', '2020-11-13', 5, 30, 'Plane', 'RyanAir');
 
 CREATE VIEW ApplicationRow AS
 SELECT Application.id,
