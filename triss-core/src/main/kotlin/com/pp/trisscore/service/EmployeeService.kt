@@ -36,7 +36,7 @@ class EmployeeService(val employeeRepository: EmployeeRepository,
     }
 
     fun saveEmployee(tokenData: TokenData, employee: Employee): Mono<Employee> {
-        if (employee.id != tokenData.employeeId)
+        if (employee.eLoginId != tokenData.employeeId)
             throw InvalidRequestBodyException("Id must equal to id in token.")
         if (employee.instituteID == null)
             throw InvalidRequestBodyException("InstituteId cannot be null")
@@ -49,7 +49,7 @@ class EmployeeService(val employeeRepository: EmployeeRepository,
         return instituteService.findInstituteById(employee.instituteID!!)
                 .flatMap { x ->
                     employeeRepository.findById(tokenData.employeeId)
-                            .switchIfEmpty(employeeRepository.save(employee.copy(id = tokenData.employeeId)))
+                            .switchIfEmpty(employeeRepository.save(employee.copy(eLoginId = tokenData.employeeId)))
                             .flatMap { x -> updateEmployee(x, employee) }
                 }
     }

@@ -1,9 +1,7 @@
 package com.pp.trisscore.service
 
 import com.pp.trisscore.exceptions.EmployeeNotFoundException
-import com.pp.trisscore.exceptions.InvalidRequestBodyException
 import com.pp.trisscore.exceptions.ObjectNotFoundException
-import com.pp.trisscore.exceptions.WrongDateException
 import com.pp.trisscore.model.architecture.ApplicationInfo
 import com.pp.trisscore.model.architecture.PageInfo
 import com.pp.trisscore.model.classes.Application
@@ -54,15 +52,15 @@ class ApplicationService(
         val advanceApplication = placeId.flatMap { x -> advanceApplicationService.createAdvanceApplication(applicationInfo.advanceApplication, x!!) }
         val application = Mono.zip(prepaymentId, advanceApplication, institute)
                 .flatMap { data ->
-                    applicationRepository.save(fillApplication(applicationInfo, user.id!!, data.t2.placeId!!, data.t1!!, data.t2.id!!, data.t3.id!!))
+                    applicationRepository.save(fillApplication(applicationInfo, user.eLoginId!!, data.t2.placeId!!, data.t1!!, data.t2.id!!, data.t3.id!!))
                 }
         return application.flatMap { x -> transportService.save(applicationInfo.transport, x.id!!) }
     }
 
 
-    fun updateApplication(application: Application): Mono<Application> = applicationRepository.save(application)
+    fun saveApplication(application: Application): Mono<Application> = applicationRepository.save(application)
 
-    private fun fillApplication(applicationInfo: ApplicationInfo, userId: Long, placeId: Long, prepaymentId: Long, advanceApplicationId: Long, instituteId: Long): Application {
+    fun fillApplication(applicationInfo: ApplicationInfo, userId: Long, placeId: Long, prepaymentId: Long, advanceApplicationId: Long, instituteId: Long): Application {
         return applicationInfo.application.copy(createdOn = LocalDate.now(), employeeId = userId, placeId = placeId,
                 prepaymentId = prepaymentId, advanceApplicationId = advanceApplicationId, instituteId = instituteId, status = Status.WaitingForDirector)
     }
