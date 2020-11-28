@@ -21,8 +21,7 @@ class PrepaymentService(val prepaymentRepository: PrepaymentRepository,
                 PrepaymentFee(id = null,
                         amount = advancePayments.accommodationFeeValue,
                         paymentType = advancePayments.accommodationFeePaymentTypeSelect)).map { x -> x.id }
-        return Mono.zip(conferenceFeeId,depositFeeId).flatMap {
-            data ->
+        return Mono.zip(conferenceFeeId, depositFeeId).flatMap { data ->
             prepaymentRepository.save(
                     Prepayment(id = null,
                             conferenceFeeId = data.t1!!,

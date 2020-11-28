@@ -55,5 +55,4 @@ class ValidationService {
             throw(WrongDateException(message))
         }
     }
-
 }

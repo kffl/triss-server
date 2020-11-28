@@ -56,7 +56,7 @@ class UserService(val employeeService: EmployeeService,
         if (user == null)
             throw EmployeeNotFoundException("User Not Found")
         validationService.validateUserApplication(applicationInfo, user)
-        val institute = instituteService.getInstitute(applicationInfo.institute.name)
+        val institute = instituteService.findInstituteByName(applicationInfo.institute.name)
         val prepaymentId = prepaymentService.createPrepayment(applicationInfo.advancePayments)
                 .map { x -> x.id }
                 .switchIfEmpty(Mono.error(ObjectNotFoundException("PrepaymentId")))

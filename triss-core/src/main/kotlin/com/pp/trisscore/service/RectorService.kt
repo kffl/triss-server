@@ -21,7 +21,6 @@ class RectorService(
 
     private val role = Role.RECTOR
 
-    //get applications which are waiting for Rector acceptation
     fun getApplications(pageInfo: PageInfo<ApplicationRow>, tokenBody: TokenData): Flux<ApplicationRow> {
         return employeeService.findEmployeeAndCheckRole(tokenBody, role).switchIfEmpty(Mono.error(UnauthorizedException("You do not have permission to perform this action")))
                 .flatMapMany { applicationService.getAllByFilter(pageInfo.copy(pageInfo.filter.copy(status = Status.WaitingForRector))) }
