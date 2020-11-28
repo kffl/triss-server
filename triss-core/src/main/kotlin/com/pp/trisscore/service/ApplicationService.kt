@@ -34,7 +34,8 @@ class ApplicationService(
         val transportService: TransportService,
         val placeService: PlaceService,
         val prepaymentService: PrepaymentService,
-        val instituteService: InstituteService) {
+        val instituteService: InstituteService,
+        val validationService: ValidationService) {
 
     fun getAllByFilter(pageInfo: PageInfo<ApplicationRow>): Flux<ApplicationRow> = applicationRowRepository.getAllByFilter(pageInfo)
     fun getCountByFilter(pageInfo: PageInfo<ApplicationRow>) = applicationRowRepository.getCountByFilter(pageInfo)
@@ -43,7 +44,7 @@ class ApplicationService(
     fun createApplication(applicationInfo: ApplicationInfo, user: Employee?): Mono<Transport> {
         if (user == null)
             throw EmployeeNotFoundException("User Not Found")
-        validateApplication(applicationInfo, user)
+        validationService.validateUserApplication(applicationInfo, user)
         val institute = instituteService.getInstitute(applicationInfo.institute.name)
         val prepaymentId = prepaymentService.createPrepayment(applicationInfo.advancePayments)
                 .map { x -> x.id }
@@ -59,58 +60,10 @@ class ApplicationService(
     }
 
 
-    fun updateApplication(application:Application) : Mono<Application> = applicationRepository.findById(application.id!!)
-            .flatMap { x -> applicationRepository.save(x.copy(financialSourceId = application.financialSourceId,
-            directorComments = application.directorComments,
-            status = application.status))}
+    fun updateApplication(application: Application): Mono<Application> = applicationRepository.save(application)
 
     private fun fillApplication(applicationInfo: ApplicationInfo, userId: Long, placeId: Long, prepaymentId: Long, advanceApplicationId: Long, instituteId: Long): Application {
         return applicationInfo.application.copy(createdOn = LocalDate.now(), employeeId = userId, placeId = placeId,
                 prepaymentId = prepaymentId, advanceApplicationId = advanceApplicationId, instituteId = instituteId, status = Status.WaitingForDirector)
     }
-
-    fun validateApplication(applicationInfo: ApplicationInfo, user: Employee) {
-        checkStartDateBeforeEndDate(applicationInfo.application.abroadStartDate,
-                applicationInfo.application.abroadEndDate, "AbroadStartDate is after abroadEndDate.")
-        checkStartDateBeforeEndDate(applicationInfo.application.conferenceStartDate,
-                applicationInfo.application.conferenceEndDate, "ConferenceStartDate is after conferenceEndDate.")
-        checkStartDateBeforeEndDate(applicationInfo.advanceApplication.startDate,
-                applicationInfo.advanceApplication.endDate, "RequestPaymentStartDate is after RequestPaymentEndDate.")
-        checkStartDateBeforeEndDate(applicationInfo.application.abroadStartDateInsurance,
-                applicationInfo.application.abroadEndDateInsurance, "AbroadStartDateInsurance is after abroadEndDateInsurance")
-        if (applicationInfo.application.firstName != user.firstName)
-            throw(InvalidRequestBodyException("FirstName is not equal first name in database"))
-        if (applicationInfo.application.surname != user.surname)
-            throw(InvalidRequestBodyException("Surname is not equal surname in database"))
-        if (applicationInfo.application.directorComments != null)
-            throw(InvalidRequestBodyException("Director comments must be null"))
-        if (applicationInfo.application.rectorComments != null)
-            throw(InvalidRequestBodyException("Rector comments must be null"))
-        if (applicationInfo.application.wildaComments != null)
-            throw(InvalidRequestBodyException("Wilda comments must be null"))
-        if (applicationInfo.financialSource != null)
-            throw(InvalidRequestBodyException("FinancialSource must be null"))
-        if (applicationInfo.application.id != null)
-            throw(InvalidRequestBodyException("Application Id must be null"))
-
-
-        //TODO więcej walidacji do zrobienia
-    }
-
-    private fun checkStartDateBeforeEndDate(startDate: LocalDate, endDate: LocalDate, message: String) {
-        if (startDate.isAfter(endDate)) {
-            throw(WrongDateException(message))
-        }
-    }
-
-
-//    @Transactional
-//    fun approveApplication(applicationInfo: ApplicationInfo, x: Employee): Mono<Application> {
-//        if (applicationInfo.application.id == null)
-//            throw InvalidRequestBodyException("ApplicationId cannot be null")
-//        val application = applicationRepository.getByIdAndInstituteId(applicationInfo.application.id, x.id!!)
-//                .switchIfEmpty(Mono.error(ObjectNotFoundException("")))
-////        return application.flatMap { x -> validateDirectorApplicationAndSave(x, applicationInfo) }
-//    }
-
 }
