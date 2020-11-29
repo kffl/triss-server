@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono
 class IdentityDocumentService(val identityDocumentRepository: IdentityDocumentRepository) {
 
     fun getIdentityDocument(id: IdentityDocument): Mono<IdentityDocument> {
-        return identityDocumentRepository.findByEmployeeIDAndTypeAndNumber(employeeId = id.employeeID!!,
+        return identityDocumentRepository.findByEmployeeIdAndTypeAndNumber(employeeId = id.employeeId!!,
                 type = id.type,
                 number = id.number)
     }

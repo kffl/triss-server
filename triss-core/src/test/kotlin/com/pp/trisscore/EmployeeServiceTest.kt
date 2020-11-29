@@ -24,7 +24,7 @@ class EmployeeServiceTest(@Autowired val employeeService: EmployeeService,
                    @Autowired val connectionFactory: ConnectionFactory) {
 
     val tokenData = TokenData(1999, "Marcel", "TOLEN")
-    val employee = Employee(id = null, eLoginId = 1999, firstName = "Marcel", surname = "TOLEN", birthDate = LocalDate.now(), phoneNumber = "666666666", academicDegree = "BRAK", instituteID = 1, employeeType = Role.RECTOR)
+    val employee = Employee(id = null, employeeId = 1999, firstName = "Marcel", surname = "TOLEN", birthDate = LocalDate.now(), phoneNumber = "666666666", academicDegree = "BRAK", instituteID = 1, employeeType = Role.RECTOR)
 
 
     fun executeScriptBlocking(sqlScript: Resource) = Mono.from(connectionFactory.create())

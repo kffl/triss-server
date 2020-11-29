@@ -85,8 +85,8 @@ CREATE TABLE Prepayment
     id                 BIGSERIAL PRIMARY KEY,
     conferenceFeeId    BIGINT,
     accommodationFeeId BIGINT,
-    CONSTRAINT conferenceFee_fk FOREIGN KEY (conferenceFeeId) REFERENCES PrepaymentFee (id),
-    CONSTRAINT accommodationFee_fk FOREIGN KEY (accommodationFeeId) REFERENCES PrepaymentFee (id)
+    CONSTRAINT conferenceFee_pr_fk FOREIGN KEY (conferenceFeeId) REFERENCES PrepaymentFee (id),
+    CONSTRAINT accommodationFee_pr_fk FOREIGN KEY (accommodationFeeId) REFERENCES PrepaymentFee (id)
 );
 
 INSERT INTO Prepayment (conferenceFeeId, accommodationFeeId)
@@ -96,7 +96,7 @@ VALUES (1, 2),
 CREATE TABLE Employee
 (
     id             BIGSERIAL PRIMARY KEY,
-    eLoginId     BIGINT UNIQUE,
+    employeeId     BIGINT UNIQUE,
     firstName      varchar(255) NOT NULL,
     surname        varchar(255) NOT NULL,
     birthDate      DATE         NOT NULL,
@@ -104,10 +104,10 @@ CREATE TABLE Employee
     phoneNumber    varchar(255) NOT NULL,
     employeeType   varchar(255),
     instituteID    BIGINT,
-    CONSTRAINT institute_fk FOREIGN KEY (instituteID) REFERENCES Institute (id)
+    CONSTRAINT institute_em_fk FOREIGN KEY (instituteID) REFERENCES Institute (id)
 );
 
-INSERT INTO Employee(eLoginId,firstName,surname,birthDate,academicDegree,phoneNumber,employeeType,instituteID)
+INSERT INTO Employee(employeeId,firstName,surname,birthDate,academicDegree,phoneNumber,employeeType,instituteID)
 VALUES (170387, 'Jan', 'Kowalczyk', '2000-01-01', 'Prof.', '+48 123456789', 'USER', 1),
        (2, 'Jan', 'Kowalski', '1990-03-21', 'Prof.', '+48 321456987', 'WILDA', 1),
        (3, 'Jerzy', 'Zbiałowierzy', '1980-05-15', 'Prof.', '+48 541236987', 'RECTOR', 1),
@@ -119,7 +119,7 @@ CREATE TABLE IdentityDocument
     employeeID BIGINT       NOT NULL,
     type       VARCHAR(255) NOT NULL,
     number     VARCHAR(255) NOT NULL,
-    CONSTRAINT employee_fk FOREIGN KEY (employeeID) REFERENCES Employee(eLoginId)
+    CONSTRAINT employee_id_fk FOREIGN KEY (employeeID) REFERENCES Employee(employeeId)
 );
 
 INSERT INTO IdentityDocument (employeeID, type, number)
@@ -156,7 +156,7 @@ CREATE TABLE AdvanceApplication
     residenceDietSum      DECIMAL(7, 2) NOT NULL,
     accommodationSum      DECIMAL(7, 2) NOT NULL,
     advanceSum            DECIMAL(7, 2) NOT NULL,
-    CONSTRAINT place_fk FOREIGN KEY (placeId) REFERENCES Place (id)
+    CONSTRAINT place_aa_fk FOREIGN KEY (placeId) REFERENCES Place (id)
 );
 
 INSERT INTO AdvanceApplication (placeId, startDate, endDate, residenceDietQuantity, residenceDietAmount,
@@ -200,12 +200,12 @@ CREATE TABLE Application
     directorComments         VARCHAR(255),
     rectorComments           VARCHAR(255),
     status                   VARCHAR(255) NOT NULL,
-    CONSTRAINT institute_fk FOREIGN KEY (instituteId) REFERENCES Institute (id),
-    CONSTRAINT employee_fk FOREIGN KEY (employeeId) REFERENCES Employee(eLoginId),
-    CONSTRAINT place_fk FOREIGN KEY (placeId) REFERENCES Place (id),
-    CONSTRAINT financialSource_fk FOREIGN KEY (financialSourceId) REFERENCES FinancialSource (id),
-    CONSTRAINT advanceApplication_fk FOREIGN KEY (advanceApplicationId) REFERENCES AdvanceApplication (id),
-    CONSTRAINT prepayment_fk FOREIGN KEY (prepaymentId) REFERENCES Prepayment (id)
+    CONSTRAINT institute_ap_fk FOREIGN KEY (instituteId) REFERENCES Institute (id),
+    CONSTRAINT employee_ap_fk FOREIGN KEY (employeeId) REFERENCES Employee(employeeId),
+    CONSTRAINT place_ap_fk FOREIGN KEY (placeId) REFERENCES Place (id),
+    CONSTRAINT financialSource_ap_fk FOREIGN KEY (financialSourceId) REFERENCES FinancialSource (id),
+    CONSTRAINT advanceApplication_ap_fk FOREIGN KEY (advanceApplicationId) REFERENCES AdvanceApplication (id),
+    CONSTRAINT prepayment_ap_fk FOREIGN KEY (prepaymentId) REFERENCES Prepayment (id)
 );
 
 INSERT INTO Application (firstName, surname, birthDate, phoneNumber, academicDegree, employeeId, identityDocumentType,
@@ -239,7 +239,7 @@ CREATE TABLE Transport
     departureMinute INTEGER      NOT NULL,
     carrier         VARCHAR(255) NOT NULL,
     vehicleSelect   VARCHAR(255) NOT NULL,
-    CONSTRAINT application_fk FOREIGN KEY (applicationID) REFERENCES Application (id)
+    CONSTRAINT application_tr_fk FOREIGN KEY (applicationID) REFERENCES Application (id)
 );
 
 INSERT INTO Transport (destinationFrom, destinationTo, departureDay, departureHour, departureMinute,
@@ -251,8 +251,8 @@ VALUES ('Poznań', 'Los Angeles', '2020-12-12', 6, 30, 'Plane', 'LOT'),
 
 CREATE VIEW ApplicationRow AS
 SELECT Application.id,
-       E.firstName,
-       E.surname,
+       firstName,
+       surname,
        employeeId,
        I.id   as instituteId,
        I.name as instituteName,
@@ -264,7 +264,6 @@ SELECT Application.id,
 FROM Application
          JOIN Place
               ON Place.id = Application.placeId
-         JOIN Employee E on Application.employeeId = E.id
          JOIN Institute I on Application.instituteId = I.id;
 
 CREATE VIEW ApplicationFull As

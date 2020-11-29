@@ -29,14 +29,14 @@ class UserService(val employeeService: EmployeeService,
     val role: Role = Role.USER
 
     fun getMyApplications(tokenData: TokenData, body: PageInfo<ApplicationRow>): Flux<ApplicationRow> {
-        if (tokenData.eLoginId != body.filter.employeeId)
+        if (tokenData.employeeId != body.filter.employeeId)
             throw InvalidRequestBodyException("Wrong EmployeeId.")
         return employeeService.findEmployee(tokenData)
                 .flatMapMany { x -> applicationService.getAllByFilter(body) }
     }
 
     fun getCountByFilter(tokenData: TokenData, body: PageInfo<ApplicationRow>): Mono<Long> {
-        if (tokenData.eLoginId != body.filter.employeeId)
+        if (tokenData.employeeId != body.filter.employeeId)
             throw InvalidRequestBodyException("Wrong EmployeeId.")
         return employeeService.findEmployee(tokenData)
                 .flatMap { x -> applicationService.getCountByFilter(body) }
@@ -65,7 +65,7 @@ class UserService(val employeeService: EmployeeService,
         val advanceApplication = placeId.flatMap { x -> advanceApplicationService.createAdvanceApplication(applicationInfo.advanceApplication, x!!) }
         val application = Mono.zip(prepaymentId, advanceApplication, institute)
                 .flatMap { data ->
-                    applicationService.saveApplication(applicationService.fillApplication(applicationInfo, user.eLoginId!!, data.t2.placeId!!, data.t1!!, data.t2.id!!, data.t3.id!!))
+                    applicationService.saveApplication(applicationService.fillApplication(applicationInfo, user.employeeId!!, data.t2.placeId!!, data.t1!!, data.t2.id!!, data.t3.id!!))
                 }
         return application.flatMap { x -> transportService.save(applicationInfo.transport, x.id!!) }
     }

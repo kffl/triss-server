@@ -33,7 +33,7 @@ class UserController(val userService: UserService,
 //                          , token: JwtAuthenticationToken
     ): Flux<ApplicationRow> {
 //        val tokenData = tokenService.getEmployeeDataFromToken(token)
-        return userService.getMyApplications(tokenData, body.copy(filter = body.filter.copy(employeeId = tokenData.eLoginId)))
+        return userService.getMyApplications(tokenData, body.copy(filter = body.filter.copy(employeeId = tokenData.employeeId)))
     }
 
     @PostMapping("application/count")
@@ -41,7 +41,7 @@ class UserController(val userService: UserService,
 //                         , token: JwtAuthenticationToken
     ): Mono<Long> {
 //        val tokenData = tokenService.getEmployeeDataFromToken(token)
-        return userService.getCountByFilter(tokenData, body.copy(filter = body.filter.copy(employeeId = tokenData.eLoginId)))
+        return userService.getCountByFilter(tokenData, body.copy(filter = body.filter.copy(employeeId = tokenData.employeeId)))
     }
 
     @PostMapping("application/getFull")

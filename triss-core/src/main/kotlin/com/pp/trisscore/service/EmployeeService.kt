@@ -21,7 +21,7 @@ class EmployeeService(val employeeRepository: EmployeeRepository,
     }
 
     fun findEmployee(t: TokenData) =
-            employeeRepository.findByELoginId(t.eLoginId)
+            employeeRepository.findByEmployeeId(t.employeeId)
                     .switchIfEmpty(Mono.error(EmployeeNotFoundException("Employee not Found")))
 
     fun checkRole(employee: Employee, role: Role): Employee? {
@@ -31,7 +31,7 @@ class EmployeeService(val employeeRepository: EmployeeRepository,
     }
 
     fun saveEmployee(tokenData: TokenData, employee: Employee): Mono<Employee> {
-        if (employee.eLoginId != tokenData.eLoginId)
+        if (employee.employeeId != tokenData.employeeId)
             throw InvalidRequestBodyException("Id must equal to id in token.")
         if (employee.instituteID == null)
             throw InvalidRequestBodyException("InstituteId cannot be null")
@@ -42,7 +42,7 @@ class EmployeeService(val employeeRepository: EmployeeRepository,
         return instituteService.findInstituteById(employee.instituteID)
                 .switchIfEmpty(Mono.error(ObjectNotFoundException("Institute Not Exists.")))
                 .flatMap {
-                    employeeRepository.findByELoginId(tokenData.eLoginId)
+                    employeeRepository.findByEmployeeId(tokenData.employeeId)
                             .flatMap { actualEmployee -> updateEmployee(actualEmployee, employee) } }
                             .switchIfEmpty( newEmployee(employee))
     }

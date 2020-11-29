@@ -8,5 +8,5 @@ import reactor.core.publisher.Mono
 @Repository
 interface IdentityDocumentRepository : ReactiveCrudRepository<IdentityDocument,Long> {
 
-    fun findByEmployeeIDAndTypeAndNumber(employeeId:Long,type:Int,number:String) : Mono<IdentityDocument>
+    fun findByEmployeeIdAndTypeAndNumber(employeeId:Long, type:Int, number:String) : Mono<IdentityDocument>
 }
