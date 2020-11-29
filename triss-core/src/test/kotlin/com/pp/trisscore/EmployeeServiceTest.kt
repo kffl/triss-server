@@ -42,37 +42,36 @@ class EmployeeServiceTest(@Autowired val employeeService: EmployeeService,
         executeScriptBlocking(script)
     }
 
-    //Create USER
+    //Create Employee
     @Test
-    fun shouldCreateUser() {
+    fun shouldCreateEmployee() {
         val x = employeeService.newEmployee(newEmployeeTokenData, newEmployee)
         StepVerifier.create(x.log()).assertNext { employee -> assert(employee.id == 5L) }.expectComplete().verify()
 
     }
 
     @Test
-    fun shouldNotCreateUserBecauseOfEmployeeType() {
+    fun shouldNotCreateEmployeeBecauseOfEmployeeType() {
         assertThrows<InvalidRequestBodyException> { employeeService.newEmployee(newEmployeeTokenData, newEmployee.copy(employeeType = Role.RECTOR)) }
     }
 
     @Test
-    fun shouldNotCreateUserBecauseWrongUserData() {
+    fun shouldNotCreateEmployeeBecauseWrongUserData() {
         assertThrows<InvalidRequestBodyException> {
             employeeService.newEmployee(existingUserToken, newEmployee)
         }
     }
 
     @Test
-    fun shouldNotCreateUserBecauseAllReadyExists() {
+    fun shouldNotCreateEmployeeBecauseAllReadyExists() {
         val x = employeeService.newEmployee(existingUserToken, existingUserEmployee.copy(id = null))
         StepVerifier.create(x.log()).expectError(UserAllReadyExistsException::class).verify()
 
     }
 
-    //Update User
-
+    //Update Employee
     @Test
-    fun shouldUpdateUser() {
+    fun shouldUpdateEmployee() {
         val x = employeeService.updateEmployee(existingUserToken, existingUserEmployee.copy(phoneNumber = "+48656565654"))
         StepVerifier.create(x.log()).assertNext { x -> assert(x != existingUserEmployee) }
                 .expectComplete().verify()
@@ -82,21 +81,21 @@ class EmployeeServiceTest(@Autowired val employeeService: EmployeeService,
     }
 
     @Test
-    fun shouldNotUpdateUserBecauseChangingEmployeeType() {
+    fun shouldNotUpdateEmployeeBecauseChangingEmployeeType() {
         val x = employeeService.updateEmployee(existingUserToken, existingUserEmployee.copy(employeeType = Role.RECTOR))
         StepVerifier.create(x.log()).expectError(InvalidRequestBodyException::class).verify()
     }
 
     @Test
-    fun shouldNotUpdateUserBecauseUserDontExists() {
-        val x = employeeService.updateEmployee(newEmployeeTokenData, newEmployee.copy(id=10))
+    fun shouldNotUpdateEmployeeBecauseUserDontExists() {
+        val x = employeeService.updateEmployee(newEmployeeTokenData, newEmployee.copy(id = 10))
         StepVerifier.create(x.log()).expectError(UserNotFoundException::class).verify()
     }
 
 
-    //Get User Data
+    //Get Employee Data
     @Test
-    fun shouldGetExistingUserData() {
+    fun shouldGetExistingEmployeeData() {
         val x = employeeService.findEmployee(existingUserToken)
         StepVerifier.create(x.log()).assertNext { x -> assert(x == existingUserEmployee) }.expectComplete().verify()
     }
@@ -107,21 +106,21 @@ class EmployeeServiceTest(@Autowired val employeeService: EmployeeService,
         StepVerifier.create(x.log()).expectError(EmployeeNotFoundException::class).verify()
     }
 
-    ////Get User Data And Check Role
+    ////Get Employee Data And Check Role
     @Test
-    fun shouldGetExistingUserDataAndCheckRole() {
+    fun shouldGetExistingEmployeeDataAndCheckRole() {
         val x = employeeService.findEmployeeAndCheckRole(existingUserToken, Role.USER)
         StepVerifier.create(x.log()).assertNext { x -> assert(x == existingUserEmployee) }.expectComplete().verify()
     }
 
     @Test
-    fun shouldNotGetExistingUserDataAndCheckRoleWrongRole() {
+    fun shouldNotGetExistingEmployeeDataAndCheckRoleWrongRole() {
         val x = employeeService.findEmployeeAndCheckRole(existingUserToken, Role.DIRECTOR)
         StepVerifier.create(x.log()).expectError(UnauthorizedException::class).verify()
     }
 
     @Test
-    fun shouldNotGetExistingUserDataAndCheckRoleNotExistingUser() {
+    fun shouldNotGetExistingEmployeeDataAndCheckRoleNotExistingUser() {
         val x = employeeService.findEmployeeAndCheckRole(newEmployeeTokenData, Role.DIRECTOR)
         StepVerifier.create(x.log()).expectError(UnauthorizedException::class).verify()
     }
