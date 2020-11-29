@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.assertDoesNotThrow
 
-internal class ValidationServiceTest {
+class ValidationServiceTest {
 
     private val goodFinancialSource = FinancialSource(null, "AllocationAccountNumberHere","MPK_1","Budżet PP","TRISS")
     private val validationService = ValidationService()

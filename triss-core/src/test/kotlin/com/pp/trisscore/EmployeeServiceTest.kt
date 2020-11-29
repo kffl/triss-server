@@ -19,11 +19,13 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.core.io.Resource
 import org.springframework.data.r2dbc.connectionfactory.init.ScriptUtils
+import org.springframework.test.context.ActiveProfiles
 import reactor.core.publisher.Mono
 import reactor.kotlin.test.expectError
 import reactor.test.StepVerifier
 
 @SpringBootTest
+@ActiveProfiles("test")
 class EmployeeServiceTest(@Autowired val employeeService: EmployeeService,
                           @Autowired val connectionFactory: ConnectionFactory,
                           @Autowired val employeeRepository: EmployeeRepository) {

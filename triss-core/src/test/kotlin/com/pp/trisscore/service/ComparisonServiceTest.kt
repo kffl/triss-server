@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.assertDoesNotThrow
 import java.time.LocalDate
 
-internal class ComparisonServiceTest() {
+class ComparisonServiceTest() {
     private val comparisonService = ComparisonService()
     private val institute = Institute(0,"Instytut Informatyki", true)
     private val place = Place(0,"Poland","Warszawa")

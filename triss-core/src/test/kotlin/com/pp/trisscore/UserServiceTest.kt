@@ -17,21 +17,20 @@ import com.pp.trisscore.service.TestData.Companion.getExampleForUserApplication
 import com.pp.trisscore.service.TestData.Companion.pageInfo
 import com.pp.trisscore.service.UserService
 import io.r2dbc.spi.ConnectionFactory
+import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.core.io.Resource
 import org.springframework.data.r2dbc.connectionfactory.init.ScriptUtils
+import org.springframework.test.context.ActiveProfiles
 import reactor.core.publisher.Mono
-import reactor.test.StepVerifier
 import java.time.LocalDate
 
 
 @SpringBootTest
+@ActiveProfiles("test")
 class UserServiceTest(@Autowired val userService: UserService,
                       @Autowired val connectionFactory: ConnectionFactory) {
 
@@ -46,7 +45,6 @@ class UserServiceTest(@Autowired val userService: UserService,
         executeScriptBlocking(script)
     }
 
-
     //Get Application Test
     @Test
     fun shouldGetAllApplicationUser() {
@@ -54,7 +52,6 @@ class UserServiceTest(@Autowired val userService: UserService,
         assertEquals(1, before)
     }
 
-    //Get Application Test
     @Test
     fun shouldGetAllApplicationDirector() {
         val before = userService.getCountByFilter(existingDirectorToken, pageInfo.copy(filter = filter.copy(employeeId = existingDirectorToken.employeeId))).block()
@@ -63,7 +60,6 @@ class UserServiceTest(@Autowired val userService: UserService,
 
     @Test
     fun shouldNotGetAllApplicationWrongIdInFilter() {
-
         val x = assertThrows<InvalidRequestBodyException> { userService.getCountByFilter(existingDirectorToken, pageInfo.copy(filter = filter.copy(employeeId = existingUserToken.employeeId))).block() }
         assertEquals("Wrong EmployeeId.", x.message)
     }
@@ -85,13 +81,6 @@ class UserServiceTest(@Autowired val userService: UserService,
         assertEquals(FinancialSource(null, null, null, null, null), app.financialSource)
         assertEquals(correctInstitute, app.institute)
         assertEquals(2, app.transport.size)
-    }
-
-    @Test
-    fun shouldCreateNewApplicationTime() {
-        val data =exampleApplicationInfo.copy(application = getExampleForUserApplication(existingUserEmployee))
-        val id = userService.createApplication(existingUserToken, data)
-        println(StepVerifier.create(id.log()).assertNext{_->}.verifyComplete().toMillis())
     }
 
     @Test

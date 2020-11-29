@@ -16,9 +16,7 @@ import reactor.core.publisher.Mono
 @Repository
 class ApplicationRowRepository(databaseClient: DatabaseClient) {
 
-
     val template = R2dbcEntityTemplate(databaseClient)
-
 
     fun getAllByFilter(pageInfo: PageInfo<ApplicationRow>): Flux<ApplicationRow> {
         return template.select(Query.query(getCriteria(pageInfo))
