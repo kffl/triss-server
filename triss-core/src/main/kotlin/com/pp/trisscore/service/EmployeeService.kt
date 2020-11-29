@@ -41,7 +41,7 @@ class EmployeeService(val employeeRepository: EmployeeRepository,
 
     private fun updateEmployee2(actualEmployee: Employee?, employee: Employee): Mono<Employee> {
         if (actualEmployee!!.employeeType != employee.employeeType)
-            throw InvalidRequestBodyException("Employee Type canno't be updated by user")
+            throw InvalidRequestBodyException("Employee Type cannot be updated by user")
         val employeeToSave = actualEmployee.copy(
                 firstName = employee.firstName,
                 surname = employee.surname,
@@ -75,7 +75,7 @@ class EmployeeService(val employeeRepository: EmployeeRepository,
     }
 
     fun ifUserFoundThrowException(employee: Employee): Mono<Employee>
-            = throw UserAllReadyExistsException("UserAllreadyExists")
+            = throw UserAllReadyExistsException("User All Ready Exists")
 
 
 }

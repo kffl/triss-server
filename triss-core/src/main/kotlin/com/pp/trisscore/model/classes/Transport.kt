@@ -13,7 +13,7 @@ data class Transport(
         @Column("id")
         val id: Long?,
         @Column("applicationID")
-        val applicationID: Long,
+        val applicationID: Long?,
         @Column("destinationFrom")
         val destinationFrom: String,
         @Column("destinationTo")

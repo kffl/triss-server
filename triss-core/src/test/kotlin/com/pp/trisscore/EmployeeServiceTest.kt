@@ -1,15 +1,19 @@
 package com.pp.trisscore
 
 import com.pp.trisscore.exceptions.*
-import com.pp.trisscore.model.architecture.TokenData
-import com.pp.trisscore.model.classes.Employee
 import com.pp.trisscore.model.enums.Role
+import com.pp.trisscore.repository.EmployeeRepository
 import com.pp.trisscore.service.EmployeeService
+import com.pp.trisscore.service.TestData.Companion.existingUserEmployee
+import com.pp.trisscore.service.TestData.Companion.existingUserToken
+import com.pp.trisscore.service.TestData.Companion.newEmployee
+import com.pp.trisscore.service.TestData.Companion.newEmployeeTokenData
 import io.r2dbc.spi.ConnectionFactory
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
@@ -18,18 +22,11 @@ import org.springframework.data.r2dbc.connectionfactory.init.ScriptUtils
 import reactor.core.publisher.Mono
 import reactor.kotlin.test.expectError
 import reactor.test.StepVerifier
-import java.time.LocalDate
 
 @SpringBootTest
 class EmployeeServiceTest(@Autowired val employeeService: EmployeeService,
-                          @Autowired val connectionFactory: ConnectionFactory) {
-
-    val logger = LoggerFactory.getLogger(EmployeeServiceTest::class.java)
-
-    val newEmployeeTokenData = TokenData(1999, "Marcel", "TOLEN")
-    val newEmployee = Employee(id = null, employeeId = 1999, firstName = "Marcel", surname = "TOLEN", birthDate = LocalDate.now(), phoneNumber = "666666666", academicDegree = "BRAK", instituteID = 1, employeeType = Role.USER)
-    val existingUserToken = TokenData(170387, "Jan", "Kowalczyk")
-    val existingUserEmployee = Employee(id = 1, employeeId = 170387, firstName = "Jan", surname = "Kowalczyk", birthDate = LocalDate.of(2000, 1, 1), phoneNumber = "+48 123456789", academicDegree = "Prof.", instituteID = 1, employeeType = Role.USER)
+                          @Autowired val connectionFactory: ConnectionFactory,
+                          @Autowired val employeeRepository: EmployeeRepository) {
 
 
     fun executeScriptBlocking(sqlScript: Resource) = Mono.from(connectionFactory.create())
@@ -45,83 +42,83 @@ class EmployeeServiceTest(@Autowired val employeeService: EmployeeService,
     //Create Employee
     @Test
     fun shouldCreateEmployee() {
-        val x = employeeService.newEmployee(newEmployeeTokenData, newEmployee)
-        StepVerifier.create(x.log()).assertNext { employee -> assert(employee.id == 5L) }.expectComplete().verify()
+        assertEquals(5, employeeService.newEmployee(newEmployeeTokenData, newEmployee).block()!!.id)
+        assertEquals(5, employeeRepository.count().block())
 
     }
 
     @Test
     fun shouldNotCreateEmployeeBecauseOfEmployeeType() {
-        assertThrows<InvalidRequestBodyException> { employeeService.newEmployee(newEmployeeTokenData, newEmployee.copy(employeeType = Role.RECTOR)) }
+        val x = assertThrows<InvalidRequestBodyException> { employeeService.newEmployee(newEmployeeTokenData, newEmployee.copy(employeeType = Role.RECTOR)).block() }
+        assertEquals("employeeType must be USER", x.message)
     }
 
     @Test
     fun shouldNotCreateEmployeeBecauseWrongUserData() {
-        assertThrows<InvalidRequestBodyException> {
-            employeeService.newEmployee(existingUserToken, newEmployee)
-        }
+        val x = assertThrows<InvalidRequestBodyException> { employeeService.newEmployee(existingUserToken, newEmployee).block() }
+        assertEquals("EmployeeId must equal to id in token.", x.message)
     }
 
     @Test
     fun shouldNotCreateEmployeeBecauseAllReadyExists() {
-        val x = employeeService.newEmployee(existingUserToken, existingUserEmployee.copy(id = null))
-        StepVerifier.create(x.log()).expectError(UserAllReadyExistsException::class).verify()
-
+        val x = assertThrows<UserAllReadyExistsException> { employeeService.newEmployee(existingUserToken, existingUserEmployee.copy(id = null)).block() }
+        assertEquals("User All Ready Exists", x.message)
     }
 
     //Update Employee
     @Test
     fun shouldUpdateEmployee() {
-        val x = employeeService.updateEmployee(existingUserToken, existingUserEmployee.copy(phoneNumber = "+48656565654"))
-        StepVerifier.create(x.log()).assertNext { x -> assert(x != existingUserEmployee) }
-                .expectComplete().verify()
-        val y = employeeService.findEmployee(existingUserToken)
-        StepVerifier.create(y.log()).assertNext { y -> assert(y == existingUserEmployee.copy(phoneNumber = "+48656565654")) }
-                .expectComplete().verify()
+        val x = employeeService.updateEmployee(existingUserToken, existingUserEmployee.copy(phoneNumber = "+48656565654")).block()
+        assertNotEquals(existingUserEmployee, x)
+        val y = employeeService.findEmployee(existingUserToken).block()
+        assertEquals(existingUserEmployee.copy(phoneNumber = "+48656565654"), y)
     }
 
     @Test
     fun shouldNotUpdateEmployeeBecauseChangingEmployeeType() {
-        val x = employeeService.updateEmployee(existingUserToken, existingUserEmployee.copy(employeeType = Role.RECTOR))
-        StepVerifier.create(x.log()).expectError(InvalidRequestBodyException::class).verify()
+        val x = assertThrows<InvalidRequestBodyException> {
+            employeeService.updateEmployee(existingUserToken,
+                    existingUserEmployee.copy(employeeType = Role.RECTOR)).block()
+        }
+        assertEquals("Employee Type cannot be updated by user", x.message)
     }
 
     @Test
     fun shouldNotUpdateEmployeeBecauseUserDontExists() {
-        val x = employeeService.updateEmployee(newEmployeeTokenData, newEmployee.copy(id = 10))
-        StepVerifier.create(x.log()).expectError(UserNotFoundException::class).verify()
+        val x = assertThrows<UserNotFoundException> { employeeService.updateEmployee(newEmployeeTokenData, newEmployee.copy(id = 10)).block() }
+        assertEquals("User not exists", x.message)
     }
 
 
     //Get Employee Data
     @Test
     fun shouldGetExistingEmployeeData() {
-        val x = employeeService.findEmployee(existingUserToken)
-        StepVerifier.create(x.log()).assertNext { x -> assert(x == existingUserEmployee) }.expectComplete().verify()
+        val x = employeeService.findEmployee(existingUserToken).block()
+        assertEquals(existingUserEmployee, x)
     }
 
     @Test
     fun shouldNotGetNotExistingInDatabaseEmployeeData() {
-        val x = employeeService.findEmployee(newEmployeeTokenData)
-        StepVerifier.create(x.log()).expectError(EmployeeNotFoundException::class).verify()
+        val x = assertThrows<EmployeeNotFoundException> { employeeService.findEmployee(newEmployeeTokenData).block()}
+        assertEquals("Employee not Found", x.message)
     }
 
     ////Get Employee Data And Check Role
     @Test
     fun shouldGetExistingEmployeeDataAndCheckRole() {
-        val x = employeeService.findEmployeeAndCheckRole(existingUserToken, Role.USER)
-        StepVerifier.create(x.log()).assertNext { x -> assert(x == existingUserEmployee) }.expectComplete().verify()
+        val x = employeeService.findEmployeeAndCheckRole(existingUserToken, Role.USER).block()
+        assertEquals(existingUserEmployee,x)
     }
 
     @Test
     fun shouldNotGetExistingEmployeeDataAndCheckRoleWrongRole() {
-        val x = employeeService.findEmployeeAndCheckRole(existingUserToken, Role.DIRECTOR)
-        StepVerifier.create(x.log()).expectError(UnauthorizedException::class).verify()
+        val x = assertThrows<UnauthorizedException> {  employeeService.findEmployeeAndCheckRole(existingUserToken, Role.DIRECTOR).block()}
+        assertEquals("Employee don't have access to this.", x.message)
     }
 
     @Test
     fun shouldNotGetExistingEmployeeDataAndCheckRoleNotExistingUser() {
-        val x = employeeService.findEmployeeAndCheckRole(newEmployeeTokenData, Role.DIRECTOR)
-        StepVerifier.create(x.log()).expectError(UnauthorizedException::class).verify()
+        val x = assertThrows<UnauthorizedException> { employeeService.findEmployeeAndCheckRole(newEmployeeTokenData, Role.DIRECTOR).block()}
+        assertEquals("Employee don't have access to this.", x.message)
     }
 }

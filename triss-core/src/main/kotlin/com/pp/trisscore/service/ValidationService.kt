@@ -5,6 +5,7 @@ import com.pp.trisscore.exceptions.WrongDateException
 import com.pp.trisscore.model.architecture.ApplicationInfo
 import com.pp.trisscore.model.classes.Employee
 import com.pp.trisscore.model.classes.FinancialSource
+import com.pp.trisscore.model.enums.Status
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 
@@ -47,6 +48,8 @@ class ValidationService {
             throw(InvalidRequestBodyException("FinancialSource must be null"))
         if (applicationInfo.application.id != null)
             throw(InvalidRequestBodyException("Application Id must be null"))
+        if (applicationInfo.application.status != Status.WaitingForDirector)
+            throw(InvalidRequestBodyException("Application Status must be WaitingForDirector"))
         //TODO więcej walidacji do zrobienia
     }
 
