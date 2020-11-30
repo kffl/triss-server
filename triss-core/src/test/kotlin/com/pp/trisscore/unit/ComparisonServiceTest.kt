@@ -1,9 +1,10 @@
-package com.pp.trisscore.service
+package com.pp.trisscore.unit
 
 import com.pp.trisscore.exceptions.InvalidRequestBodyException
 import com.pp.trisscore.model.applicationinfoelements.AdvancePaymentsInfo
 import com.pp.trisscore.model.classes.*
 import com.pp.trisscore.model.enums.*
+import com.pp.trisscore.service.ComparisonService
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.assertDoesNotThrow

@@ -1,13 +1,13 @@
-package com.pp.trisscore
+package com.pp.trisscore.integration
 
 import com.pp.trisscore.exceptions.*
 import com.pp.trisscore.model.enums.Role
 import com.pp.trisscore.repository.EmployeeRepository
 import com.pp.trisscore.service.EmployeeService
-import com.pp.trisscore.service.TestData.Companion.existingUserEmployee
-import com.pp.trisscore.service.TestData.Companion.existingUserToken
-import com.pp.trisscore.service.TestData.Companion.newEmployee
-import com.pp.trisscore.service.TestData.Companion.newEmployeeTokenData
+import com.pp.trisscore.data.TestData.Companion.existingUserEmployee
+import com.pp.trisscore.data.TestData.Companion.existingUserToken
+import com.pp.trisscore.data.TestData.Companion.newEmployee
+import com.pp.trisscore.data.TestData.Companion.newEmployeeTokenData
 import io.r2dbc.spi.ConnectionFactory
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals
@@ -21,8 +21,6 @@ import org.springframework.core.io.Resource
 import org.springframework.data.r2dbc.connectionfactory.init.ScriptUtils
 import org.springframework.test.context.ActiveProfiles
 import reactor.core.publisher.Mono
-import reactor.kotlin.test.expectError
-import reactor.test.StepVerifier
 
 @SpringBootTest
 @ActiveProfiles("test")

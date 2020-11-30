@@ -1,4 +1,4 @@
-package com.pp.trisscore.service
+package com.pp.trisscore.data
 
 import com.pp.trisscore.model.applicationinfoelements.AdvancePaymentsInfo
 import com.pp.trisscore.model.architecture.ApplicationInfo
