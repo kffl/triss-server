@@ -12,24 +12,25 @@ import java.time.LocalDate
 @Service
 class ValidationService {
 
-    fun validateInstitute(institute: Institute){
+    fun validateApproveInstitute(institute: Institute){
         if (institute.id == null)
             throw InvalidRequestBodyException("InstituteId cannot be null")
     }
 
-    fun validatePlace(place: Place){
+    fun validateApprovePlace(place: Place){
         if (place.id == null)
             throw InvalidRequestBodyException("PlaceId cannot be null")
     }
 
-    fun validateAdvanceApplication(advanceApplication: AdvanceApplication){
+    fun validateApproveAdvanceApplication(advanceApplication: AdvanceApplication){
         if (advanceApplication.id == null)
             throw InvalidRequestBodyException("AdvanceApplicationId cannot be null")
         if (advanceApplication.placeId == null)
             throw InvalidRequestBodyException("AdvanceApplicationPlaceId cannot be null")
+
     }
 
-    fun validateFinancialSource(financialSource: FinancialSource?) {
+    fun validateApproveFinancialSource(financialSource: FinancialSource?) {
         if (financialSource == null)
             throw InvalidRequestBodyException("FinancialSource cannot be null")
         if (financialSource.mpk == null)
@@ -71,23 +72,27 @@ class ValidationService {
     }
 
     fun validateApproveApplicationInfo(applicationInfo: ApplicationInfo, role: Role) {
-        validateInstitute(applicationInfo.institute)
-        validatePlace(applicationInfo.place)
-        validateAdvanceApplication(applicationInfo.advanceApplication)
+        validateApproveInstitute(applicationInfo.institute)
+        validateApprovePlace(applicationInfo.place)
+        validateApproveAdvanceApplication(applicationInfo.advanceApplication)
         validateApproveApplication(applicationInfo.application, role)
-        validateFinancialSource(applicationInfo.financialSource)
-        if (applicationInfo.application.directorComments != null)
-            throw(InvalidRequestBodyException("Director comments must be null"))
-        if (applicationInfo.application.rectorComments != null)
-            throw(InvalidRequestBodyException("Rector comments must be null"))
-        if (applicationInfo.application.wildaComments != null)
-            throw(InvalidRequestBodyException("Wilda comments must be null"))
-        if (applicationInfo.financialSource != null)
-            throw(InvalidRequestBodyException("FinancialSource must be null"))
-        if (applicationInfo.application.id != null)
-            throw(InvalidRequestBodyException("Application Id must be null"))
-        if (applicationInfo.application.status != Status.WaitingForDirector)
-            throw(InvalidRequestBodyException("Application Status must be WaitingForDirector"))
+        validateApproveFinancialSource(applicationInfo.financialSource)
+        setScale(applicationInfo)
+    }
+
+    fun setScale(a: ApplicationInfo)
+    {
+        a.advanceApplication.accommodationLimit.setScale(2)
+        a.advanceApplication.accommodationSum.setScale(2)
+        a.advanceApplication.advanceSum.setScale(2)
+        a.advanceApplication.residenceDietAmount.setScale(2)
+        a.advanceApplication.residenceDietSum.setScale(2)
+        a.advanceApplication.travelCosts.setScale(2)
+        a.advanceApplication.travelDietAmount.setScale(2)
+        if(a.advanceApplication.otherCostsAmount!=null)
+            a.advanceApplication.otherCostsAmount.setScale(2)
+        a.advancePayments.accommodationFeeValue.setScale(2)
+        a.advancePayments.accommodationFeeValue.setScale(2)
     }
 
     private fun validateApproveApplication(application: Application, role: Role) {
