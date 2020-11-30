@@ -34,7 +34,7 @@ class DirectorService(val employeeService: EmployeeService,
 
     @Transactional
     fun approveApplication(tokenBody: TokenData, body: ApplicationInfo): Mono<Application> {
-        validationService.validateFinancialSource(body.financialSource)
+        validationService.validateApproveApplicationInfo(body, role)
         return employeeService.findEmployeeAndCheckRole(tokenBody, role).switchIfEmpty(Mono.error(UnauthorizedException("")))
                 .flatMap { x -> applicationFullService.getFullDirectorApplication(body.application.id!!, x!!) }
                 .flatMap { x -> validateApproveAndSaveApplication(x, body) }

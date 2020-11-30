@@ -3,9 +3,7 @@ package com.pp.trisscore.service
 import com.pp.trisscore.exceptions.InvalidRequestBodyException
 import com.pp.trisscore.exceptions.WrongDateException
 import com.pp.trisscore.model.architecture.ApplicationInfo
-import com.pp.trisscore.model.classes.Application
-import com.pp.trisscore.model.classes.Employee
-import com.pp.trisscore.model.classes.FinancialSource
+import com.pp.trisscore.model.classes.*
 import com.pp.trisscore.model.enums.Role
 import com.pp.trisscore.model.enums.Status
 import org.springframework.stereotype.Service
@@ -14,9 +12,26 @@ import java.time.LocalDate
 @Service
 class ValidationService {
 
+    fun validateInstitute(institute: Institute){
+        if (institute.id == null)
+            throw InvalidRequestBodyException("InstituteId cannot be null")
+    }
+
+    fun validatePlace(place: Place){
+        if (place.id == null)
+            throw InvalidRequestBodyException("PlaceId cannot be null")
+    }
+
+    fun validateAdvanceApplication(advanceApplication: AdvanceApplication){
+        if (advanceApplication.id == null)
+            throw InvalidRequestBodyException("AdvanceApplicationId cannot be null")
+        if (advanceApplication.placeId == null)
+            throw InvalidRequestBodyException("AdvanceApplicationPlaceId cannot be null")
+    }
+
     fun validateFinancialSource(financialSource: FinancialSource?) {
         if (financialSource == null)
-            throw InvalidRequestBodyException("FinancialSourceId cannot be null")
+            throw InvalidRequestBodyException("FinancialSource cannot be null")
         if (financialSource.mpk == null)
             throw InvalidRequestBodyException("FinancialSourceMPK cannot be empty")
         if (financialSource.allocationAccount == null)
@@ -55,9 +70,12 @@ class ValidationService {
         //TODO więcej walidacji do zrobienia
     }
 
-    private fun validateApproveApplicationInfo(applicationInfo: ApplicationInfo, role: Role) {
+    fun validateApproveApplicationInfo(applicationInfo: ApplicationInfo, role: Role) {
+        validateInstitute(applicationInfo.institute)
+        validatePlace(applicationInfo.place)
+        validateAdvanceApplication(applicationInfo.advanceApplication)
         validateApproveApplication(applicationInfo.application, role)
-
+        validateFinancialSource(applicationInfo.financialSource)
         if (applicationInfo.application.directorComments != null)
             throw(InvalidRequestBodyException("Director comments must be null"))
         if (applicationInfo.application.rectorComments != null)
