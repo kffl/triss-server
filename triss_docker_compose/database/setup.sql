@@ -230,8 +230,8 @@ VALUES ('Jan', 'Kowalczyk', '2000-01-01', '+48 123456789', 'Prof.', 170387, 'IdC
 
 CREATE TABLE Transport
 (
-    id              BIGSERIAL PRIMARY KEY,
-    applicationID   BIGINT,
+    id              BIGSERIAL    PRIMARY KEY,
+    applicationID   BIGINT       NOT NULL,
     destinationFrom VARCHAR(255) NOT NULL,
     destinationTo   VARCHAR(255) NOT NULL,
     departureDay    DATE         NOT NULL,
@@ -242,12 +242,12 @@ CREATE TABLE Transport
     CONSTRAINT application_tr_fk FOREIGN KEY (applicationID) REFERENCES Application (id)
 );
 
-INSERT INTO Transport (destinationFrom, destinationTo, departureDay, departureHour, departureMinute,
+INSERT INTO Transport (applicationID,destinationFrom, destinationTo, departureDay, departureHour, departureMinute,
                        vehicleSelect, carrier)
-VALUES ('Poznań', 'Los Angeles', '2020-12-12', 6, 30, 'Plane', 'LOT'),
-       ('Los Angeles', 'Poznań', '2020-12-14', 20, 10, 'Plane', 'RyanAir'),
-       ('Poznań', 'Montreal', '2020-11-10', 4, 24, 'Plane', 'LOT'),
-       ('Montreal', 'Poznań', '2020-11-13', 5, 30, 'Plane', 'RyanAir');
+VALUES (1,'Poznań', 'Los Angeles', '2020-12-12', 6, 30, 'Plane', 'LOT'),
+       (1,'Los Angeles', 'Poznań', '2020-12-14', 20, 10, 'Plane', 'RyanAir'),
+       (2,'Poznań', 'Montreal', '2020-11-10', 4, 24, 'Plane', 'LOT'),
+       (2,'Montreal', 'Poznań', '2020-11-13', 5, 30, 'Plane', 'RyanAir');
 
 CREATE VIEW ApplicationRow AS
 SELECT Application.id,

@@ -72,4 +72,11 @@ class DirectorServiceTest(@Autowired val directorService: DirectorService,
                         .copy(status = Status.WaitingForWilda))).block()}
     }
 
+    @Test
+    fun shouldGetApplicationFull() {
+        directorService.getFullApplication(existingDirectorToken,1).block()
+    }
+
+
+
 }

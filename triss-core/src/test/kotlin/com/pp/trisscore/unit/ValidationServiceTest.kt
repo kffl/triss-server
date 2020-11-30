@@ -15,14 +15,14 @@ class ValidationServiceTest {
     @Test
     fun shouldNotValidateFinancialSourceAndThrowInvalidRequestBody() {
        assertThrows(InvalidRequestBodyException::class.java){
-           validationService.validateFinancialSource(goodFinancialSource.copy(allocationAccount = null, mpk = null, financialSource = null, project = null))
+           validationService.validateApproveFinancialSource(goodFinancialSource.copy(allocationAccount = null, mpk = null, financialSource = null, project = null))
        }
     }
 
     @Test
     fun shouldValidateFinancialSource(){
         assertDoesNotThrow("Should not throw an InvalidRequestBodyException"){
-            validationService.validateFinancialSource(goodFinancialSource)
+            validationService.validateApproveFinancialSource(goodFinancialSource)
         }
     }
 }
