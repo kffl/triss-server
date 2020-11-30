@@ -60,7 +60,7 @@ class EmployeeServiceTest(@Autowired val employeeService: EmployeeService,
     }
 
     @Test
-    fun shouldNotCreateEmployeeBecauseAllReadyExists() {
+    fun shouldNotCreateEmployeeBecauseAlreadyExists() {
         val x = assertThrows<UserAllReadyExistsException> { employeeService.newEmployee(existingUserToken, existingUserEmployee.copy(id = null)).block() }
         assertEquals("User All Ready Exists", x.message)
     }

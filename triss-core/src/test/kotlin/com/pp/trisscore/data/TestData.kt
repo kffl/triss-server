@@ -29,6 +29,7 @@ interface TestData {
                 , abroadEndDateInsurance = LocalDate.now().plusDays(40), selfInsured = true, advanceApplicationId = null, prepaymentId = null, comments = "blablabla",
                 wildaComments = null, directorComments = null, rectorComments = null, status = Status.WaitingForDirector)
         val correctInstitute = Institute(id = 1, name = "Instytut Architektury i Planowania Przestrzennego", active = true)
+        val correctFinancialSource = FinancialSource(id = null, allocationAccount = "AllocAcc", mpk = "MPK", financialSource = "financialSrc", project = "project")
         val correctTransportList = listOf(Transport(id = null, applicationID = null, destinationFrom = "Poznań", destinationTo = "Berlin", departureDay = LocalDate.now().plusDays(10), departureHour = 10, departureMinute = 10, vehicleSelect = Vehicle.Bus, carrier = "carrier"),
                 Transport(id = null, applicationID = null, destinationFrom = "Berlin", destinationTo = "Poznań", departureDay = LocalDate.now().plusDays(10), departureHour = 10, departureMinute = 10, vehicleSelect = Vehicle.Bus, carrier = "carrier"))
         val correctAdvanceApplication = AdvanceApplication(id = null, startDate = LocalDate.now().plusDays(10), endDate = LocalDate.now().plusDays(40),
