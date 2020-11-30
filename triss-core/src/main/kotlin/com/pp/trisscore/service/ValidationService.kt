@@ -3,7 +3,6 @@ package com.pp.trisscore.service
 import com.pp.trisscore.exceptions.InvalidRequestBodyException
 import com.pp.trisscore.exceptions.WrongDateException
 import com.pp.trisscore.model.architecture.ApplicationInfo
-import com.pp.trisscore.model.architecture.TokenData
 import com.pp.trisscore.model.classes.Application
 import com.pp.trisscore.model.classes.Employee
 import com.pp.trisscore.model.classes.FinancialSource
@@ -56,8 +55,9 @@ class ValidationService {
         //TODO więcej walidacji do zrobienia
     }
 
-    private fun validateApproveApplication(applicationInfo: ApplicationInfo){
-        if (applicationInfo.application == null)
+    private fun validateApproveApplicationInfo(applicationInfo: ApplicationInfo, role: Role) {
+        validateApproveApplication(applicationInfo.application, role)
+
         if (applicationInfo.application.directorComments != null)
             throw(InvalidRequestBodyException("Director comments must be null"))
         if (applicationInfo.application.rectorComments != null)
@@ -71,6 +71,32 @@ class ValidationService {
         if (applicationInfo.application.status != Status.WaitingForDirector)
             throw(InvalidRequestBodyException("Application Status must be WaitingForDirector"))
     }
+
+    private fun validateApproveApplication(application: Application, role: Role) {
+        if (application.id == null)
+            throw(InvalidRequestBodyException("Application Id cannot be null"))
+        if (application.advanceApplicationId == null)
+            throw(InvalidRequestBodyException("Advance Application Id cannot be null"))
+        if (application.createdOn == null)
+            throw(InvalidRequestBodyException("Created On cannot be null"))
+        if (application.employeeId == null)
+            throw(InvalidRequestBodyException("EmployeeId cannot be null"))
+        if (application.instituteId == null)
+            throw(InvalidRequestBodyException("InstituteId cannot be null"))
+        if (application.placeId == null)
+            throw(InvalidRequestBodyException("PlaceId cannot be null"))
+        if (application.prepaymentId == null)
+            throw(InvalidRequestBodyException("PrepaymentId cannot be null"))
+        when (role) {
+            Role.DIRECTOR, Role.USER ->
+                if (application.financialSourceId != null)
+                    throw(InvalidRequestBodyException("FinancialSourceId must be null"))
+            else ->
+                if (application.financialSourceId == null)
+                    throw(InvalidRequestBodyException("FinancialSourceId cannot null"))
+        }
+    }
+
 
     private fun checkStartDateBeforeEndDate(startDate: LocalDate, endDate: LocalDate, message: String) {
         if (startDate.isAfter(endDate)) {
