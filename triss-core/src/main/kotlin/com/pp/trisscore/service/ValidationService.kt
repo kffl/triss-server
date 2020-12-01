@@ -77,22 +77,6 @@ class ValidationService {
         validateApproveAdvanceApplication(applicationInfo.advanceApplication)
         validateApproveApplication(applicationInfo.application, role)
         validateApproveFinancialSource(applicationInfo.financialSource)
-        setScale(applicationInfo)
-    }
-
-    fun setScale(a: ApplicationInfo)
-    {
-        a.advanceApplication.accommodationLimit.setScale(2)
-        a.advanceApplication.accommodationSum.setScale(2)
-        a.advanceApplication.advanceSum.setScale(2)
-        a.advanceApplication.residenceDietAmount.setScale(2)
-        a.advanceApplication.residenceDietSum.setScale(2)
-        a.advanceApplication.travelCosts.setScale(2)
-        a.advanceApplication.travelDietAmount.setScale(2)
-        if(a.advanceApplication.otherCostsAmount!=null)
-            a.advanceApplication.otherCostsAmount.setScale(2)
-        a.advancePayments.accommodationFeeValue.setScale(2)
-        a.advancePayments.accommodationFeeValue.setScale(2)
     }
 
     private fun validateApproveApplication(application: Application, role: Role) {
