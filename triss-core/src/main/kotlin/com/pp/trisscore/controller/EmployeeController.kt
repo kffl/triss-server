@@ -21,7 +21,7 @@ class EmployeeController(val employeeService: EmployeeService,
                          val tokenService: TokenService) {
 
 
-    val tokenData = TokenData(2121,"Andrzej","Jerzy")
+    val tokenData = TokenData(170387,"Jan","Kowalczyk")
 
     @PostMapping("/get")
     fun getEmployee(

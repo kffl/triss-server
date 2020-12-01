@@ -188,8 +188,10 @@ class ComparisonService {
             throw InvalidRequestBodyException("AdvanceApplicationTravelCosts in DB differs from the request's one")
         if (dbAdvanceApplication.otherCostsDescription != reqAdvanceApplication.otherCostsDescription)
             throw InvalidRequestBodyException("AdvanceApplicationOtherCostsDescription in DB differs from the request's one")
-        if (dbAdvanceApplication.otherCostsAmount!!.toFloat() != reqAdvanceApplication.otherCostsAmount!!.toFloat())
-            throw InvalidRequestBodyException("AdvanceApplicationOtherCostsAmount in DB differs from the request's one")
+        if (dbAdvanceApplication.otherCostsAmount != null)
+            if (reqAdvanceApplication.otherCostsAmount == null ||
+                    dbAdvanceApplication.otherCostsAmount.toFloat() != reqAdvanceApplication.otherCostsAmount.toFloat())
+                throw InvalidRequestBodyException("AdvanceApplicationOtherCostsAmount in DB differs from the request's one")
         if (dbAdvanceApplication.residenceDietSum.toFloat() != reqAdvanceApplication.residenceDietSum.toFloat())
             throw InvalidRequestBodyException("AdvanceApplicationResidenceDietSum in DB differs from the request's one")
         if (dbAdvanceApplication.accommodationSum.toFloat() != reqAdvanceApplication.accommodationSum.toFloat())
