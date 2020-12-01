@@ -49,7 +49,7 @@ class UserServiceTest(@Autowired val userService: UserService,
     @Test
     fun shouldGetAllApplicationUser() {
         val before = userService.getCountByFilter(existingUserToken, pageInfo.copy(filter = filter.copy(employeeId = existingUserToken.employeeId))).block()
-        assertEquals(1, before)
+        assertEquals(2, before)
     }
 
     @Test

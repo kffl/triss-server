@@ -1,8 +1,10 @@
 package com.pp.trisscore.integration
 
 import com.pp.trisscore.data.TestData.Companion.correctApplication
+import com.pp.trisscore.data.TestData.Companion.correctApplicationForDirector
 import com.pp.trisscore.data.TestData.Companion.correctFinancialSource
 import com.pp.trisscore.data.TestData.Companion.exampleApplicationInfo
+import com.pp.trisscore.data.TestData.Companion.exampleApplicationInfoForDirector
 import com.pp.trisscore.data.TestData.Companion.existingDirector
 import com.pp.trisscore.data.TestData.Companion.existingDirectorToken
 import com.pp.trisscore.data.TestData.Companion.existingUserToken
@@ -45,7 +47,7 @@ class DirectorServiceTest(@Autowired val directorService: DirectorService,
     @Test
     fun shouldGetDirectorCount() {
         val x = directorService.getCountByFilter(existingDirectorToken, pageInfo).block()
-        assertEquals(1,x)
+        assertEquals(2,x)
     }
 
     @Test
@@ -56,27 +58,27 @@ class DirectorServiceTest(@Autowired val directorService: DirectorService,
     //Director approveApplication
     @Test
     fun shouldNotApproveApplicationNullFinancialSource(){
-        assertThrows<InvalidRequestBodyException>{directorService.approveApplication(existingDirectorToken, exampleApplicationInfo).block()}
+        val x = assertThrows<InvalidRequestBodyException>{directorService.approveApplication(existingDirectorToken, exampleApplicationInfoForDirector).block()}
+        assertEquals("FinancialSource cannot be null", x.message)
     }
 
     @Test
     fun shouldNotApproveApplicationWrongRole(){
-        assertThrows<InvalidRequestBodyException> {directorService.approveApplication(existingUserToken,
-                exampleApplicationInfo.copy(financialSource = correctFinancialSource)).block()}
+        val x = assertThrows<UnauthorizedException> {directorService.approveApplication(existingUserToken,
+                exampleApplicationInfoForDirector.copy(financialSource = correctFinancialSource)).block()}
+        assertEquals("Employee don't have access to this.", x.message)
     }
 
     @Test
     fun shouldNotApproveApplicationWrongStatus(){
-        assertThrows<InvalidRequestBodyException> {directorService.approveApplication(existingDirectorToken,
-                exampleApplicationInfo.copy(financialSource = correctFinancialSource, application = correctApplication
-                        .copy(status = Status.WaitingForWilda))).block()}
+        val x = assertThrows<InvalidRequestBodyException> {directorService.approveApplication(existingDirectorToken,
+                exampleApplicationInfoForDirector.copy(financialSource = correctFinancialSource, application = correctApplicationForDirector
+                        .copy(status = Status.WaitingForDirector))).block()}
+        assertEquals("ApplicationStatus in DB differs from the request's one", x.message)
     }
 
     @Test
     fun shouldGetApplicationFull() {
         directorService.getFullApplication(existingDirectorToken,1).block()
     }
-
-
-
 }
