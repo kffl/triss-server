@@ -1,7 +1,7 @@
 
 DROP VIEW IF EXISTS  ApplicationFull;
 DROP VIEW IF EXISTS  ApplicationRow;
-DROP TABLE IF EXISTS  TRANSPORT;
+DROP TABLE IF EXISTS TRANSPORT;
 DROP TABLE IF EXISTS Application;
 DROP TABLE IF EXISTS AdvanceApplication;
 DROP TABLE IF EXISTS FinancialSource;
@@ -65,7 +65,8 @@ INSERT INTO Place (city, country)
 VALUES ('Los Angeles', 'USA'),
        ('Warszawa', 'Polska'),
        ('Cambridge', 'USA'),
-       ('Montreal', 'Kanada');
+       ('Montreal', 'Kanada'),
+       ('Berlin', 'Niemcy');
 
 CREATE TABLE PrepaymentFee
 (
@@ -78,7 +79,9 @@ INSERT INTO PrepaymentFee (amount, paymentType)
 VALUES (2500, 'Cash'),
        (1250, 'Card'),
        (1400, 'Transfer'),
-       (3000.50, 'Transfer');
+       (3000.50, 'Transfer'),
+       (100, 'Blik'),
+       (100, 'Card');
 
 CREATE TABLE Prepayment
 (
@@ -91,7 +94,8 @@ CREATE TABLE Prepayment
 
 INSERT INTO Prepayment (conferenceFeeId, accommodationFeeId)
 VALUES (1, 2),
-       (3, 4);
+       (3, 4),
+       (5, 6);
 
 CREATE TABLE Employee
 (
@@ -164,7 +168,8 @@ INSERT INTO AdvanceApplication (placeId, startDate, endDate, residenceDietQuanti
                                 accommodationLimit, travelDietAmount, travelCosts, otherCostsDescription,
                                 otherCostsAmount, residenceDietSum, accommodationSum, advanceSum)
 VALUES (1, '2020-12-12', '2020-12-15', 2, 200, 1, 400, 300, 50, NULL, NULL, 400, 400, 1150),
-       (4, '2020-11-10', '2020-11-13', 1, 500, 1, 500, 400, 50, NULL, NULL, 500, 500, 1450);
+       (4, '2020-11-10', '2020-11-13', 1, 500, 1, 500, 400, 50, NULL, NULL, 500, 500, 1450),
+       (5, '2020-12-12', '2020-12-15', 10, 10, 10, 10, 100, 100, 'OtherCosts', 100, 100, 100, 400);
 
 CREATE TABLE Application
 (
@@ -215,18 +220,23 @@ INSERT INTO Application (firstName, surname, birthDate, phoneNumber, academicDeg
                          abroadEndDateInsurance,
                          selfInsured, advanceApplicationId, prepaymentId, comments, wildaComments, directorComments,
                          rectorComments, status)
-VALUES ('Jan', 'Kowalczyk', '2000-01-01', '+48 123456789', 'Prof.', 170387, 'IdCard', 'ABC12345', '2020-11-03', 1, 1,
+VALUES  ('Jan', 'Kowalczyk', '2000-01-01', '+48 123456789', 'Prof.', 170387, 'IdCard', 'ABC12345', '2020-11-03', 1, 1,
         '2020-12-12',
         '2020-12-15', 'Konferencja', 'AntyCovid2020',
         ' TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą',
         '2020-12-13', '2020-12-14', NULL, '2020-12-12', '2020-12-15', FALSE, 1, 1, NULL, NULL, NULL, NULL,
         'WaitingForDirector'),
-       ('Jan', 'Kowalski', '1990-03-21', '+48 321456987', 'Prof.', 2, 'Passport', 'DE6789000', '2020-11-04', 4, 2,
+        ('Jan', 'Kowalski', '1990-03-21', '+48 321456987', 'Prof.', 2, 'Passport', 'DE6789000', '2020-11-04', 4, 2,
         '2020-11-10',
         '2020-11-13', 'Konferencja', 'AntyCovid2020',
         ' TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą',
         '2020-11-10', '2020-11-13', 1, '2020-11-10', '2020-11-13', FALSE, 2, 2, NULL, NULL, NULL, NULL,
-        'WaitingForDirector');
+        'WaitingForDirector'),
+        ('Jan', 'Kowalczyk', '2000-01-01', '+48 123456789', 'Prof.', 170387, 'Passport', 'AB6789000', '2020-12-01', 5, 1,
+         '2020-12-12', '2020-12-15', 'Konferencja', 'AntyCovid2020',
+         ' TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą',
+         '2020-12-13', '2020-12-14', NULL, '2020-12-12', '2020-12-15', FALSE, 3, 3, 'comments', NULL, NULL, NULL,
+         'WaitingForDirector');
 
 CREATE TABLE Transport
 (
@@ -247,7 +257,9 @@ INSERT INTO Transport (applicationID,destinationFrom, destinationTo, departureDa
 VALUES (1,'Poznań', 'Los Angeles', '2020-12-12', 6, 30, 'Plane', 'LOT'),
        (1,'Los Angeles', 'Poznań', '2020-12-14', 20, 10, 'Plane', 'RyanAir'),
        (2,'Poznań', 'Montreal', '2020-11-10', 4, 24, 'Plane', 'LOT'),
-       (2,'Montreal', 'Poznań', '2020-11-13', 5, 30, 'Plane', 'RyanAir');
+       (2,'Montreal', 'Poznań', '2020-11-13', 5, 30, 'Plane', 'RyanAir'),
+       (3,'Poznań','Berlin','2020-12-12',10 ,10 ,'Plane','RyanAir'),
+       (3,'Berlin','Poznań','2020-12-15',12 ,30 ,'Plane','RyanAir');
 
 CREATE VIEW ApplicationRow AS
 SELECT Application.id,

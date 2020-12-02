@@ -68,11 +68,11 @@ data class ApplicationFull(
         val prepaymentId: Long?,
         @Column("comments")
         val comments: String?,
-        @Column("comments")
+        @Column("wildaComments")
         val wildaComments: String?,
-        @Column("comments")
+        @Column("directorComments")
         val directorComments: String?,
-        @Column("comments")
+        @Column("rectorComments")
         val rectorComments: String?,
         @Column("status")
         val status: Status?,
@@ -148,17 +148,18 @@ data class ApplicationFull(
         val pcPaymentType: PaymentType
 ) {
     fun getApplication() = Application(
-            id, firstName, surname, birthDate,
-            academicDegree, phoneNumber, employeeId,
-            identityDocumentType, identityDocumentNumber, createdOn, placeId,
-            abroadStartDate, abroadEndDate,
-            instituteId, purpose, conference,
-            subject, conferenceStartDate,
-            conferenceEndDate, financialSourceId,
-            abroadStartDateInsurance, abroadEndDateInsurance,
-            selfInsured, advanceApplicationId, prepaymentId,
-            comments, wildaComments,
-            directorComments, rectorComments, status
+            id = id, firstName = firstName, surname = surname,
+            birthDate = birthDate,
+            academicDegree = academicDegree, phoneNumber = phoneNumber, employeeId = employeeId,
+            identityDocumentType = identityDocumentType, identityDocumentNumber = identityDocumentNumber, createdOn = createdOn, placeId = placeId,
+            abroadStartDate = abroadStartDate, abroadEndDate = abroadEndDate,
+            instituteId = instituteId, purpose = purpose, conference = conference,
+            subject = subject, conferenceStartDate = conferenceStartDate,
+            conferenceEndDate = conferenceEndDate, financialSourceId = financialSourceId,
+            abroadStartDateInsurance = abroadStartDateInsurance, abroadEndDateInsurance = abroadEndDateInsurance,
+            selfInsured = selfInsured, advanceApplicationId = advanceApplicationId, prepaymentId = prepaymentId,
+            comments = comments, wildaComments = wildaComments,
+            directorComments = directorComments, rectorComments = rectorComments, status = status
     )
 
     fun getPlace() = Place(pId, pCountry, pCity)

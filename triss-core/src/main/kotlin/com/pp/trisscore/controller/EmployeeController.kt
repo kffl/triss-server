@@ -10,7 +10,6 @@ import com.pp.trisscore.service.EmployeeService
 import com.pp.trisscore.service.TokenService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
 import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Mono
 import java.util.*
@@ -22,7 +21,7 @@ class EmployeeController(val employeeService: EmployeeService,
                          val tokenService: TokenService) {
 
 
-    val tokenData = TokenData(2121,"Andrzej","Jerzy")
+    val tokenData = TokenData(170387,"Jan","Kowalczyk")
 
     @PostMapping("/get")
     fun getEmployee(
@@ -37,7 +36,15 @@ class EmployeeController(val employeeService: EmployeeService,
 //            token: JwtAuthenticationToken,
                        @RequestBody employee: Employee): Mono<Employee> {
 //        val tokenData = tokenService.getEmployeeDataFromToken(token)
-        return employeeService.saveEmployee(tokenData,employee)
+        return employeeService.updateEmployee(tokenData,employee)
+    }
+
+    @PostMapping("/create")
+    fun createEmployee(
+//            token: JwtAuthenticationToken,
+            @RequestBody employee: Employee): Mono<Employee> {
+//        val tokenData = tokenService.getEmployeeDataFromToken(token)
+        return employeeService.newEmployee(tokenData,employee)
     }
 
     @ExceptionHandler(value = [InvalidRequestBodyException::class])

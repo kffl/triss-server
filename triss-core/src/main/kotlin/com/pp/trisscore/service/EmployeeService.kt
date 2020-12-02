@@ -1,9 +1,6 @@
 package com.pp.trisscore.service
 
-import com.pp.trisscore.exceptions.EmployeeNotFoundException
-import com.pp.trisscore.exceptions.InvalidRequestBodyException
-import com.pp.trisscore.exceptions.ObjectNotFoundException
-import com.pp.trisscore.exceptions.UnauthorizedException
+import com.pp.trisscore.exceptions.*
 import com.pp.trisscore.model.architecture.TokenData
 import com.pp.trisscore.model.classes.Employee
 import com.pp.trisscore.model.enums.Role
@@ -15,23 +12,19 @@ import reactor.core.publisher.Mono
 class EmployeeService(val employeeRepository: EmployeeRepository,
                       val instituteService: InstituteService) {
 
-    fun findEmployeeAndCheckRole(tokenData: TokenData, role: Role): Mono<Employee?> {
-        return findEmployee(tokenData).map { x -> checkRole(x, role) }
+    fun findEmployeeAndCheckRole(tokenData: TokenData, role: Role): Mono<Employee> {
+        return employeeRepository.findByEmployeeIdAndEmployeeType(tokenData.employeeId,role)
                 .switchIfEmpty(Mono.error(UnauthorizedException("Employee don't have access to this.")))
     }
 
     fun findEmployee(t: TokenData) =
-            employeeRepository.findByELoginId(t.eLoginId)
+            employeeRepository.findByEmployeeId(t.employeeId)
                     .switchIfEmpty(Mono.error(EmployeeNotFoundException("Employee not Found")))
 
-    fun checkRole(employee: Employee, role: Role): Employee? {
-        if (employee.employeeType == role)
-            return employee
-        return null
-    }
-
-    fun saveEmployee(tokenData: TokenData, employee: Employee): Mono<Employee> {
-        if (employee.eLoginId != tokenData.eLoginId)
+    fun updateEmployee(tokenData: TokenData, employee: Employee): Mono<Employee> {
+        if (employee.id == null)
+            throw InvalidRequestBodyException("Id cannot be null")
+        if (employee.employeeId != tokenData.employeeId)
             throw InvalidRequestBodyException("Id must equal to id in token.")
         if (employee.instituteID == null)
             throw InvalidRequestBodyException("InstituteId cannot be null")
@@ -41,31 +34,48 @@ class EmployeeService(val employeeRepository: EmployeeRepository,
             throw InvalidRequestBodyException("Employee surname must equal to surname in token")
         return instituteService.findInstituteById(employee.instituteID)
                 .switchIfEmpty(Mono.error(ObjectNotFoundException("Institute Not Exists.")))
-                .flatMap {
-                    employeeRepository.findByELoginId(tokenData.eLoginId)
-                            .flatMap { actualEmployee -> updateEmployee(actualEmployee, employee) } }
-                            .switchIfEmpty( newEmployee(employee))
+                .flatMap { x -> employeeRepository.findByEmployeeId(tokenData.employeeId) }
+                .switchIfEmpty(Mono.error { UserNotFoundException("User not exists") })
+                .flatMap { actualEmployee -> updateEmployee2(actualEmployee, employee) }
     }
 
-    private fun updateEmployee(actualEmployee: Employee, newEmployee: Employee): Mono<Employee> {
-        if (actualEmployee.employeeType != newEmployee.employeeType)
-            throw InvalidRequestBodyException("employeeType cannot be changed by user")
+    private fun updateEmployee2(actualEmployee: Employee?, employee: Employee): Mono<Employee> {
+        if (actualEmployee!!.employeeType != employee.employeeType)
+            throw InvalidRequestBodyException("Employee Type cannot be updated by user")
         val employeeToSave = actualEmployee.copy(
-                firstName = newEmployee.firstName,
-                surname = newEmployee.surname,
-                birthDate = newEmployee.birthDate,
-                phoneNumber = newEmployee.phoneNumber,
-                academicDegree = newEmployee.academicDegree,
-                instituteID = newEmployee.instituteID
+                firstName = employee.firstName,
+                surname = employee.surname,
+                birthDate = employee.birthDate,
+                phoneNumber = employee.phoneNumber,
+                academicDegree = employee.academicDegree,
+                instituteID = employee.instituteID
         )
         return employeeRepository.save(employeeToSave)
     }
 
-    private fun newEmployee(newEmployee: Employee): Mono<Employee> {
-        if (newEmployee.employeeType != Role.USER)
+
+    fun newEmployee(tokenData: TokenData, employee: Employee): Mono<Employee> {
+        if (employee.id != null)
+            throw InvalidRequestBodyException("Id must be null")
+        if (employee.employeeId != tokenData.employeeId)
+            throw InvalidRequestBodyException("EmployeeId must equal to id in token.")
+        if (employee.instituteID == null)
+            throw InvalidRequestBodyException("InstituteId cannot be null")
+        if (employee.firstName != tokenData.name)
+            throw InvalidRequestBodyException("Employee fistName must equal to name in token")
+        if (employee.surname != tokenData.surname)
+            throw InvalidRequestBodyException("Employee surname must equal to surname in token")
+        if (employee.employeeType != Role.USER)
             throw InvalidRequestBodyException("employeeType must be USER")
-        return employeeRepository.save(newEmployee)
+        return instituteService.findInstituteById(employee.instituteID)
+                .switchIfEmpty(Mono.error(ObjectNotFoundException("Institute Not Exists.")))
+                .flatMap { x -> employeeRepository.findByEmployeeId(tokenData.employeeId) }
+                .flatMap { x -> ifUserFoundThrowException(x) }
+                .switchIfEmpty(employeeRepository.save(employee))
     }
+
+    fun ifUserFoundThrowException(employee: Employee): Mono<Employee>
+            = throw UserAllReadyExistsException("User All Ready Exists")
 
 
 }

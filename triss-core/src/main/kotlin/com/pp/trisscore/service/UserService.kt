@@ -17,29 +17,30 @@ import reactor.core.publisher.Mono
 
 
 @Service
-class UserService(val employeeService: EmployeeService,
-                  val applicationService: ApplicationService,
-                  val advanceApplicationService: AdvanceApplicationService,
-                  val applicationFullService: ApplicationFullService,
-                  val validationService: ValidationService,
-                  val instituteService: InstituteService,
-                  val prepaymentService: PrepaymentService,
-                  val placeService: PlaceService,
-                  val transportService: TransportService) {
-    val role: Role = Role.USER
+class UserService(private val employeeService: EmployeeService,
+                  private val applicationService: ApplicationService,
+                  private val advanceApplicationService: AdvanceApplicationService,
+                  private val applicationFullService: ApplicationFullService,
+                  private val validationService: ValidationService,
+                  private val instituteService: InstituteService,
+                  private val prepaymentService: PrepaymentService,
+                  private val placeService: PlaceService,
+                  private val transportService: TransportService) {
+    private val role: Role = Role.USER
 
     fun getMyApplications(tokenData: TokenData, body: PageInfo<ApplicationRow>): Flux<ApplicationRow> {
-        if (tokenData.eLoginId != body.filter.employeeId)
+        if (tokenData.employeeId != body.filter.employeeId)
             throw InvalidRequestBodyException("Wrong EmployeeId.")
         return employeeService.findEmployee(tokenData)
                 .flatMapMany { x -> applicationService.getAllByFilter(body) }
     }
 
     fun getCountByFilter(tokenData: TokenData, body: PageInfo<ApplicationRow>): Mono<Long> {
-        if (tokenData.eLoginId != body.filter.employeeId)
+        if (tokenData.employeeId != body.filter.employeeId && body.filter.employeeId != null)
             throw InvalidRequestBodyException("Wrong EmployeeId.")
+        val searchBody = body.copy(filter = body.filter.copy(employeeId = tokenData.employeeId))
         return employeeService.findEmployee(tokenData)
-                .flatMap { x -> applicationService.getCountByFilter(body) }
+                .flatMap { x -> applicationService.getCountByFilter(searchBody) }
     }
 
     fun getMyFullApplication(tokenData: TokenData, body: Long): Mono<ApplicationInfo> {
@@ -47,12 +48,12 @@ class UserService(val employeeService: EmployeeService,
     }
 
     fun createApplication(tokenData: TokenData, body: ApplicationInfo): Mono<Transport> {
-        return employeeService.findEmployeeAndCheckRole(tokenData, role)
-                .flatMap { x -> createApplication(body, x) }
+        return employeeService.findEmployee(tokenData)
+                .flatMap { x -> createApplication2(body, x) }
     }
 
     @Transactional
-    fun createApplication(applicationInfo: ApplicationInfo, user: Employee?): Mono<Transport> {
+    fun createApplication2(applicationInfo: ApplicationInfo, user: Employee?): Mono<Transport> {
         if (user == null)
             throw EmployeeNotFoundException("User Not Found")
         validationService.validateUserApplication(applicationInfo, user)
@@ -65,7 +66,7 @@ class UserService(val employeeService: EmployeeService,
         val advanceApplication = placeId.flatMap { x -> advanceApplicationService.createAdvanceApplication(applicationInfo.advanceApplication, x!!) }
         val application = Mono.zip(prepaymentId, advanceApplication, institute)
                 .flatMap { data ->
-                    applicationService.saveApplication(applicationService.fillApplication(applicationInfo, user.eLoginId!!, data.t2.placeId!!, data.t1!!, data.t2.id!!, data.t3.id!!))
+                    applicationService.saveApplication(applicationService.fillApplication(applicationInfo, user.employeeId!!, data.t2.placeId!!, data.t1!!, data.t2.id!!, data.t3.id!!))
                 }
         return application.flatMap { x -> transportService.save(applicationInfo.transport, x.id!!) }
     }

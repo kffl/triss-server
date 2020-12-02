@@ -69,11 +69,11 @@ data class Application(
         val prepaymentId: Long?,
         @Column("comments")
         val comments: String?,
-        @Column("comments")
+        @Column("wildaComments")
         val wildaComments: String?,
-        @Column("comments")
+        @Column("directorComments")
         val directorComments: String?,
-        @Column("comments")
+        @Column("rectorComments")
         val rectorComments: String?,
         @Column("status")
         val status: Status?
