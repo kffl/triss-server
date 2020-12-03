@@ -31,8 +31,10 @@ class UserService(private val employeeService: EmployeeService,
     fun getMyApplications(tokenData: TokenData, body: PageInfo<ApplicationRow>): Flux<ApplicationRow> {
         if (tokenData.employeeId != body.filter.employeeId)
             throw InvalidRequestBodyException("Wrong EmployeeId.")
-        return employeeService.findEmployee(tokenData)
+        var x = employeeService.findEmployee(tokenData)
                 .flatMapMany { x -> applicationService.getAllByFilter(body) }
+        x.subscribe{x -> print(x)};
+        return x;
     }
 
     fun getCountByFilter(tokenData: TokenData, body: PageInfo<ApplicationRow>): Mono<Long> {
