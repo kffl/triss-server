@@ -23,7 +23,7 @@ class ApplicationRowRepository(databaseClient: DatabaseClient) {
                 .sort(pageInfo.getSort())
                 .limit(pageInfo.pageSize)
                 .offset(pageInfo.pageNumber * pageInfo.pageSize),
-                ApplicationRow::class.java)
+                ApplicationRow::class.java) //TODO after adding enums to database we need to change status to string and display text, not value in enum or id
     }
 
     fun getCountByFilter(pageInfo: PageInfo<ApplicationRow>): Mono<Long> {

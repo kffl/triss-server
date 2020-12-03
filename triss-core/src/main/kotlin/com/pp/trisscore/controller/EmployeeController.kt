@@ -10,40 +10,39 @@ import com.pp.trisscore.service.EmployeeService
 import com.pp.trisscore.service.TokenService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
 import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Mono
 import java.util.*
 
-@RestController
 @CrossOrigin
+@RestController
 @RequestMapping("/employee")
 class EmployeeController(val employeeService: EmployeeService,
                          val tokenService: TokenService) {
 
 
-    val tokenData = TokenData(170387,"Jan","Kowalczyk")
-
     @PostMapping("/get")
     fun getEmployee(
-//            token: JwtAuthenticationToken
+            token: JwtAuthenticationToken
     ): Mono<Employee> {
-//        val tokenData = tokenService.getEmployeeDataFromToken(token)
+        val tokenData = tokenService.getEmployeeDataFromToken(token)
         return employeeService.findEmployee(tokenData)
     }
 
     @PostMapping("/update")
     fun updateEmployee(
-//            token: JwtAuthenticationToken,
+            token: JwtAuthenticationToken,
                        @RequestBody employee: Employee): Mono<Employee> {
-//        val tokenData = tokenService.getEmployeeDataFromToken(token)
+        val tokenData = tokenService.getEmployeeDataFromToken(token)
         return employeeService.updateEmployee(tokenData,employee)
     }
 
     @PostMapping("/create")
     fun createEmployee(
-//            token: JwtAuthenticationToken,
+            token: JwtAuthenticationToken,
             @RequestBody employee: Employee): Mono<Employee> {
-//        val tokenData = tokenService.getEmployeeDataFromToken(token)
+        val tokenData = tokenService.getEmployeeDataFromToken(token)
         return employeeService.newEmployee(tokenData,employee)
     }
 

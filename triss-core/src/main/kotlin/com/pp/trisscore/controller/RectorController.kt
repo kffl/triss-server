@@ -13,6 +13,7 @@ import com.pp.trisscore.service.RectorService
 import com.pp.trisscore.service.TokenService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
 import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
@@ -24,38 +25,37 @@ import java.util.*
 @RequestMapping("/rector")
 class RectorController(val rectorService: RectorService,
                        private val tokenService: TokenService) {
-    val tokenBody = TokenData(3, "Jerzy", "Zbiałowierzy")
 
 
     @PostMapping("/application/get")
     fun getApplications(
-//            token: JwtAuthenticationToken,
+            token: JwtAuthenticationToken,
             @RequestBody pageInfo: PageInfo<ApplicationRow>): Flux<ApplicationRow> {
-//        val tokenBody = tokenService.getEmployeeDataFromToken(token)
+        val tokenBody = tokenService.getEmployeeDataFromToken(token)
         return rectorService.getApplications(pageInfo, tokenBody)
     }
 
     @PostMapping("/application/count")
     fun getCountByFilter(@RequestBody body: PageInfo<ApplicationRow>
-//                         , token: JwtAuthenticationToken
+                         , token: JwtAuthenticationToken
     ): Mono<Long> {
-//        val tokenBody = tokenService.getEmployeeDataFromToken(token)
+        val tokenBody = tokenService.getEmployeeDataFromToken(token)
         return rectorService.getCountByFilter(tokenBody, body)
     }
 
     @PostMapping("application/approve")
     fun approveApplication(@RequestBody body: ApplicationInfo
-//                           , token: JwtAuthenticationToken
+                           , token: JwtAuthenticationToken
     ): Mono<Application> {
-//        val tokenBody = tokenService.getEmployeeDataFromToken(token)
+        val tokenBody = tokenService.getEmployeeDataFromToken(token)
         return rectorService.approveApplication(tokenBody, body)
     }
 
     @PostMapping("application/getFull")
     fun getFullApplication(@RequestBody id: Long
-//                           , token: JwtAuthenticationToken
+                           , token: JwtAuthenticationToken
     ) : Mono<ApplicationInfo>{
-//        val tokenBody = tokenService.getEmployeeDataFromToken(token)
+        val tokenBody = tokenService.getEmployeeDataFromToken(token)
         return rectorService.getFullApplication(tokenBody, id)
     }
 
