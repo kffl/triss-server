@@ -42,6 +42,16 @@ class WildaController(val wildaService: WildaService) {
         return wildaService.getFullApplication(tokenBody, id)
     }
 
+    @PostMapping("application/reject")
+    fun rejectApplication(@RequestBody body: ApplicationInfo):Mono<Application>
+//                          ,
+//                          token: JwtAuthenticationToken)
+    {
+//        val tokenBody = tokenService.getEmployeeDataFromToken(token)
+        return wildaService.rejectApplication(tokenBody, body);
+    }
+
+
     @PostMapping("application/approve")
     fun approveApplication(@RequestBody body: ApplicationInfo
 //                           , token: JwtAuthenticationToken

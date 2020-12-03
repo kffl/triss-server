@@ -1,5 +1,6 @@
 package com.pp.trisscore.service
 
+import com.pp.trisscore.exceptions.ObjectNotFoundException
 import com.pp.trisscore.exceptions.UnauthorizedException
 import com.pp.trisscore.model.architecture.ApplicationInfo
 import com.pp.trisscore.model.architecture.PageInfo
@@ -41,7 +42,7 @@ class DirectorService(val employeeService: EmployeeService,
     }
 
     fun validateApproveAndSaveApplication(dbApplication: ApplicationInfo, reqApplication: ApplicationInfo): Mono<Application> {
-        comparisonService.compareApplicationsInfo(dbApplication, reqApplication, Role.DIRECTOR)
+        comparisonService.compareApproveApplicationsInfo(dbApplication, reqApplication, Role.DIRECTOR)
         return financialSourceService.save(reqApplication.financialSource!!)
                 .flatMap { x -> applicationService.saveApplication(reqApplication.application.copy(financialSourceId = x.id)) }
     }
@@ -50,5 +51,24 @@ class DirectorService(val employeeService: EmployeeService,
     fun getFullApplication(tokenBody: TokenData, id: Long): Mono<ApplicationInfo> {
         return employeeService.findEmployeeAndCheckRole(tokenBody, role).switchIfEmpty(Mono.error(UnauthorizedException("")))
                 .flatMap { x -> applicationFullService.getFullDirectorApplication(id, x!!) }
+    }
+
+
+
+    @Transactional
+    fun rejectApplication(tokenBody: TokenData, body: ApplicationInfo): Mono<Application> {
+        validationService.validateRejectApplicationInfo(body,role)
+        return employeeService.findEmployeeAndCheckRole(tokenBody,role)
+                .switchIfEmpty(Mono.error(UnauthorizedException("")))
+                .flatMap{x -> applicationFullService.getFullDirectorApplication(body.application.id!!,x!!)}
+                .switchIfEmpty(Mono.error(ObjectNotFoundException("")))
+                .flatMap { x -> validateRejectAndSaveApplication(x,body)}
+
+    }
+
+    private fun validateRejectAndSaveApplication(dbApplication: ApplicationInfo, reqApplication: ApplicationInfo): Mono<Application> {
+        comparisonService.compareRejectedApplicationsInfo(dbApplication, reqApplication, role)
+        return applicationService.saveApplication(reqApplication.application)
+
     }
 }

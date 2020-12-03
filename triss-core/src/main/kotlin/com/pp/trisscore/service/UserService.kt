@@ -26,6 +26,7 @@ class UserService(private val employeeService: EmployeeService,
                   private val prepaymentService: PrepaymentService,
                   private val placeService: PlaceService,
                   private val transportService: TransportService) {
+
     private val role: Role = Role.USER
 
     fun getMyApplications(tokenData: TokenData, body: PageInfo<ApplicationRow>): Flux<ApplicationRow> {
