@@ -61,8 +61,7 @@ class RectorController(val rectorService: RectorService,
 
     @PostMapping("application/reject")
     fun rejectApplication(@RequestBody body: ApplicationInfo):Mono<Application>
-//                          ,
-//                          token: JwtAuthenticationToken)
+//                          ,token: JwtAuthenticationToken)
     {
 //        val tokenBody = tokenService.getEmployeeDataFromToken(token)
         return rectorService.rejectApplication(tokenBody, body);

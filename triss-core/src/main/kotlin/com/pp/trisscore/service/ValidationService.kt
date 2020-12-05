@@ -66,7 +66,7 @@ class ValidationService {
         if (applicationInfo.application.id != null)
             throw(InvalidRequestBodyException("Application Id must be null"))
         if (applicationInfo.application.status != Status.WaitingForDirector)
-            throw(InvalidRequestBodyException("Application Status.kt must be WaitingForDirector"))
+            throw(InvalidRequestBodyException("Application Status must be WaitingForDirector"))
         //TODO więcej walidacji do zrobienia
     }
 

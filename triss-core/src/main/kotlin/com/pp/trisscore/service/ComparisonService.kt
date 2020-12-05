@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service
 class ComparisonService {
 
     fun compareApproveApplicationsInfo(dbApplicationInfo: ApplicationInfo, reqApplicationInfo: ApplicationInfo, role: Role) {
-        compareApplications(dbApplicationInfo.application, reqApplicationInfo.application,role)
         compareApproveApplication(role, dbApplicationInfo.application, reqApplicationInfo.application)
         compareInstitutes(dbApplicationInfo.institute, reqApplicationInfo.institute)
         if (role != Role.DIRECTOR)
@@ -23,11 +22,11 @@ class ComparisonService {
     }
 
     fun compareRejectedApplicationsInfo(dbApplicationInfo: ApplicationInfo, reqApplicationInfo: ApplicationInfo, role: Role) {
-        compareApplications(dbApplicationInfo.application, reqApplicationInfo.application,role)
         compareRejectedApplications(role, dbApplicationInfo.application, reqApplicationInfo.application)
         compareInstitutes(dbApplicationInfo.institute, reqApplicationInfo.institute)
-        if (role != Role.DIRECTOR)
+        if (role != Role.DIRECTOR) {
             compareFinancialSources(dbApplicationInfo.financialSource!!, reqApplicationInfo.financialSource!!)
+        }
         compareAdvanceApplication(dbApplicationInfo.advanceApplication, reqApplicationInfo.advanceApplication)
         compareAdvancePayments(dbApplicationInfo.advancePayments, reqApplicationInfo.advancePayments)
     }
@@ -48,7 +47,7 @@ class ComparisonService {
             throw InvalidRequestBodyException("PlaceCity in DB differs from the request's PlaceCity")
     }
 
-    fun compareApplications(dbApplication: Application, reqApplication: Application, role: Role) {
+    private fun compareBaseApplications(dbApplication: Application, reqApplication: Application, role: Role) {
         if (dbApplication.id != reqApplication.id)
             throw InvalidRequestBodyException("ApplicationId in DB differs from the request's one")
         if (dbApplication.firstName != reqApplication.firstName)
@@ -138,6 +137,7 @@ class ComparisonService {
     }
 
     private fun compareApproveApplication(role: Role, dbApplication: Application, reqApplication: Application) {
+        compareBaseApplications(dbApplication, reqApplication, role)
         when (role) {
             Role.WILDA -> {
                 if (reqApplication.status != Status.WaitingForRector)
@@ -152,7 +152,7 @@ class ComparisonService {
             Role.RECTOR -> {
                 if (reqApplication.status != Status.Accepted)
                     throw InvalidRequestBodyException("ApplicationStatus in DB differs from the request's one")
-                    return
+                return
             }
             Role.USER -> {
                 throw UnauthorizedException("You do not have permission to perform this action")
@@ -161,6 +161,7 @@ class ComparisonService {
     }
 
     private fun compareRejectedApplications(role: Role, dbApplication: Application, reqApplication: Application) {
+        compareBaseApplications(dbApplication, reqApplication, role)
         when (role) {
             Role.WILDA -> {
                 if (reqApplication.status != Status.RejectedByWilda)

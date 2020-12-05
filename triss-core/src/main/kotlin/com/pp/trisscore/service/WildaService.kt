@@ -15,11 +15,11 @@ import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
 @Service
-class WildaService(val employeeService: EmployeeService,
-                   val applicationService: ApplicationService,
-                   val applicationFullService: ApplicationFullService,
-                   val comparisonService: ComparisonService,
-                   val validationService: ValidationService) {
+class WildaService(private val employeeService: EmployeeService,
+                   private val applicationService: ApplicationService,
+                   private val applicationFullService: ApplicationFullService,
+                   private val comparisonService: ComparisonService,
+                   private val validationService: ValidationService) {
 
 
     private val role = Role.WILDA
@@ -35,13 +35,15 @@ class WildaService(val employeeService: EmployeeService,
     }
 
     fun approveApplication(tokenBody: TokenData, body: ApplicationInfo): Mono<Application> {
-        return employeeService.findEmployeeAndCheckRole(tokenBody, role).switchIfEmpty(Mono.error(UnauthorizedException("")))
-                .flatMap { x -> applicationFullService.getFullApplication(body.application.id!!) }
+        return employeeService.findEmployeeAndCheckRole(tokenBody, role)
+                .switchIfEmpty(Mono.error(UnauthorizedException("")))
+                .flatMap { applicationFullService.getFullApplication(body.application.id!!) }
+                .switchIfEmpty(Mono.error(ObjectNotFoundException("")))
                 .flatMap { x -> validateApproveAndSaveApplication(x, body) }
     }
 
-    private fun validateApproveAndSaveApplication(dbApplicationInfo: ApplicationInfo?, reqApplicationInfo: ApplicationInfo): Mono<out Application>? {
-        comparisonService.compareApproveApplicationsInfo(dbApplicationInfo!!, reqApplicationInfo, role)
+    private fun validateApproveAndSaveApplication(dbApplicationInfo: ApplicationInfo, reqApplicationInfo: ApplicationInfo): Mono<out Application>? {
+        comparisonService.compareApproveApplicationsInfo(dbApplicationInfo, reqApplicationInfo, role)
         return applicationService.saveApplication(reqApplicationInfo.application)
     }
 
