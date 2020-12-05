@@ -1,11 +1,9 @@
 package com.pp.trisscore.integration
 
-import com.pp.trisscore.data.TestData
 import com.pp.trisscore.data.TestData.Companion.correctApplicationForRector
 import com.pp.trisscore.data.TestData.Companion.exampleApplicationInfoForRector
 import com.pp.trisscore.data.TestData.Companion.existingDirectorToken
 import com.pp.trisscore.data.TestData.Companion.existingRectorToken
-import com.pp.trisscore.data.TestData.Companion.existingUserToken
 import com.pp.trisscore.data.TestData.Companion.pageInfo
 import com.pp.trisscore.exceptions.InvalidRequestBodyException
 import com.pp.trisscore.exceptions.UnauthorizedException

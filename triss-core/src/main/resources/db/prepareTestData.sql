@@ -237,11 +237,23 @@ VALUES  ('Jan', 'Kowalczyk', '2000-01-01', '+48 123456789', 'Prof.', 170387, 'Id
          ' TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą',
          '2020-12-13', '2020-12-14', NULL, '2020-12-12', '2020-12-15', FALSE, 3, 3, 'comments', NULL, NULL, NULL,
          'WaitingForDirector'),
+-- Rector Applications
          ('Jan', 'Kowalczyk', '2000-01-01', '+48 123456789', 'Prof.', 170387, 'Passport', 'AB6789000', '2020-12-01', 5, 1,
          '2020-12-12', '2020-12-15', 'Konferencja', 'AntyCovid2020',
          ' TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą',
          '2020-12-13', '2020-12-14', 1, '2020-12-12', '2020-12-15', FALSE, 3, 3, 'User Comments', NULL,
-         'Director comments', NULL, 'WaitingForRector');
+         'Director comments', NULL, 'WaitingForRector'),
+-- Wilda Applications
+         ('Jan', 'Kowalczyk', '2000-01-01', '+48 123456789', 'Prof.', 170387, 'Passport', 'AB6789000', '2020-12-01', 5, 1,
+         '2020-12-12', '2020-12-15', 'Konferencja', 'AntyCovid2020',
+         ' TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą',
+         '2020-12-13', '2020-12-14', 1, '2020-12-12', '2020-12-15', FALSE, 3, 3, 'User Comments', NULL,
+         'Director comments', NULL, 'WaitingForWilda'),
+         ('Jan', 'Kowalczyk', '2000-01-01', '+48 123456789', 'Prof.', 170387, 'Passport', 'AB6789000', '2020-12-01', 5, 1,
+         '2020-12-12', '2020-12-15', 'Konferencja', 'AntyCovid2020',
+         ' TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą',
+         '2020-12-13', '2020-12-14', 1, '2020-12-12', '2020-12-15', FALSE, 3, 3, 'User Comments', NULL,
+         'Director comments', NULL, 'Accepted');
 
 CREATE TABLE Transport
 (
@@ -266,7 +278,11 @@ VALUES (1,'Poznań', 'Los Angeles', '2020-12-12', 6, 30, 'Plane', 'LOT'),
        (3,'Poznań','Berlin','2020-12-12',10 ,10 ,'Plane','RyanAir'),
        (3,'Berlin','Poznań','2020-12-15',12 ,30 ,'Plane','RyanAir'),
        (4,'Poznań','Berlin','2020-12-12',10 ,10 ,'Plane','RyanAir'),
-       (4,'Berlin','Poznań','2020-12-15',12 ,30 ,'Plane','RyanAir');
+       (4,'Berlin','Poznań','2020-12-15',12 ,30 ,'Plane','RyanAir'),
+       (5,'Poznań','Berlin','2020-12-12',10 ,10 ,'Plane','RyanAir'),
+       (5,'Berlin','Poznań','2020-12-15',12 ,30 ,'Plane','RyanAir'),
+       (6,'Poznań','Berlin','2020-12-12',10 ,10 ,'Plane','RyanAir'),
+       (6,'Berlin','Poznań','2020-12-15',12 ,30 ,'Plane','RyanAir');
 
 CREATE VIEW ApplicationRow AS
 SELECT Application.id,
