@@ -57,12 +57,6 @@ class ComparisonServiceTest() {
     }
 
     @Test
-    fun shouldCompareApplicationsAndThrow() {
-        assertThrows(InvalidRequestBodyException::class.java){
-            comparisonService.compareApplications(application, application.copy(status = Status.WaitingForDirector), Role.DIRECTOR)
-        }
-    }
-    @Test
     fun shouldCompareApplicationsAndNotThrow(){
         assertDoesNotThrow("Shouldn't throw InvalidBodyRequestException"){
             comparisonService.compareApplications(application, application.copy(status = Status.WaitingForWilda), Role.DIRECTOR)
