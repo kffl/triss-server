@@ -123,7 +123,8 @@ class ComparisonService {
                 if (dbApplication.status != Status.WaitingForRector)
                     throw InvalidRequestBodyException("ApplicationStatus in DB differs from the request's one")
                 if (reqApplication.status != Status.Accepted)
-                    return
+                    throw InvalidRequestBodyException("ApplicationStatus in DB differs from the request's one")
+                return
             }
             Role.USER -> {
                 throw UnauthorizedException("You do not have permission to perform this action")
