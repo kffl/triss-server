@@ -18,13 +18,13 @@ import java.util.*
 @CrossOrigin
 @RestController
 @RequestMapping("/employee")
-class EmployeeController(val employeeService: EmployeeService,
-                         val tokenService: TokenService) {
+class EmployeeController(private val employeeService: EmployeeService,
+                         private val tokenService: TokenService) {
 
 
     @PostMapping("/get")
     fun getEmployee(
-            token: JwtAuthenticationToken
+                    token: JwtAuthenticationToken
     ): Mono<Employee> {
         val tokenData = tokenService.getEmployeeDataFromToken(token)
         return employeeService.findEmployee(tokenData)
@@ -32,16 +32,18 @@ class EmployeeController(val employeeService: EmployeeService,
 
     @PostMapping("/update")
     fun updateEmployee(
-            token: JwtAuthenticationToken,
-                       @RequestBody employee: Employee): Mono<Employee> {
+                        @RequestBody employee: Employee,
+                        token: JwtAuthenticationToken
+    ): Mono<Employee> {
         val tokenData = tokenService.getEmployeeDataFromToken(token)
         return employeeService.updateEmployee(tokenData,employee)
     }
 
     @PostMapping("/create")
     fun createEmployee(
-            token: JwtAuthenticationToken,
-            @RequestBody employee: Employee): Mono<Employee> {
+                        @RequestBody employee: Employee,
+                        token: JwtAuthenticationToken
+    ): Mono<Employee> {
         val tokenData = tokenService.getEmployeeDataFromToken(token)
         return employeeService.newEmployee(tokenData,employee)
     }

@@ -201,6 +201,9 @@ class ComparisonService {
     }
 
     fun compareAdvancePayments(dbAdvancePaymentsInfo: AdvancePaymentsInfo, reqAdvancePaymentsInfo: AdvancePaymentsInfo) {
+        if (reqAdvancePaymentsInfo.equals(dbAdvancePaymentsInfo)) {
+            // jest git
+        }
         if (dbAdvancePaymentsInfo.conferenceFeeValue.toFloat() != reqAdvancePaymentsInfo.conferenceFeeValue.toFloat())
             throw InvalidRequestBodyException("AdvancePaymentsConferenceFeeValue in DB differs from the request's one")
         if (dbAdvancePaymentsInfo.conferenceFeePaymentTypeSelect != reqAdvancePaymentsInfo.conferenceFeePaymentTypeSelect)

@@ -24,38 +24,42 @@ import java.util.*
 @RestController
 @CrossOrigin
 @RequestMapping("/director")
-class DirectorController (val directorService: DirectorService,
-                          val tokenService: TokenService) {
+class DirectorController (private val directorService: DirectorService,
+                          private val tokenService: TokenService) {
 
 
     @PostMapping("application/get")
     fun getApplications(
-            token: JwtAuthenticationToken,
-                           @RequestBody pageInfo: PageInfo<ApplicationRow>): Flux<ApplicationRow> {
+                        @RequestBody pageInfo: PageInfo<ApplicationRow>,
+                        token: JwtAuthenticationToken
+    ): Mono<List<ApplicationRow>> {
         val tokenBody = tokenService.getEmployeeDataFromToken(token)
-        return directorService.getApplications(pageInfo, tokenBody)
+        return directorService.getApplications(pageInfo, tokenBody).collectList()
     }
 
     @PostMapping("application/count")
-    fun getCountByFilter(@RequestBody body: PageInfo<ApplicationRow>
-                         ,token: JwtAuthenticationToken
+    fun getCountByFilter(
+                         @RequestBody body: PageInfo<ApplicationRow>,
+                         token: JwtAuthenticationToken
     ): Mono<Long> {
         val tokenBody = tokenService.getEmployeeDataFromToken(token)
         return directorService.getCountByFilter(tokenBody, body)
     }
 
     @PostMapping("application/approve")
-    fun approveApplication(@RequestBody body: ApplicationInfo
-                           , token: JwtAuthenticationToken
+    fun approveApplication(
+                           @RequestBody body: ApplicationInfo,
+                           token: JwtAuthenticationToken
     ): Mono<Application> {
         val tokenBody = tokenService.getEmployeeDataFromToken(token)
         return directorService.approveApplication(tokenBody, body)
     }
 
     @PostMapping("application/getFull")
-    fun getFullApplication(@RequestBody id: Long
-                           , token: JwtAuthenticationToken
-    ) : Mono<ApplicationInfo>{
+    fun getFullApplication(
+                           @RequestBody id: Long,
+                           token: JwtAuthenticationToken
+    ): Mono<ApplicationInfo>{
         val tokenBody = tokenService.getEmployeeDataFromToken(token)
         return directorService.getFullApplication(tokenBody, id)
     }

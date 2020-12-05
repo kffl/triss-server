@@ -15,41 +15,43 @@ import reactor.core.publisher.Mono
 @CrossOrigin
 @RestController
 @RequestMapping("/wilda")
-class WildaController(val wildaService: WildaService,
-                        val tokenService: TokenService) {
+class WildaController(private val wildaService: WildaService,
+                      private val tokenService: TokenService) {
 
 
     @PostMapping("/application/get")
     fun getApplications(
-            token: JwtAuthenticationToken,
-            @RequestBody pageInfo: PageInfo<ApplicationRow>): Flux<ApplicationRow> {
+            @RequestBody pageInfo: PageInfo<ApplicationRow>,
+            token: JwtAuthenticationToken
+    ): Mono<List<ApplicationRow>> {
         val tokenBody = tokenService.getEmployeeDataFromToken(token)
-        return wildaService.getApplications(pageInfo, tokenBody)
+        return wildaService.getApplications(pageInfo, tokenBody).collectList()
     }
 
     @PostMapping("/application/count")
-    fun getCountByFilter(@RequestBody body: PageInfo<ApplicationRow>
-                         , token: JwtAuthenticationToken
+    fun getCountByFilter(
+                         @RequestBody body: PageInfo<ApplicationRow>,
+                         token: JwtAuthenticationToken
     ): Mono<Long> {
         val tokenBody = tokenService.getEmployeeDataFromToken(token)
         return wildaService.getCountByFilter(tokenBody, body)
     }
 
     @PostMapping("application/getFull")
-    fun getFullApplication(@RequestBody id: Long
-                           , token: JwtAuthenticationToken
-    ) : Mono<ApplicationInfo>{
+    fun getFullApplication(
+                           @RequestBody id: Long,
+                           token: JwtAuthenticationToken
+    ): Mono<ApplicationInfo>{
         val tokenBody = tokenService.getEmployeeDataFromToken(token)
         return wildaService.getFullApplication(tokenBody, id)
     }
 
     @PostMapping("application/approve")
-    fun approveApplication(@RequestBody body: ApplicationInfo
-                           , token: JwtAuthenticationToken
+    fun approveApplication(
+                           @RequestBody body: ApplicationInfo,
+                           token: JwtAuthenticationToken
     ): Mono<Application> {
         val tokenBody = tokenService.getEmployeeDataFromToken(token)
         return wildaService.approveApplication(tokenBody, body)
     }
-
-
 }

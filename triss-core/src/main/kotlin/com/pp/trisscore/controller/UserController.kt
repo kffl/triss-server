@@ -17,43 +17,47 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import reactor.kotlin.core.publisher.toMono
 import java.util.*
 
 
 @RestController
 @CrossOrigin
 @RequestMapping("/user")
-class UserController(val userService: UserService,
-                     val tokenService: TokenService) {
-
+class UserController(private val userService: UserService,
+                     private val tokenService: TokenService) {
 
     @PostMapping("application/get")
-    fun getMyApplications(@RequestBody body: PageInfo<ApplicationRow>
-                          , token: JwtAuthenticationToken
-    ): Flux<ApplicationRow> {
+    fun getMyApplications(
+                          @RequestBody body: PageInfo<ApplicationRow>,
+                          token: JwtAuthenticationToken
+    ): Mono<List<ApplicationRow>> {
         val tokenData = tokenService.getEmployeeDataFromToken(token)
-        return userService.getMyApplications(tokenData, body.copy(filter = body.filter.copy(employeeId = tokenData.employeeId)))
+        return userService.getMyApplications(tokenData, body.copy(filter = body.filter.copy(employeeId = tokenData.employeeId))).collectList()
     }
 
     @PostMapping("application/count")
-    fun getCountByFilter(@RequestBody body: PageInfo<ApplicationRow>
-                         , token: JwtAuthenticationToken
+    fun getCountByFilter(
+                         @RequestBody body: PageInfo<ApplicationRow>,
+                         token: JwtAuthenticationToken
     ): Mono<Long> {
         val tokenData = tokenService.getEmployeeDataFromToken(token)
         return userService.getCountByFilter(tokenData, body.copy(filter = body.filter.copy(employeeId = tokenData.employeeId)))
     }
 
     @PostMapping("application/getFull")
-    fun getFullApplication(@RequestBody id: Long
-                           , token: JwtAuthenticationToken
+    fun getFullApplication(
+                           @RequestBody id: Long,
+                           token: JwtAuthenticationToken
     ): Mono<ApplicationInfo> {
         val tokenData = tokenService.getEmployeeDataFromToken(token)
         return userService.getMyFullApplication(tokenData, id)
     }
 
     @PostMapping("application/create")
-    fun createApplication(@RequestBody body: ApplicationInfo
-                          , token: JwtAuthenticationToken
+    fun createApplication(
+                          @RequestBody body: ApplicationInfo,
+                          token: JwtAuthenticationToken
     ): Mono<Transport>{
         val tokenData = tokenService.getEmployeeDataFromToken(token)
         return userService.createApplication(tokenData, body)
