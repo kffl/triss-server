@@ -12,22 +12,21 @@ import java.time.LocalDate
 @Service
 class ValidationService {
 
-    fun validateApproveInstitute(institute: Institute){
+    fun validateInstitute(institute: Institute) {
         if (institute.id == null)
             throw InvalidRequestBodyException("InstituteId cannot be null")
     }
 
-    fun validateApprovePlace(place: Place){
+    fun validatePlace(place: Place) {
         if (place.id == null)
             throw InvalidRequestBodyException("PlaceId cannot be null")
     }
 
-    fun validateApproveAdvanceApplication(advanceApplication: AdvanceApplication){
+    fun validateAdvanceApplication(advanceApplication: AdvanceApplication) {
         if (advanceApplication.id == null)
             throw InvalidRequestBodyException("AdvanceApplicationId cannot be null")
         if (advanceApplication.placeId == null)
             throw InvalidRequestBodyException("AdvanceApplicationPlaceId cannot be null")
-
     }
 
     fun validateApproveFinancialSource(financialSource: FinancialSource?) {
@@ -72,14 +71,24 @@ class ValidationService {
     }
 
     fun validateApproveApplicationInfo(applicationInfo: ApplicationInfo, role: Role) {
-        validateApproveInstitute(applicationInfo.institute)
-        validateApprovePlace(applicationInfo.place)
-        validateApproveAdvanceApplication(applicationInfo.advanceApplication)
-        validateApproveApplication(applicationInfo.application, role)
+        validateInstitute(applicationInfo.institute)
+        validatePlace(applicationInfo.place)
+        validateAdvanceApplication(applicationInfo.advanceApplication)
+        validateApproveAndRejectApplication(applicationInfo.application, role)
         validateApproveFinancialSource(applicationInfo.financialSource)
     }
 
-    private fun validateApproveApplication(application: Application, role: Role) {
+    fun validateRejectApplicationInfo(applicationInfo: ApplicationInfo, role: Role) {
+        validateInstitute(applicationInfo.institute)
+        validatePlace(applicationInfo.place)
+        validateAdvanceApplication(applicationInfo.advanceApplication)
+        validateApproveAndRejectApplication(applicationInfo.application, role)
+        if (role != Role.DIRECTOR)
+            validateApproveFinancialSource(applicationInfo.financialSource)
+    }
+
+
+    private fun validateApproveAndRejectApplication(application: Application, role: Role) {
         if (application.id == null)
             throw(InvalidRequestBodyException("Application Id cannot be null"))
         if (application.advanceApplicationId == null)

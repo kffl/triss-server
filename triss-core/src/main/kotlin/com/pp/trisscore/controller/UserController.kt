@@ -77,4 +77,6 @@ class UserController(val userService: UserService,
         val errorDetails = ErrorsDetails(Date(), ex.toString(), ex.message!!)
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorDetails)
     }
+
+
 }

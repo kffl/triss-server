@@ -12,11 +12,21 @@ import org.springframework.stereotype.Service
 @Service
 class ComparisonService {
 
-    fun compareApplicationsInfo(dbApplicationInfo: ApplicationInfo, reqApplicationInfo: ApplicationInfo, role: Role) {
-        compareApplications(dbApplicationInfo.application, reqApplicationInfo.application, role)
+    fun compareApproveApplicationsInfo(dbApplicationInfo: ApplicationInfo, reqApplicationInfo: ApplicationInfo, role: Role) {
+        compareApproveApplication(role, dbApplicationInfo.application, reqApplicationInfo.application)
         compareInstitutes(dbApplicationInfo.institute, reqApplicationInfo.institute)
         if (role != Role.DIRECTOR)
             compareFinancialSources(dbApplicationInfo.financialSource!!, reqApplicationInfo.financialSource!!)
+        compareAdvanceApplication(dbApplicationInfo.advanceApplication, reqApplicationInfo.advanceApplication)
+        compareAdvancePayments(dbApplicationInfo.advancePayments, reqApplicationInfo.advancePayments)
+    }
+
+    fun compareRejectedApplicationsInfo(dbApplicationInfo: ApplicationInfo, reqApplicationInfo: ApplicationInfo, role: Role) {
+        compareRejectedApplications(role, dbApplicationInfo.application, reqApplicationInfo.application)
+        compareInstitutes(dbApplicationInfo.institute, reqApplicationInfo.institute)
+        if (role != Role.DIRECTOR) {
+            compareFinancialSources(dbApplicationInfo.financialSource!!, reqApplicationInfo.financialSource!!)
+        }
         compareAdvanceApplication(dbApplicationInfo.advanceApplication, reqApplicationInfo.advanceApplication)
         compareAdvancePayments(dbApplicationInfo.advancePayments, reqApplicationInfo.advancePayments)
     }
@@ -37,7 +47,7 @@ class ComparisonService {
             throw InvalidRequestBodyException("PlaceCity in DB differs from the request's PlaceCity")
     }
 
-    fun compareApplications(dbApplication: Application, reqApplication: Application, role: Role) {
+    private fun compareBaseApplications(dbApplication: Application, reqApplication: Application, role: Role) {
         if (dbApplication.id != reqApplication.id)
             throw InvalidRequestBodyException("ApplicationId in DB differs from the request's one")
         if (dbApplication.firstName != reqApplication.firstName)
@@ -98,8 +108,6 @@ class ComparisonService {
                     throw InvalidRequestBodyException("ApplicationRectorComments in DB differs from the request's one")
                 if (dbApplication.status != Status.WaitingForWilda)
                     throw InvalidRequestBodyException("ApplicationStatus in DB differs from the request's one")
-                if (reqApplication.status != Status.WaitingForRector)
-                    throw InvalidRequestBodyException("ApplicationStatus in DB differs from the request's one")
                 return
             }
             Role.DIRECTOR -> {
@@ -108,8 +116,6 @@ class ComparisonService {
                 if (dbApplication.rectorComments != reqApplication.rectorComments)
                     throw InvalidRequestBodyException("ApplicationRectorComments in DB differs from the request's one")
                 if (dbApplication.status != Status.WaitingForDirector)
-                    throw InvalidRequestBodyException("ApplicationStatus in DB differs from the request's one")
-                if (reqApplication.status != Status.WaitingForWilda)
                     throw InvalidRequestBodyException("ApplicationStatus in DB differs from the request's one")
                 return
             }
@@ -122,8 +128,55 @@ class ComparisonService {
                     throw InvalidRequestBodyException("ApplicationWildaComments in DB differs from the request's one")
                 if (dbApplication.status != Status.WaitingForRector)
                     throw InvalidRequestBodyException("ApplicationStatus in DB differs from the request's one")
+            }
+            Role.USER -> {
+                throw UnauthorizedException("You do not have permission to perform this action")
+            }
+        }
+
+    }
+
+    private fun compareApproveApplication(role: Role, dbApplication: Application, reqApplication: Application) {
+        compareBaseApplications(dbApplication, reqApplication, role)
+        when (role) {
+            Role.WILDA -> {
+                if (reqApplication.status != Status.WaitingForRector)
+                    throw InvalidRequestBodyException("ApplicationStatus in DB differs from the request's one")
+                return
+            }
+            Role.DIRECTOR -> {
+                if (reqApplication.status != Status.WaitingForWilda)
+                    throw InvalidRequestBodyException("ApplicationStatus in DB differs from the request's one")
+                return
+            }
+            Role.RECTOR -> {
                 if (reqApplication.status != Status.Accepted)
-                    return
+                    throw InvalidRequestBodyException("ApplicationStatus in DB differs from the request's one")
+                return
+            }
+            Role.USER -> {
+                throw UnauthorizedException("You do not have permission to perform this action")
+            }
+        }
+    }
+
+    private fun compareRejectedApplications(role: Role, dbApplication: Application, reqApplication: Application) {
+        compareBaseApplications(dbApplication, reqApplication, role)
+        when (role) {
+            Role.WILDA -> {
+                if (reqApplication.status != Status.RejectedByWilda)
+                    throw InvalidRequestBodyException("ApplicationStatus in DB differs from the request's one")
+                return
+            }
+            Role.DIRECTOR -> {
+                if (reqApplication.status != Status.RejectedByDirector)
+                    throw InvalidRequestBodyException("ApplicationStatus in DB differs from the request's one")
+                return
+            }
+            Role.RECTOR -> {
+                if (reqApplication.status != Status.RejectedByRector)
+                    throw InvalidRequestBodyException("ApplicationStatus in DB differs from the request's one")
+                return
             }
             Role.USER -> {
                 throw UnauthorizedException("You do not have permission to perform this action")

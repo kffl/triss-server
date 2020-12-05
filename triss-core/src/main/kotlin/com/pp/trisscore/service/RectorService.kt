@@ -1,5 +1,6 @@
 package com.pp.trisscore.service
 
+import com.pp.trisscore.exceptions.ObjectNotFoundException
 import com.pp.trisscore.exceptions.UnauthorizedException
 import com.pp.trisscore.model.architecture.ApplicationInfo
 import com.pp.trisscore.model.architecture.PageInfo
@@ -9,6 +10,7 @@ import com.pp.trisscore.model.enums.Role
 import com.pp.trisscore.model.enums.Status
 import com.pp.trisscore.model.rows.ApplicationRow
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
@@ -17,7 +19,8 @@ class RectorService(
         private val employeeService: EmployeeService,
         private val applicationService: ApplicationService,
         private val applicationFullService: ApplicationFullService,
-        val comparisonService: ComparisonService) {
+        val comparisonService: ComparisonService,
+        val validationService: ValidationService) {
 
     private val role = Role.RECTOR
 
@@ -38,13 +41,29 @@ class RectorService(
     }
 
     private fun validateApproveAndSaveApplication(dbApplicationInfo: ApplicationInfo?, reqApplicationInfo: ApplicationInfo): Mono<out Application>? {
-        comparisonService.compareApplicationsInfo(dbApplicationInfo!!, reqApplicationInfo, role)
+        comparisonService.compareApproveApplicationsInfo(dbApplicationInfo!!, reqApplicationInfo, role)
         return applicationService.saveApplication(reqApplicationInfo.application)
     }
 
     fun getFullApplication(tokenBody: TokenData, id: Long): Mono<ApplicationInfo> {
         return employeeService.findEmployeeAndCheckRole(tokenBody, role).switchIfEmpty(Mono.error(UnauthorizedException("")))
                 .flatMap { applicationFullService.getFullApplication(id) }
+    }
+
+    @Transactional
+    fun rejectApplication(tokenBody: TokenData, body: ApplicationInfo): Mono<Application> {
+        validationService.validateRejectApplicationInfo(body, role)
+        return employeeService.findEmployeeAndCheckRole(tokenBody, role)
+                .switchIfEmpty(Mono.error(UnauthorizedException("")))
+                .flatMap { x -> applicationFullService.getFullDirectorApplication(body.application.id!!, x!!) }
+                .switchIfEmpty(Mono.error(ObjectNotFoundException("")))
+                .flatMap { x -> validateRejectAndSaveApplication(x, body) }
+    }
+
+    private fun validateRejectAndSaveApplication(dbApplication: ApplicationInfo, reqApplication: ApplicationInfo): Mono<Application> {
+        comparisonService.compareRejectedApplicationsInfo(dbApplication, reqApplication, role)
+        return applicationService.saveApplication(reqApplication.application)
+
     }
 
 }
