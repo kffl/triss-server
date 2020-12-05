@@ -122,7 +122,7 @@ class UserServiceTest(@Autowired val userService: UserService,
     fun shouldNotCreateNewApplicationWrongStatusInApplication() {
         val before = userService.getCountByFilter(existingDirectorToken, pageInfo.copy(filter = filter.copy(employeeId = existingDirectorToken.employeeId))).block()
         val x = assertThrows<InvalidRequestBodyException> { userService.createApplication(existingDirectorToken, exampleApplicationInfo.copy(application = getExampleForUserApplication(existingDirector).copy(status = Status.Accepted))).block()!!.applicationID }
-        assertEquals("Application Status.kt must be WaitingForDirector", x.message)
+        assertEquals("Application Status must be WaitingForDirector", x.message)
         val after = userService.getCountByFilter(existingDirectorToken, pageInfo.copy(filter = filter.copy(employeeId = existingDirectorToken.employeeId))).block()
         assertEquals(after, before)
     }
