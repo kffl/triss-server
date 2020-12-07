@@ -12,8 +12,8 @@ import org.springframework.stereotype.Service
 @Service
 class ComparisonService {
 
-    fun compareApproveApplicationsInfo(dbApplicationInfo: ApplicationInfo, reqApplicationInfo: ApplicationInfo, role: Role) {
-        compareApproveApplication(role, dbApplicationInfo.application, reqApplicationInfo.application)
+    fun compareApplicationsInfo(dbApplicationInfo: ApplicationInfo, reqApplicationInfo: ApplicationInfo, role: Role) {
+        compareApplications(role, dbApplicationInfo.application, reqApplicationInfo.application)
         compareInstitutes(dbApplicationInfo.institute, reqApplicationInfo.institute)
         if (role != Role.DIRECTOR)
             compareFinancialSources(dbApplicationInfo.financialSource!!, reqApplicationInfo.financialSource!!)
@@ -21,162 +21,29 @@ class ComparisonService {
         compareAdvancePayments(dbApplicationInfo.advancePayments, reqApplicationInfo.advancePayments)
     }
 
-    fun compareRejectedApplicationsInfo(dbApplicationInfo: ApplicationInfo, reqApplicationInfo: ApplicationInfo, role: Role) {
-        compareRejectedApplications(role, dbApplicationInfo.application, reqApplicationInfo.application)
-        compareInstitutes(dbApplicationInfo.institute, reqApplicationInfo.institute)
-        if (role != Role.DIRECTOR) {
-            compareFinancialSources(dbApplicationInfo.financialSource!!, reqApplicationInfo.financialSource!!)
-        }
-        compareAdvanceApplication(dbApplicationInfo.advanceApplication, reqApplicationInfo.advanceApplication)
-        compareAdvancePayments(dbApplicationInfo.advancePayments, reqApplicationInfo.advancePayments)
-    }
-
     fun compareInstitutes(dbInstitute: Institute, reqInstitute: Institute) {
-        if (dbInstitute.id != reqInstitute.id)
-            throw InvalidRequestBodyException("InstituteId in DB differs from the request's InstituteId ")
-        if (dbInstitute.name != reqInstitute.name)
-            throw InvalidRequestBodyException("InstituteName in DB differs from the request's InstituteName")
+        if (dbInstitute.copy(active = reqInstitute.active) != reqInstitute)
+            throw InvalidRequestBodyException("Institute in DB differs from the request's Institute ")
     }
 
     fun comparePlaces(dbPlace: Place, reqPlace: Place) {
-        if (dbPlace.id != reqPlace.id)
-            throw InvalidRequestBodyException("PlaceId in DB differs from the request's PlaceId")
-        if (dbPlace.country != reqPlace.country)
-            throw InvalidRequestBodyException("PlaceCountry in DB differs from the request's PlaceCountry")
-        if (dbPlace.city != reqPlace.city)
-            throw InvalidRequestBodyException("PlaceCity in DB differs from the request's PlaceCity")
+        if (dbPlace != reqPlace)
+            throw InvalidRequestBodyException("Place in DB differs from the request's Place")
     }
 
-    private fun compareBaseApplications(dbApplication: Application, reqApplication: Application, role: Role) {
-        if (dbApplication.id != reqApplication.id)
-            throw InvalidRequestBodyException("ApplicationId in DB differs from the request's one")
-        if (dbApplication.firstName != reqApplication.firstName)
-            throw InvalidRequestBodyException("ApplicationFirstName in DB differs from the request's one")
-        if (dbApplication.surname != reqApplication.surname)
-            throw InvalidRequestBodyException("ApplicationSurname in DB differs from the request's one")
-        if (dbApplication.birthDate != reqApplication.birthDate)
-            throw InvalidRequestBodyException("ApplicationBirthDate in DB differs from the request's one")
-        if (dbApplication.academicDegree != reqApplication.academicDegree)
-            throw InvalidRequestBodyException("ApplicationAcademicDegree in DB differs from the request's one")
-        if (dbApplication.phoneNumber != reqApplication.phoneNumber)
-            throw InvalidRequestBodyException("ApplicationPhoneNumber in DB differs from the request's one")
-        if (dbApplication.employeeId != reqApplication.employeeId)
-            throw InvalidRequestBodyException("ApplicationEmployeeId in DB differs from the request's one")
-        if (dbApplication.identityDocumentType != reqApplication.identityDocumentType)
-            throw InvalidRequestBodyException("ApplicationIdentityDocumentType in DB differs from the request's one")
-        if (dbApplication.identityDocumentNumber != reqApplication.identityDocumentNumber)
-            throw InvalidRequestBodyException("ApplicationIdentityDocumentNumber in DB differs from the request's one")
-        if (dbApplication.createdOn != reqApplication.createdOn)
-            throw InvalidRequestBodyException("ApplicationCreatedOn in DB differs from the request's one")
-        if (dbApplication.placeId != reqApplication.placeId)
-            throw InvalidRequestBodyException("ApplicationPlaceId in DB differs from request's one")
-        if (dbApplication.abroadStartDate != reqApplication.abroadStartDate)
-            throw InvalidRequestBodyException("ApplicationAbroadStartDate in DB differs from the request's one")
-        if (dbApplication.abroadEndDate != reqApplication.abroadEndDate)
-            throw InvalidRequestBodyException("ApplicationAbroadEndDate in DB differs from the request's one")
-        if (dbApplication.instituteId != reqApplication.instituteId)
-            throw InvalidRequestBodyException("ApplicationInstituteId in DB differs from the request's one")
-        if (dbApplication.purpose != reqApplication.purpose)
-            throw InvalidRequestBodyException("ApplicationPurpose in DB differs from the request's one")
-        if (dbApplication.conference != reqApplication.conference)
-            throw InvalidRequestBodyException("ApplicationConference in DB differs from the request's one")
-        if (dbApplication.subject != reqApplication.subject)
-            throw InvalidRequestBodyException("ApplicationSubject in DB differs from the request's one")
-        if (dbApplication.conferenceStartDate != reqApplication.conferenceStartDate)
-            throw InvalidRequestBodyException("ApplicationConferenceStartDate in DB differs from the request's one")
-        if (dbApplication.conferenceEndDate != reqApplication.conferenceEndDate)
-            throw InvalidRequestBodyException("ApplicationConferenceEndDate in DB differs from the request's one")
-        if (dbApplication.abroadStartDateInsurance != reqApplication.abroadStartDateInsurance)
-            throw InvalidRequestBodyException("ApplicationAbroadStartDateInsurance in DB differs from the request's one")
-        if (dbApplication.abroadEndDateInsurance != reqApplication.abroadEndDateInsurance)
-            throw InvalidRequestBodyException("ApplicationAbroadEndDateInsurance in DB differs from the request's one")
-        if (dbApplication.selfInsured != reqApplication.selfInsured)
-            throw InvalidRequestBodyException("ApplicationSelfInsured in DB differs from the request's one")
-        if (dbApplication.advanceApplicationId != reqApplication.advanceApplicationId)
-            throw InvalidRequestBodyException("ApplicationAdvanceApplicationId in DB differs from the request's one")
-        if (dbApplication.prepaymentId != reqApplication.prepaymentId)
-            throw InvalidRequestBodyException("ApplicationPrepaymentId in DB differs from the request's one")
-        if (dbApplication.comments != reqApplication.comments)
-            throw InvalidRequestBodyException("ApplicationComments in DB differs from the request's one")
+    private fun compareApplications(role: Role,dbApplication: Application, reqApplication: Application) {
         when (role) {
             Role.WILDA -> {
-                if (dbApplication.financialSourceId != reqApplication.financialSourceId)
+                if (dbApplication.copy(wildaComments = reqApplication.wildaComments) != reqApplication.copy(status = Status.WaitingForWilda))
                     throw InvalidRequestBodyException("ApplicationFinancialSourceId in DB differs from the request's one")
-                if (dbApplication.directorComments != reqApplication.directorComments)
-                    throw InvalidRequestBodyException("ApplicationDirectorComments in DB differs from the request's one")
-                if (dbApplication.rectorComments != reqApplication.rectorComments)
-                    throw InvalidRequestBodyException("ApplicationRectorComments in DB differs from the request's one")
-                if (dbApplication.status != Status.WaitingForWilda)
-                    throw InvalidRequestBodyException("ApplicationStatus in DB differs from the request's one")
-                return
             }
             Role.DIRECTOR -> {
-                if (dbApplication.wildaComments != reqApplication.wildaComments)
-                    throw InvalidRequestBodyException("ApplicationWildaComments in DB differs from the request's one")
-                if (dbApplication.rectorComments != reqApplication.rectorComments)
-                    throw InvalidRequestBodyException("ApplicationRectorComments in DB differs from the request's one")
-                if (dbApplication.status != Status.WaitingForDirector)
-                    throw InvalidRequestBodyException("ApplicationStatus in DB differs from the request's one")
-                return
-            }
-            Role.RECTOR -> {
-                if (dbApplication.financialSourceId != reqApplication.financialSourceId)
+                if (dbApplication.copy(directorComments = reqApplication.directorComments) != reqApplication.copy(status = Status.WaitingForDirector))
                     throw InvalidRequestBodyException("ApplicationFinancialSourceId in DB differs from the request's one")
-                if (dbApplication.directorComments != reqApplication.directorComments)
-                    throw InvalidRequestBodyException("ApplicationDirectorComments in DB differs from the request's one")
-                if (dbApplication.wildaComments != reqApplication.wildaComments)
-                    throw InvalidRequestBodyException("ApplicationWildaComments in DB differs from the request's one")
-                if (dbApplication.status != Status.WaitingForRector)
-                    throw InvalidRequestBodyException("ApplicationStatus in DB differs from the request's one")
-            }
-            Role.USER -> {
-                throw UnauthorizedException("You do not have permission to perform this action")
-            }
-        }
-
-    }
-
-    private fun compareApproveApplication(role: Role, dbApplication: Application, reqApplication: Application) {
-        compareBaseApplications(dbApplication, reqApplication, role)
-        when (role) {
-            Role.WILDA -> {
-                if (reqApplication.status != Status.WaitingForRector)
-                    throw InvalidRequestBodyException("ApplicationStatus in DB differs from the request's one")
-                return
-            }
-            Role.DIRECTOR -> {
-                if (reqApplication.status != Status.WaitingForWilda)
-                    throw InvalidRequestBodyException("ApplicationStatus in DB differs from the request's one")
-                return
             }
             Role.RECTOR -> {
-                if (reqApplication.status != Status.Accepted)
-                    throw InvalidRequestBodyException("ApplicationStatus in DB differs from the request's one")
-                return
-            }
-            Role.USER -> {
-                throw UnauthorizedException("You do not have permission to perform this action")
-            }
-        }
-    }
-
-    private fun compareRejectedApplications(role: Role, dbApplication: Application, reqApplication: Application) {
-        compareBaseApplications(dbApplication, reqApplication, role)
-        when (role) {
-            Role.WILDA -> {
-                if (reqApplication.status != Status.RejectedByWilda)
-                    throw InvalidRequestBodyException("ApplicationStatus in DB differs from the request's one")
-                return
-            }
-            Role.DIRECTOR -> {
-                if (reqApplication.status != Status.RejectedByDirector)
-                    throw InvalidRequestBodyException("ApplicationStatus in DB differs from the request's one")
-                return
-            }
-            Role.RECTOR -> {
-                if (reqApplication.status != Status.RejectedByRector)
-                    throw InvalidRequestBodyException("ApplicationStatus in DB differs from the request's one")
-                return
+                if (dbApplication.copy(rectorComments = reqApplication.rectorComments) != reqApplication.copy(status = Status.WaitingForRector))
+                    throw InvalidRequestBodyException("ApplicationFinancialSourceId in DB differs from the request's one")
             }
             Role.USER -> {
                 throw UnauthorizedException("You do not have permission to perform this action")
@@ -185,37 +52,13 @@ class ComparisonService {
     }
 
     fun compareFinancialSources(dbFinancialSource: FinancialSource, reqFinancialSource: FinancialSource) {
-        if (dbFinancialSource.id != reqFinancialSource.id)
-            throw InvalidRequestBodyException("FinancialSourceId in DB differs from the request's one")
-        if (dbFinancialSource.allocationAccount != reqFinancialSource.allocationAccount)
-            throw InvalidRequestBodyException("FinancialSourceAllocationAccount in DB differs from the request's one")
-        if (dbFinancialSource.mpk != reqFinancialSource.mpk)
-            throw InvalidRequestBodyException("FinancialSourceMPK in DB differs from the request's one")
-        if (dbFinancialSource.financialSource != reqFinancialSource.financialSource)
+        if (dbFinancialSource != reqFinancialSource)
             throw InvalidRequestBodyException("FinancialSource in DB differs from the request's one")
-        if (dbFinancialSource.project != reqFinancialSource.project)
-            throw InvalidRequestBodyException("FinancialSourceProject in DB differs from the request's one")
     }
 
     fun compareTransports(dbTransport: Transport, reqTransport: Transport) {
-        if (dbTransport.id != reqTransport.id)
-            throw InvalidRequestBodyException("TransportId in DB differs from the request's one")
-        if (dbTransport.applicationID != reqTransport.applicationID)
-            throw InvalidRequestBodyException("TransportApplicationID in DB differs from the request's one")
-        if (dbTransport.destinationFrom != reqTransport.destinationFrom)
-            throw InvalidRequestBodyException("TransportDestinationFrom in DB differs from the request's one")
-        if (dbTransport.destinationTo != reqTransport.destinationTo)
-            throw InvalidRequestBodyException("TransportDestinationTo in DB differs from the request's one")
-        if (dbTransport.departureDay != reqTransport.departureDay)
-            throw InvalidRequestBodyException("TransportDepartureDay in DB differs from the request's one")
-        if (dbTransport.departureMinute != reqTransport.departureMinute)
-            throw InvalidRequestBodyException("TransportDepartureMinute in DB differs from the request's one")
-        if (dbTransport.departureHour != reqTransport.departureHour)
-            throw InvalidRequestBodyException("TransportDepartureHour in DB differs from the request's one")
-        if (dbTransport.vehicleSelect != reqTransport.vehicleSelect)
-            throw InvalidRequestBodyException("TransportVehicleSelect in DB differs from the request's one")
-        if (dbTransport.carrier != reqTransport.carrier)
-            throw InvalidRequestBodyException("TransportCarrier in DB differs from the request's one")
+        if (dbTransport != reqTransport)
+            throw InvalidRequestBodyException("Transport in DB differs from the request's one")
     }
 
     fun compareAdvanceApplication(dbAdvanceApplication: AdvanceApplication, reqAdvanceApplication: AdvanceApplication) {

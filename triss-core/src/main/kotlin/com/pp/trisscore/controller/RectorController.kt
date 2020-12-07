@@ -68,21 +68,21 @@ class RectorController(val rectorService: RectorService,
     }
 
 
-    @ExceptionHandler(value = [InvalidRequestBodyException::class])
-    fun catchInvalidRequestBodyException(ex: RuntimeException): ResponseEntity<ErrorsDetails> {
-        val errorDetails = ErrorsDetails(Date(), ex.toString(), ex.message!!)
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDetails)
-    }
-
-    @ExceptionHandler(value = [ObjectNotFoundException::class])
-    fun catchObjectNotFoundException(ex: RuntimeException): ResponseEntity<ErrorsDetails> {
-        val errorDetails = ErrorsDetails(Date(), ex.toString(), ex.message!!)
-        return ResponseEntity.status(HttpStatus.GONE).body(errorDetails)
-    }
-
-    @ExceptionHandler(value = [RectorNotFoundException::class])
-    fun catchRectorNotFoundException(ex: RuntimeException): ResponseEntity<ErrorsDetails> {
-        val errorDetails = ErrorsDetails(Date(), ex.toString(), ex.message!!)
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorDetails)
-    }
+//    @ExceptionHandler(value = [InvalidRequestBodyException::class])
+//    fun catchInvalidRequestBodyException(ex: RuntimeException): ResponseEntity<ErrorsDetails> {
+//        val errorDetails = ErrorsDetails(Date(), ex.toString(), ex.message!!)
+//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDetails)
+//    }
+//
+//    @ExceptionHandler(value = [ObjectNotFoundException::class])
+//    fun catchObjectNotFoundException(ex: RuntimeException): ResponseEntity<ErrorsDetails> {
+//        val errorDetails = ErrorsDetails(Date(), ex.toString(), ex.message!!)
+//        return ResponseEntity.status(HttpStatus.GONE).body(errorDetails)
+//    }
+//
+//    @ExceptionHandler(value = [RectorNotFoundException::class])
+//    fun catchRectorNotFoundException(ex: RuntimeException): ResponseEntity<ErrorsDetails> {
+//        val errorDetails = ErrorsDetails(Date(), ex.toString(), ex.message!!)
+//        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorDetails)
+//    }
 }

@@ -1,7 +1,6 @@
-
-DROP VIEW IF EXISTS  ApplicationFull;
-DROP VIEW IF EXISTS  ApplicationRow;
-DROP TABLE IF EXISTS  TRANSPORT;
+DROP VIEW IF EXISTS ApplicationFull;
+DROP VIEW IF EXISTS ApplicationRow;
+DROP TABLE IF EXISTS TRANSPORT;
 DROP TABLE IF EXISTS Application;
 DROP TABLE IF EXISTS AdvanceApplication;
 DROP TABLE IF EXISTS FinancialSource;
@@ -107,7 +106,7 @@ CREATE TABLE Employee
     CONSTRAINT institute_em_fk FOREIGN KEY (instituteID) REFERENCES Institute (id)
 );
 
-INSERT INTO Employee(employeeId,firstName,surname,birthDate,academicDegree,phoneNumber,employeeType,instituteID)
+INSERT INTO Employee(employeeId, firstName, surname, birthDate, academicDegree, phoneNumber, employeeType, instituteID)
 VALUES (170387, 'Jan', 'Kowalczyk', '2000-01-01', 'Prof.', '+48 123456789', 'USER', 1),
        (2, 'Jan', 'Kowalski', '1990-03-21', 'Prof.', '+48 321456987', 'WILDA', 1),
        (3, 'Jerzy', 'Zbiałowierzy', '1980-05-15', 'Prof.', '+48 541236987', 'RECTOR', 1),
@@ -119,7 +118,7 @@ CREATE TABLE IdentityDocument
     employeeID BIGINT       NOT NULL,
     type       VARCHAR(255) NOT NULL,
     number     VARCHAR(255) NOT NULL,
-    CONSTRAINT employee_id_fk FOREIGN KEY (employeeID) REFERENCES Employee(employeeId)
+    CONSTRAINT employee_id_fk FOREIGN KEY (employeeID) REFERENCES Employee (employeeId)
 );
 
 INSERT INTO IdentityDocument (employeeID, type, number)
@@ -190,8 +189,8 @@ CREATE TABLE Application
     conferenceStartDate      DATE         NOT NULL,
     conferenceEndDate        DATE         NOT NULL,
     financialSourceId        BIGINT,
-    abroadStartDateInsurance DATE         NOT NULL,
-    abroadEndDateInsurance   DATE         NOT NULL,
+    abroadStartDateInsurance DATE,
+    abroadEndDateInsurance   DATE,
     selfInsured              BOOL         NOT NULL,
     advanceApplicationId     BIGINT       NOT NULL,
     prepaymentId             BIGINT       NOT NULL,
@@ -201,7 +200,7 @@ CREATE TABLE Application
     rectorComments           VARCHAR(255),
     status                   VARCHAR(255) NOT NULL,
     CONSTRAINT institute_ap_fk FOREIGN KEY (instituteId) REFERENCES Institute (id),
-    CONSTRAINT employee_ap_fk FOREIGN KEY (employeeId) REFERENCES Employee(employeeId),
+    CONSTRAINT employee_ap_fk FOREIGN KEY (employeeId) REFERENCES Employee (employeeId),
     CONSTRAINT place_ap_fk FOREIGN KEY (placeId) REFERENCES Place (id),
     CONSTRAINT financialSource_ap_fk FOREIGN KEY (financialSourceId) REFERENCES FinancialSource (id),
     CONSTRAINT advanceApplication_ap_fk FOREIGN KEY (advanceApplicationId) REFERENCES AdvanceApplication (id),
@@ -230,7 +229,7 @@ VALUES ('Jan', 'Kowalczyk', '2000-01-01', '+48 123456789', 'Prof.', 170387, 'IdC
 
 CREATE TABLE Transport
 (
-    id              BIGSERIAL    PRIMARY KEY,
+    id              BIGSERIAL PRIMARY KEY,
     applicationID   BIGINT       NOT NULL,
     destinationFrom VARCHAR(255) NOT NULL,
     destinationTo   VARCHAR(255) NOT NULL,
@@ -242,12 +241,12 @@ CREATE TABLE Transport
     CONSTRAINT application_tr_fk FOREIGN KEY (applicationID) REFERENCES Application (id)
 );
 
-INSERT INTO Transport (applicationID,destinationFrom, destinationTo, departureDay, departureHour, departureMinute,
+INSERT INTO Transport (applicationID, destinationFrom, destinationTo, departureDay, departureHour, departureMinute,
                        vehicleSelect, carrier)
-VALUES (1,'Poznań', 'Los Angeles', '2020-12-12', 6, 30, 'Plane', 'LOT'),
-       (1,'Los Angeles', 'Poznań', '2020-12-14', 20, 10, 'Plane', 'RyanAir'),
-       (2,'Poznań', 'Montreal', '2020-11-10', 4, 24, 'Plane', 'LOT'),
-       (2,'Montreal', 'Poznań', '2020-11-13', 5, 30, 'Plane', 'RyanAir');
+VALUES (1, 'Poznań', 'Los Angeles', '2020-12-12', 6, 30, 'Plane', 'LOT'),
+       (1, 'Los Angeles', 'Poznań', '2020-12-14', 20, 10, 'Plane', 'RyanAir'),
+       (2, 'Poznań', 'Montreal', '2020-11-10', 4, 24, 'Plane', 'LOT'),
+       (2, 'Montreal', 'Poznań', '2020-11-13', 5, 30, 'Plane', 'RyanAir');
 
 CREATE VIEW ApplicationRow AS
 SELECT Application.id,
