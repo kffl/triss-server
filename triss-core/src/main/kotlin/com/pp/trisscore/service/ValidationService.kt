@@ -187,7 +187,7 @@ class ValidationService {
             }
             Role.WILDA -> {
                 if (application.status != Status.WaitingForRector)
-                    throw(UnauthorizedException("Status must be WaitingForWilda"))
+                    throw(UnauthorizedException("Status must be WaitingForRector"))
             }
             Role.RECTOR -> {
                 if (application.status != Status.Accepted)
@@ -203,15 +203,15 @@ class ValidationService {
         when (role) {
             Role.DIRECTOR -> {
                 if (application.status != Status.RejectedByDirector)
-                    throw(UnauthorizedException("Status must be WaitingForWilda"))
+                    throw(UnauthorizedException("Status must be RejectedByDirector"))
             }
             Role.WILDA -> {
                 if (application.status != Status.RejectedByWilda)
-                    throw(UnauthorizedException("Status must be WaitingForWilda"))
+                    throw(UnauthorizedException("Status must be RejectedByWilda"))
             }
             Role.RECTOR -> {
                 if (application.status != Status.RejectedByRector)
-                    throw(UnauthorizedException("Status must be Accepted"))
+                    throw(UnauthorizedException("Status must be RejectedByRector"))
             }
             Role.USER -> {
                 throw UnauthorizedException("User don't have access to this")

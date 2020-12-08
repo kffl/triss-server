@@ -61,16 +61,16 @@ class WildaServiceTest(@Autowired val wildaService: WildaService,
         val x = assertThrows<UnauthorizedException> {
             wildaService.approveApplication(existingDirectorToken, exampleApplicationInfoForWaitingForWilda).block()
         }
-        Assertions.assertEquals("Status must be WaitingForWilda", x.message)
+        Assertions.assertEquals("Employee don't have access to this.", x.message)
     }
 
     @Test
     fun shouldNotApproveApplicationWrongStatus() {
         val x = assertThrows<UnauthorizedException> {
             wildaService.approveApplication(existingWildaToken, exampleApplicationInfoForWaitingForWilda.copy(
-                    application = correctApplicationForWaitingForWilda.copy(status = Status.WaitingForDirector))).block()
+                    application = correctApplicationForWaitingForWilda.copy(status = Status.WaitingForWilda))).block()
         }
-        Assertions.assertEquals("Status must be WaitingForWilda", x.message)
+        Assertions.assertEquals("Status must be WaitingForRector", x.message)
     }
 
     @Test

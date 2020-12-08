@@ -40,7 +40,7 @@ interface TestData {
                 financialSourceId = 1, abroadStartDateInsurance = LocalDate.of(2020,12,12),
                 abroadEndDateInsurance = LocalDate.of(2020,12,15), selfInsured = false,
                 advanceApplicationId = 3, prepaymentId = 3, comments = "User Comments",
-                wildaComments = null, directorComments = "Director comments", rectorComments = null, status = Status.WaitingForWilda)
+                wildaComments = null, directorComments = "Director comments", rectorComments = null, status = Status.WaitingForRector)
         val correctTransportListForWaitingForWilda = listOf(
                 Transport(id = 5, applicationID = 5, destinationFrom = "Poznań", destinationTo = "Berlin",
                         departureDay = LocalDate.of(2020, 12, 12), departureHour = 10, departureMinute = 10,
@@ -79,7 +79,7 @@ interface TestData {
                 financialSourceId = 1, abroadStartDateInsurance = LocalDate.of(2020,12,12),
                 abroadEndDateInsurance = LocalDate.of(2020,12,15), selfInsured = false,
                 advanceApplicationId = 3, prepaymentId = 3, comments = "User Comments",
-                wildaComments = null, directorComments = "Director comments", rectorComments = null, status = Status.WaitingForRector)
+                wildaComments = null, directorComments = "Director comments", rectorComments = null, status = Status.Accepted)
         val correctTransportListForRector = listOf(
                 Transport(id = 5, applicationID = 4, destinationFrom = "Poznań", destinationTo = "Berlin",
                         departureDay = LocalDate.of(2020, 12, 12), departureHour = 10, departureMinute = 10,
