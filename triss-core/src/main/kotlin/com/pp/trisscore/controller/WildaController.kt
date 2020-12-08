@@ -37,10 +37,19 @@ class WildaController(val wildaService: WildaService) {
     @PostMapping("application/getFull")
     fun getFullApplication(@RequestBody id: Long
 //                           , token: JwtAuthenticationToken
-    ) : Mono<ApplicationInfo>{
+    ): Mono<ApplicationInfo> {
 //        val tokenBody = tokenService.getEmployeeDataFromToken(token)
         return wildaService.getFullApplication(tokenBody, id)
     }
+
+    @PostMapping("application/reject")
+    fun rejectApplication(@RequestBody body: ApplicationInfo): Mono<Application>
+//                          , token: JwtAuthenticationToken)
+    {
+//        val tokenBody = tokenService.getEmployeeDataFromToken(token)
+        return wildaService.rejectApplication(tokenBody, body)
+    }
+
 
     @PostMapping("application/approve")
     fun approveApplication(@RequestBody body: ApplicationInfo
@@ -49,6 +58,4 @@ class WildaController(val wildaService: WildaService) {
 //        val tokenBody = tokenService.getEmployeeDataFromToken(token)
         return wildaService.approveApplication(tokenBody, body)
     }
-
-
 }
