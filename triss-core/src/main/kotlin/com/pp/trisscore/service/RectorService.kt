@@ -35,6 +35,7 @@ class RectorService(
     }
 
     fun approveApplication(tokenBody: TokenData, body: ApplicationInfo): Mono<Application> {
+         validationService.validateApproveApplicationInfo(body,role)
         return employeeService.findEmployeeAndCheckRole(tokenBody, role).switchIfEmpty(Mono.error(UnauthorizedException("")))
                 .flatMap { applicationFullService.getFullApplication(body.application.id!!) }
                 .flatMap { x -> validateApproveAndSaveApplication(x, body) }
