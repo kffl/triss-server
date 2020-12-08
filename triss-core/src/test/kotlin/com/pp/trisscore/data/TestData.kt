@@ -21,8 +21,74 @@ interface TestData {
                 academicDegree = "Prof.", instituteID = 1, employeeType = Role.USER)
         val existingDirectorToken = TokenData(167711, "Andrzej", "Nowak")
         val existingDirector = Employee(id = 4, employeeId = 167711, firstName = "Andrzej", surname = "Nowak", birthDate = LocalDate.of(1988, 7, 16), phoneNumber = "+48 987456321", academicDegree = "Prof.", instituteID = 1, employeeType = Role.DIRECTOR)
+        val existingRectorToken = TokenData(3, "Jerzy", "Zbiałowierzy")
+        val existingRector = Employee(id = 3, employeeId = 3, firstName = "Jerzy", surname = "Zbiałowierzy", birthDate = LocalDate.of(1980,5,15), phoneNumber = "+48 541236987", academicDegree = "Prof.", instituteID = 1, employeeType = Role.RECTOR)
+        val existingWildaToken = TokenData(2, "Jan", "Kowalski")
+        val existingWilda = Employee(id = 2, employeeId = 2, firstName = "Jan", surname = "Kowalski", birthDate = LocalDate.of(1990,3,21), phoneNumber = "+48 321456987", academicDegree = "Prof.", instituteID = 1, employeeType = Role.WILDA)
 
+
+        val correctFinancialSource = FinancialSource(id = null, allocationAccount = "01 2345 6789 0123 4567 8901 2345", mpk = "MPK_1", financialSource = "Financial Source 1", project = "Project X")
+        val correctFinancialSourceRectorAndWilda = FinancialSource(id = 1, allocationAccount = "01 2345 6789 0123 4567 8901 2345", mpk = "MPK_1", financialSource = "Financial Source 1", project = "Project X")
         //Different types of applications
+        val correctApplicationForWaitingForWilda = Application(id = 5, firstName = "Jan", surname = "Kowalczyk",
+                birthDate = LocalDate.of(2000, 1, 1), academicDegree = "Prof.",
+                phoneNumber = "+48 123456789", employeeId = 170387, identityDocumentType = DocumentType.Passport,
+                identityDocumentNumber = "AB6789000", createdOn = LocalDate.of(2020, 12, 1), placeId = 5,
+                abroadStartDate = LocalDate.of(2020, 12, 12), abroadEndDate = LocalDate.of(2020,12,15),
+                instituteId = 1, purpose = "Konferencja", conference = "AntyCovid2020", subject = " TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą",
+                conferenceStartDate = LocalDate.of(2020,12,13), conferenceEndDate = LocalDate.of(2020,12,14),
+                financialSourceId = 1, abroadStartDateInsurance = LocalDate.of(2020,12,12),
+                abroadEndDateInsurance = LocalDate.of(2020,12,15), selfInsured = false,
+                advanceApplicationId = 3, prepaymentId = 3, comments = "User Comments",
+                wildaComments = null, directorComments = "Director comments", rectorComments = null, status = Status.WaitingForWilda)
+        val correctTransportListForWaitingForWilda = listOf(
+                Transport(id = 5, applicationID = 5, destinationFrom = "Poznań", destinationTo = "Berlin",
+                        departureDay = LocalDate.of(2020, 12, 12), departureHour = 10, departureMinute = 10,
+                        vehicleSelect = Vehicle.Plane, carrier = "RyanAir"),
+                Transport(id = 6, applicationID = 5, destinationFrom = "Berlin", destinationTo = "Poznań",
+                        departureDay = LocalDate.of(2020, 12, 15), departureHour = 12, departureMinute = 30,
+                        vehicleSelect = Vehicle.Plane, carrier = "RyanAir"))
+
+        val correctApplicationForAccepted = Application(id = 6, firstName = "Jan", surname = "Kowalczyk",
+                birthDate = LocalDate.of(2000, 1, 1), academicDegree = "Prof.",
+                phoneNumber = "+48 123456789", employeeId = 170387, identityDocumentType = DocumentType.Passport,
+                identityDocumentNumber = "AB6789000", createdOn = LocalDate.of(2020, 12, 1), placeId = 5,
+                abroadStartDate = LocalDate.of(2020, 12, 12), abroadEndDate = LocalDate.of(2020,12,15),
+                instituteId = 1, purpose = "Konferencja", conference = "AntyCovid2020", subject = " TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą",
+                conferenceStartDate = LocalDate.of(2020,12,13), conferenceEndDate = LocalDate.of(2020,12,14),
+                financialSourceId = 1, abroadStartDateInsurance = LocalDate.of(2020,12,12),
+                abroadEndDateInsurance = LocalDate.of(2020,12,15), selfInsured = false,
+                advanceApplicationId = 3, prepaymentId = 3, comments = "User Comments",
+                wildaComments = null, directorComments = "Director comments", rectorComments = null, status = Status.Accepted)
+        val correctTransportListForAccepted = listOf(
+                Transport(id = 5, applicationID = 6, destinationFrom = "Poznań", destinationTo = "Berlin",
+                        departureDay = LocalDate.of(2020, 12, 12), departureHour = 10, departureMinute = 10,
+                        vehicleSelect = Vehicle.Plane, carrier = "RyanAir"),
+                Transport(id = 6, applicationID = 6, destinationFrom = "Berlin", destinationTo = "Poznań",
+                        departureDay = LocalDate.of(2020, 12, 15), departureHour = 12, departureMinute = 30,
+                        vehicleSelect = Vehicle.Plane, carrier = "RyanAir"))
+
+
+        val correctApplicationForRector = Application(id = 4, firstName = "Jan", surname = "Kowalczyk",
+                birthDate = LocalDate.of(2000, 1, 1), academicDegree = "Prof.",
+                phoneNumber = "+48 123456789", employeeId = 170387, identityDocumentType = DocumentType.Passport,
+                identityDocumentNumber = "AB6789000", createdOn = LocalDate.of(2020, 12, 1), placeId = 5,
+                abroadStartDate = LocalDate.of(2020, 12, 12), abroadEndDate = LocalDate.of(2020,12,15),
+                instituteId = 1, purpose = "Konferencja", conference = "AntyCovid2020", subject = " TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą",
+                conferenceStartDate = LocalDate.of(2020,12,13), conferenceEndDate = LocalDate.of(2020,12,14),
+                financialSourceId = 1, abroadStartDateInsurance = LocalDate.of(2020,12,12),
+                abroadEndDateInsurance = LocalDate.of(2020,12,15), selfInsured = false,
+                advanceApplicationId = 3, prepaymentId = 3, comments = "User Comments",
+                wildaComments = null, directorComments = "Director comments", rectorComments = null, status = Status.WaitingForRector)
+        val correctTransportListForRector = listOf(
+                Transport(id = 5, applicationID = 4, destinationFrom = "Poznań", destinationTo = "Berlin",
+                        departureDay = LocalDate.of(2020, 12, 12), departureHour = 10, departureMinute = 10,
+                        vehicleSelect = Vehicle.Plane, carrier = "RyanAir"),
+                Transport(id = 6, applicationID = 4, destinationFrom = "Berlin", destinationTo = "Poznań",
+                        departureDay = LocalDate.of(2020, 12, 15), departureHour = 12, departureMinute = 30,
+                        vehicleSelect = Vehicle.Plane, carrier = "RyanAir"))
+
+
         val correctApplicationForDirector = Application(id = 3, firstName = "Jan", surname = "Kowalczyk",
                 birthDate = LocalDate.of(2000, 1, 1), academicDegree = "Prof.",
                 phoneNumber = "+48 123456789", employeeId = 170387, identityDocumentType = DocumentType.Passport,
@@ -61,7 +127,30 @@ interface TestData {
                 advanceApplication = correctAdvanceApplicationForDirector,
                 advancePayments = correctAdvancePaymentsInfoForDirector,
                 place = correctPlaceForDirector)
-
+        val exampleApplicationInfoForRector = ApplicationInfo(
+                application = correctApplicationForRector,
+                institute = correctInstitute,
+                financialSource = correctFinancialSourceRectorAndWilda,
+                transport = correctTransportListForRector,
+                advanceApplication = correctAdvanceApplicationForDirector,
+                advancePayments = correctAdvancePaymentsInfoForDirector,
+                place = correctPlaceForDirector)
+        val exampleApplicationInfoForWaitingForWilda = ApplicationInfo(
+                application = correctApplicationForWaitingForWilda,
+                institute = correctInstitute,
+                financialSource = correctFinancialSourceRectorAndWilda,
+                transport = correctTransportListForWaitingForWilda,
+                advanceApplication = correctAdvanceApplicationForDirector,
+                advancePayments = correctAdvancePaymentsInfoForDirector,
+                place = correctPlaceForDirector)
+        val exampleApplicationInfoForAccepted = ApplicationInfo(
+                application = correctApplicationForAccepted,
+                institute = correctInstitute,
+                financialSource = correctFinancialSourceRectorAndWilda,
+                transport = correctTransportListForAccepted,
+                advanceApplication = correctAdvanceApplicationForDirector,
+                advancePayments = correctAdvancePaymentsInfoForDirector,
+                place = correctPlaceForDirector)
 
 
         val correctApplication = Application(id = null, firstName = "Jan", surname = "Kowalczyk", birthDate = LocalDate.of(2000, 1, 1)
@@ -72,7 +161,6 @@ interface TestData {
                 conferenceEndDate = LocalDate.now().plusDays(39), financialSourceId = null, abroadStartDateInsurance = LocalDate.now().plusDays(10)
                 , abroadEndDateInsurance = LocalDate.now().plusDays(40), selfInsured = false, advanceApplicationId = null, prepaymentId = null, comments = "blablabla",
                 wildaComments = null, directorComments = null, rectorComments = null, status = Status.WaitingForDirector)
-        val correctFinancialSource = FinancialSource(id = null, allocationAccount = "01 2345 6789 0123 4567 8901 2345", mpk = "MPK_1", financialSource = "Financial Source 1", project = "Project X")
         val correctTransportList = listOf(Transport(id = null, applicationID = null, destinationFrom = "Poznań", destinationTo = "Berlin", departureDay = LocalDate.now().plusDays(10), departureHour = 10, departureMinute = 10, vehicleSelect = Vehicle.Bus, carrier = "carrier"),
                 Transport(id = null, applicationID = null, destinationFrom = "Berlin", destinationTo = "Poznań", departureDay = LocalDate.now().plusDays(10), departureHour = 10, departureMinute = 10, vehicleSelect = Vehicle.Bus, carrier = "carrier"))
         val correctAdvanceApplication = AdvanceApplication(id = null, startDate = LocalDate.now().plusDays(10), endDate = LocalDate.now().plusDays(40),
