@@ -13,6 +13,24 @@ DROP TABLE IF EXISTS Institute;
 DROP TABLE IF EXISTS DocumentType;
 DROP TABLE IF EXISTS PaymentType;
 DROP TABLE IF EXISTS Vehicle;
+DROP TABLE IF EXISTS Status;
+
+
+CREATE TABLE Status
+(
+    id      BIGINT PRIMARY KEY,
+    namePl  varchar(255) UNIQUE NOT NULL,
+    nameEng varchar(255) UNIQUE NOT NULL
+);
+
+INSERT INTO Status (id,namePl, nameEng)
+VALUES (1,'Oczekuje na dyrektora', 'Waiting for Director'),
+       (2,'Oczekuje na Wildę', 'Waiting for Wilda'),
+       (3,'Oczekuje na rektora', 'Waiting for Rector'),
+       (4,'Odrzucony przez Dyrektora', 'Rejected by Director'),
+       (5,'Odrzucony przez Wilde', 'Rejected by Wilda'),
+       (6,'Odrzucony przez Rectora', 'Rejected by Rector'),
+       (7,'Zaakceptowany', 'Accepted');
 
 CREATE TABLE Vehicle
 (
@@ -248,14 +266,15 @@ CREATE TABLE Application
     wildaComments            VARCHAR(255),
     directorComments         VARCHAR(255),
     rectorComments           VARCHAR(255),
-    status                   VARCHAR(255) NOT NULL,
+    status                   BIGINT       NOT NULL,
     CONSTRAINT institute_ap_fk FOREIGN KEY (instituteId) REFERENCES Institute (id),
     CONSTRAINT employee_ap_fk FOREIGN KEY (employeeId) REFERENCES Employee (employeeId),
     CONSTRAINT place_ap_fk FOREIGN KEY (placeId) REFERENCES Place (id),
     CONSTRAINT financialSource_ap_fk FOREIGN KEY (financialSourceId) REFERENCES FinancialSource (id),
     CONSTRAINT advanceApplication_ap_fk FOREIGN KEY (advanceApplicationId) REFERENCES AdvanceApplication (id),
     CONSTRAINT prepayment_ap_fk FOREIGN KEY (prepaymentId) REFERENCES Prepayment (id),
-    CONSTRAINT documentType_ap_fk FOREIGN KEY (identityDocumentType) REFERENCES DocumentType (id)
+    CONSTRAINT documentType_ap_fk FOREIGN KEY (identityDocumentType) REFERENCES DocumentType (id),
+    CONSTRAINT status_ap_fk FOREIGN KEY (status) REFERENCES Status (id)
 );
 
 INSERT INTO Application (firstName, surname, birthDate, phoneNumber, academicDegree, employeeId, identityDocumentType,
@@ -270,35 +289,35 @@ VALUES ('Jan', 'Kowalczyk', '2000-01-01', '+48 123456789', 'Prof.', 170387, 1, '
         '2020-12-15', 'Konferencja', 'AntyCovid2020',
         ' TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą',
         '2020-12-13', '2020-12-14', NULL, '2020-12-12', '2020-12-15', FALSE, 1, 1, NULL, NULL, NULL, NULL,
-        'WaitingForDirector'),
+        1),
        ('Jan', 'Kowalski', '1990-03-21', '+48 321456987', 'Prof.', 2, 2, 'DE6789000', '2020-11-04', 4, 2,
         '2020-11-10',
         '2020-11-13', 'Konferencja', 'AntyCovid2020',
         ' TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą',
         '2020-11-10', '2020-11-13', 1, '2020-11-10', '2020-11-13', FALSE, 2, 2, NULL, NULL, NULL, NULL,
-        'WaitingForDirector'),
+        1),
        ('Jan', 'Kowalczyk', '2000-01-01', '+48 123456789', 'Prof.', 170387, 2, 'AB6789000', '2020-12-01', 5, 1,
         '2020-12-12', '2020-12-15', 'Konferencja', 'AntyCovid2020',
         ' TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą',
         '2020-12-13', '2020-12-14', NULL, '2020-12-12', '2020-12-15', FALSE, 3, 3, 'comments', NULL, NULL, NULL,
-        'WaitingForDirector'),
+        1),
 -- Rector Applications
        ('Jan', 'Kowalczyk', '2000-01-01', '+48 123456789', 'Prof.', 170387, 2, 'AB6789000', '2020-12-01', 5, 1,
         '2020-12-12', '2020-12-15', 'Konferencja', 'AntyCovid2020',
         ' TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą',
         '2020-12-13', '2020-12-14', 1, '2020-12-12', '2020-12-15', FALSE, 3, 3, 'User Comments', NULL,
-        'Director comments', NULL, 'WaitingForRector'),
+        'Director comments', NULL, 3),
 -- Wilda Applications
        ('Jan', 'Kowalczyk', '2000-01-01', '+48 123456789', 'Prof.', 170387, 2, 'AB6789000', '2020-12-01', 5, 1,
         '2020-12-12', '2020-12-15', 'Konferencja', 'AntyCovid2020',
         ' TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą',
         '2020-12-13', '2020-12-14', 1, '2020-12-12', '2020-12-15', FALSE, 3, 3, 'User Comments', NULL,
-        'Director comments', NULL, 'WaitingForWilda'),
+        'Director comments', NULL, 2),
        ('Jan', 'Kowalczyk', '2000-01-01', '+48 123456789', 'Prof.', 170387, 2, 'AB6789000', '2020-12-01', 5, 1,
         '2020-12-12', '2020-12-15', 'Konferencja', 'AntyCovid2020',
         ' TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą',
         '2020-12-13', '2020-12-14', 1, '2020-12-12', '2020-12-15', FALSE, 3, 3, 'User Comments', NULL,
-        'Director comments', NULL, 'Accepted');
+        'Director comments', NULL, 7);
 
 CREATE TABLE Transport
 (
@@ -341,11 +360,14 @@ SELECT Application.id,
        city,
        abroadStartDate,
        abroadEndDate,
-       status
+       status,
+       S.nameEng as statusEng,
+       S.namePl as statusPl
 FROM Application
          JOIN Place
               ON Place.id = Application.placeId
-         JOIN Institute I on Application.instituteId = I.id;
+         JOIN Institute I on Application.instituteId = I.id
+         JOIN Status S on Application.status = S.id;
 
 CREATE VIEW ApplicationFull As
 SELECT a.id,

@@ -3,7 +3,6 @@ package com.pp.trisscore.model.rows
 import com.pp.trisscore.model.applicationinfoelements.AdvancePaymentsInfo
 import com.pp.trisscore.model.architecture.ApplicationInfo
 import com.pp.trisscore.model.classes.*
-import com.pp.trisscore.model.enums.Status
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
@@ -73,7 +72,7 @@ data class ApplicationFull(
         @Column("rectorComments")
         val rectorComments: String?,
         @Column("status")
-        val status: Status?,
+        val status: Long?,
         //PlaceData
         @Column("pId")
         val pId: Long?,

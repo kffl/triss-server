@@ -6,7 +6,7 @@ import com.pp.trisscore.exceptions.WrongDateException
 import com.pp.trisscore.model.architecture.ApplicationInfo
 import com.pp.trisscore.model.classes.*
 import com.pp.trisscore.model.enums.Role
-import com.pp.trisscore.model.enums.Status
+import com.pp.trisscore.model.enums.StatusEnum
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 
@@ -149,7 +149,7 @@ class ValidationService {
             throw(InvalidRequestBodyException("Rector comments must be null"))
         if (application.wildaComments != null)
             throw(InvalidRequestBodyException("Wilda comments must be null"))
-        if (application.status != Status.WaitingForDirector)
+        if (application.status != StatusEnum.WaitingForDirector.value)
             throw(InvalidRequestBodyException("Application Status must be WaitingForDirector"))
 
     }
@@ -184,15 +184,15 @@ class ValidationService {
     private fun validateStatus(application: Application, role: Role) {
         when (role) {
             Role.DIRECTOR -> {
-                if (application.status != Status.WaitingForDirector)
+                if (application.status != StatusEnum.WaitingForDirector.value)
                     throw(UnauthorizedException("Status must be WaitingForDirector"))
             }
             Role.WILDA -> {
-                if (application.status != Status.WaitingForWilda)
+                if (application.status != StatusEnum.WaitingForWilda.value)
                     throw(UnauthorizedException("Status must be WaitingForWilda"))
             }
             Role.RECTOR -> {
-                if (application.status != Status.WaitingForRector)
+                if (application.status != StatusEnum.WaitingForRector.value)
                     throw(UnauthorizedException("Status must be WaitingForRector"))
             }
             Role.USER -> {

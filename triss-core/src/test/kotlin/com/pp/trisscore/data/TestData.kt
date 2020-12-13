@@ -40,7 +40,7 @@ interface TestData {
                 financialSourceId = 1, abroadStartDateInsurance = LocalDate.of(2020,12,12),
                 abroadEndDateInsurance = LocalDate.of(2020,12,15), selfInsured = false,
                 advanceApplicationId = 3, prepaymentId = 3, comments = "User Comments",
-                wildaComments = null, directorComments = "Director comments", rectorComments = null, status = Status.WaitingForWilda)
+                wildaComments = null, directorComments = "Director comments", rectorComments = null, status = StatusEnum.WaitingForWilda.value)
         val correctTransportListForWaitingForWilda = listOf(
                 Transport(id = 5, applicationID = 5, destinationFrom = "Poznań", destinationTo = "Berlin",
                         departureDay = LocalDate.of(2020, 12, 12), departureHour = 10, departureMinute = 10,
@@ -59,7 +59,7 @@ interface TestData {
                 financialSourceId = 1, abroadStartDateInsurance = LocalDate.of(2020,12,12),
                 abroadEndDateInsurance = LocalDate.of(2020,12,15), selfInsured = false,
                 advanceApplicationId = 3, prepaymentId = 3, comments = "User Comments",
-                wildaComments = null, directorComments = "Director comments", rectorComments = null, status = Status.Accepted)
+                wildaComments = null, directorComments = "Director comments", rectorComments = null, status = StatusEnum.Accepted.value)
         val correctTransportListForAccepted = listOf(
                 Transport(id = 5, applicationID = 6, destinationFrom = "Poznań", destinationTo = "Berlin",
                         departureDay = LocalDate.of(2020, 12, 12), departureHour = 10, departureMinute = 10,
@@ -79,7 +79,7 @@ interface TestData {
                 financialSourceId = 1, abroadStartDateInsurance = LocalDate.of(2020,12,12),
                 abroadEndDateInsurance = LocalDate.of(2020,12,15), selfInsured = false,
                 advanceApplicationId = 3, prepaymentId = 3, comments = "User Comments",
-                wildaComments = null, directorComments = "Director comments", rectorComments = null, status = Status.WaitingForRector)
+                wildaComments = null, directorComments = "Director comments", rectorComments = null, status = StatusEnum.WaitingForRector.value)
         val correctTransportListForRector = listOf(
                 Transport(id = 5, applicationID = 4, destinationFrom = "Poznań", destinationTo = "Berlin",
                         departureDay = LocalDate.of(2020, 12, 12), departureHour = 10, departureMinute = 10,
@@ -99,7 +99,7 @@ interface TestData {
                 financialSourceId = null, abroadStartDateInsurance = LocalDate.of(2020,12,12),
                 abroadEndDateInsurance = LocalDate.of(2020,12,15), selfInsured = false,
                 advanceApplicationId = 3, prepaymentId = 3, comments = "comments",
-                wildaComments = null, directorComments = null, rectorComments = null, status = Status.WaitingForDirector)
+                wildaComments = null, directorComments = null, rectorComments = null, status = StatusEnum.WaitingForDirector.value)
         val correctInstitute = Institute(id = 1, name = "Instytut Architektury i Planowania Przestrzennego", active = true)
         val correctTransportListForDirector = listOf(
                 Transport(id = 5, applicationID = 3, destinationFrom = "Poznań", destinationTo = "Berlin",
@@ -160,7 +160,7 @@ interface TestData {
                 instituteId = 1, purpose = "prupose", conference = "conference", subject = "subject", conferenceStartDate = LocalDate.now().plusDays(11),
                 conferenceEndDate = LocalDate.now().plusDays(39), financialSourceId = null, abroadStartDateInsurance = LocalDate.now().plusDays(10)
                 , abroadEndDateInsurance = LocalDate.now().plusDays(40), selfInsured = false, advanceApplicationId = null, prepaymentId = null, comments = "blablabla",
-                wildaComments = null, directorComments = null, rectorComments = null, status = Status.WaitingForDirector)
+                wildaComments = null, directorComments = null, rectorComments = null, status = StatusEnum.WaitingForDirector.value)
         val correctTransportList = listOf(Transport(id = null, applicationID = null, destinationFrom = "Poznań", destinationTo = "Berlin", departureDay = LocalDate.now().plusDays(10), departureHour = 10, departureMinute = 10, vehicleSelect = 3, carrier = "carrier"),
                 Transport(id = null, applicationID = null, destinationFrom = "Berlin", destinationTo = "Poznań", departureDay = LocalDate.now().plusDays(10), departureHour = 10, departureMinute = 10, vehicleSelect = 3, carrier = "carrier"))
         val correctAdvanceApplication = AdvanceApplication(id = null, startDate = LocalDate.now().plusDays(10), endDate = LocalDate.now().plusDays(40),
@@ -180,7 +180,7 @@ interface TestData {
                 advancePayments = correctAdvancePaymentsInfo,
                 place = correctPlace)
         val filter = ApplicationRow(id = null, firstName = null, surname = null,
-                employeeId = null, instituteName = null, instituteId = null, country = null, abroadEndDate = null, abroadStartDate = null, city = null, status = null)
+                employeeId = null, instituteName = null, instituteId = null, country = null, abroadEndDate = null, abroadStartDate = null, city = null, status = null,statusEng = null,statusPl = null)
         val pageInfo = PageInfo(filter = filter,
                 desc = false, orderBy = "id", pageSize = 100, pageNumber = 0)
         fun getExampleForUserApplication(user: Employee) = correctApplication.copy(firstName = user.firstName, surname = user.surname, birthDate = user.birthDate, academicDegree = user.academicDegree, phoneNumber = user.phoneNumber, employeeId = user.employeeId, instituteId = user.instituteID)

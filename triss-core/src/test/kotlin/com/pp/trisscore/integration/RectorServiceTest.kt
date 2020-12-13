@@ -5,9 +5,8 @@ import com.pp.trisscore.data.TestData.Companion.exampleApplicationInfoForRector
 import com.pp.trisscore.data.TestData.Companion.existingDirectorToken
 import com.pp.trisscore.data.TestData.Companion.existingRectorToken
 import com.pp.trisscore.data.TestData.Companion.pageInfo
-import com.pp.trisscore.exceptions.InvalidRequestBodyException
 import com.pp.trisscore.exceptions.UnauthorizedException
-import com.pp.trisscore.model.enums.Status
+import com.pp.trisscore.model.enums.StatusEnum
 import com.pp.trisscore.service.RectorService
 import io.r2dbc.spi.ConnectionFactory
 import org.junit.jupiter.api.Assertions
@@ -62,7 +61,7 @@ class RectorServiceTest(@Autowired val rectorService: RectorService,
     fun shouldNotApproveApplicationWrongStatus() {
         val x = assertThrows<UnauthorizedException> {
             rectorService.approveApplication(existingRectorToken, exampleApplicationInfoForRector.copy(
-                    application = correctApplicationForRector.copy(status = Status.Accepted))).block()
+                    application = correctApplicationForRector.copy(status = StatusEnum.Accepted.value))).block()
         }
         Assertions.assertEquals("Status must be WaitingForRector", x.message)
     }

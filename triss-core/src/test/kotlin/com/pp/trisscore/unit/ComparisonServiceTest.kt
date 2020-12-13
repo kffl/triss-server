@@ -28,7 +28,7 @@ class ComparisonServiceTest() {
             0,"Konferencja", "AntyCovid2020", "TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą",
             LocalDate.parse("2020-12-13"), LocalDate.parse("2020-12-14"), null, LocalDate.parse("2020-12-12"),
             LocalDate.parse("2020-12-15"), false, 1, 1, null, null,
-            null, null, Status.WaitingForDirector)
+            null, null, StatusEnum.WaitingForDirector.value)
 
     @Test
     fun shouldCompareInstitutesAndThrowInvalidRequestBody() {

@@ -7,7 +7,7 @@ import com.pp.trisscore.model.architecture.PageInfo
 import com.pp.trisscore.model.architecture.TokenData
 import com.pp.trisscore.model.classes.Application
 import com.pp.trisscore.model.enums.Role
-import com.pp.trisscore.model.enums.Status
+import com.pp.trisscore.model.enums.StatusEnum
 import com.pp.trisscore.model.rows.ApplicationRow
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -26,12 +26,12 @@ class RectorService(
 
     fun getApplications(pageInfo: PageInfo<ApplicationRow>, tokenBody: TokenData): Flux<ApplicationRow> {
         return employeeService.findEmployeeAndCheckRole(tokenBody, role).switchIfEmpty(Mono.error(UnauthorizedException("You do not have permission to perform this action")))
-                .flatMapMany { applicationService.getAllByFilter(pageInfo.copy(pageInfo.filter.copy(status = Status.WaitingForRector))) }
+                .flatMapMany { applicationService.getAllByFilter(pageInfo.copy(pageInfo.filter.copy(status = StatusEnum.WaitingForRector.value))) }
     }
 
     fun getCountByFilter(tokenBody: TokenData, pageInfo: PageInfo<ApplicationRow>): Mono<Long> {
         return employeeService.findEmployeeAndCheckRole(tokenBody, role).switchIfEmpty(Mono.error(UnauthorizedException("You do not have permission to perform this action")))
-                .flatMap { applicationService.getCountByFilter(pageInfo.copy(pageInfo.filter.copy(status = Status.WaitingForRector))) }
+                .flatMap { applicationService.getCountByFilter(pageInfo.copy(pageInfo.filter.copy(status = StatusEnum.WaitingForRector.value))) }
     }
 
     fun approveApplication(tokenBody: TokenData, body: ApplicationInfo): Mono<Application> {
@@ -43,7 +43,7 @@ class RectorService(
 
     private fun validateApproveAndSaveApplication(dbApplicationInfo: ApplicationInfo?, reqApplicationInfo: ApplicationInfo): Mono<out Application>? {
         comparisonService.compareApplicationsInfo(dbApplicationInfo!!, reqApplicationInfo, role)
-        return applicationService.saveApplication(reqApplicationInfo.application.copy(status = Status.Accepted))
+        return applicationService.saveApplication(reqApplicationInfo.application.copy(status = StatusEnum.Accepted.value))
     }
 
     fun getFullApplication(tokenBody: TokenData, id: Long): Mono<ApplicationInfo> {
@@ -63,7 +63,7 @@ class RectorService(
 
     private fun validateRejectAndSaveApplication(dbApplication: ApplicationInfo, reqApplication: ApplicationInfo): Mono<Application> {
         comparisonService.compareApplicationsInfo(dbApplication, reqApplication, role)
-        return applicationService.saveApplication(reqApplication.application.copy(status = Status.RejectedByRector))
+        return applicationService.saveApplication(reqApplication.application.copy(status = StatusEnum.RejectedByRector.value))
     }
 
 }
