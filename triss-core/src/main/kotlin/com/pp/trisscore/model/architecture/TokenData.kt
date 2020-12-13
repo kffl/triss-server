@@ -2,6 +2,6 @@ package com.pp.trisscore.model.architecture
 
 data class TokenData(
         val employeeId: Long,
-        val name: String,
+        val firstname: String,
         val surname: String
 )

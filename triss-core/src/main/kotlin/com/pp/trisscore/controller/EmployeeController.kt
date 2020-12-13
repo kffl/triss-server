@@ -3,6 +3,7 @@ package com.pp.trisscore.controller
 import com.pp.trisscore.exceptions.EmployeeNotFoundException
 import com.pp.trisscore.exceptions.InvalidRequestBodyException
 import com.pp.trisscore.exceptions.ObjectNotFoundException
+import com.pp.trisscore.exceptions.UserAllReadyExistsException
 import com.pp.trisscore.model.architecture.ErrorsDetails
 import com.pp.trisscore.model.architecture.TokenData
 import com.pp.trisscore.model.classes.Employee
@@ -47,7 +48,7 @@ class EmployeeController(private val employeeService: EmployeeService,
         return employeeService.newEmployee(tokenData,employee)
     }
 
-    @ExceptionHandler(value = [InvalidRequestBodyException::class])
+    @ExceptionHandler(value = [InvalidRequestBodyException::class, UserAllReadyExistsException::class])
     fun catchInvalidRequestBodyException(ex: RuntimeException): ResponseEntity<ErrorsDetails> {
         val errorDetails = ErrorsDetails(Date(), ex.toString(), ex.message!!)
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDetails)
@@ -62,6 +63,6 @@ class EmployeeController(private val employeeService: EmployeeService,
     @ExceptionHandler(value = [EmployeeNotFoundException::class])
     fun catchEmployeeNotFoundException(ex: RuntimeException): ResponseEntity<ErrorsDetails> {
         val errorDetails = ErrorsDetails(Date(), ex.toString(), ex.message!!)
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorDetails)
+        return ResponseEntity.status(HttpStatus.GONE).body(errorDetails)
     }
 }

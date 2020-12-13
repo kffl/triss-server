@@ -1,8 +1,6 @@
 package com.pp.trisscore.controller
 
-import com.pp.trisscore.exceptions.InvalidRequestBodyException
-import com.pp.trisscore.exceptions.ObjectNotFoundException
-import com.pp.trisscore.exceptions.UserNotFoundException
+import com.pp.trisscore.exceptions.*
 import com.pp.trisscore.model.architecture.ApplicationInfo
 import com.pp.trisscore.model.architecture.ErrorsDetails
 import com.pp.trisscore.model.architecture.PageInfo
@@ -81,5 +79,10 @@ class UserController(private val userService: UserService,
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorDetails)
     }
 
+    @ExceptionHandler(value = [UnauthorizedException::class])
+    fun catchUnauthorizedException(ex: RuntimeException): ResponseEntity<ErrorsDetails> {
+        val errorDetails = ErrorsDetails(Date(), ex.toString(), ex.message!!)
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorDetails)
+    }
 
 }

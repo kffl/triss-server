@@ -3,6 +3,7 @@ package com.pp.trisscore.controller
 import com.pp.trisscore.exceptions.InvalidRequestBodyException
 import com.pp.trisscore.exceptions.ObjectNotFoundException
 import com.pp.trisscore.exceptions.RectorNotFoundException
+import com.pp.trisscore.exceptions.UnauthorizedException
 import com.pp.trisscore.model.architecture.ApplicationInfo
 import com.pp.trisscore.model.architecture.ErrorsDetails
 import com.pp.trisscore.model.architecture.PageInfo
@@ -79,15 +80,15 @@ class RectorController(private val rectorService: RectorService,
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDetails)
     }
 
-    @ExceptionHandler(value = [ObjectNotFoundException::class])
+    @ExceptionHandler(value = [ObjectNotFoundException::class,RectorNotFoundException::class])
     fun catchObjectNotFoundException(ex: RuntimeException): ResponseEntity<ErrorsDetails> {
         val errorDetails = ErrorsDetails(Date(), ex.toString(), ex.message!!)
         return ResponseEntity.status(HttpStatus.GONE).body(errorDetails)
     }
 
-    @ExceptionHandler(value = [RectorNotFoundException::class])
-    fun catchRectorNotFoundException(ex: RuntimeException): ResponseEntity<ErrorsDetails> {
+    @ExceptionHandler(value = [UnauthorizedException::class])
+    fun catchUnauthorizedException(ex: RuntimeException): ResponseEntity<ErrorsDetails> {
         val errorDetails = ErrorsDetails(Date(), ex.toString(), ex.message!!)
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorDetails)
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorDetails)
     }
 }
