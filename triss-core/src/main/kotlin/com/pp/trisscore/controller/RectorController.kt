@@ -13,6 +13,7 @@ import com.pp.trisscore.service.RectorService
 import com.pp.trisscore.service.TokenService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
 import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
@@ -22,67 +23,71 @@ import java.util.*
 @RestController
 @CrossOrigin
 @RequestMapping("/rector")
-class RectorController(val rectorService: RectorService,
+class RectorController(private val rectorService: RectorService,
                        private val tokenService: TokenService) {
-    val tokenBody = TokenData(3, "Jerzy", "Zbiałowierzy")
-
 
     @PostMapping("/application/get")
     fun getApplications(
-//            token: JwtAuthenticationToken,
-            @RequestBody pageInfo: PageInfo<ApplicationRow>): Flux<ApplicationRow> {
-//        val tokenBody = tokenService.getEmployeeDataFromToken(token)
-        return rectorService.getApplications(pageInfo, tokenBody)
+            @RequestBody pageInfo: PageInfo<ApplicationRow>,
+            token: JwtAuthenticationToken
+    ): Mono<List<ApplicationRow>> {
+        val tokenBody = tokenService.getEmployeeDataFromToken(token)
+        return rectorService.getApplications(pageInfo, tokenBody).collectList()
     }
 
     @PostMapping("/application/count")
-    fun getCountByFilter(@RequestBody body: PageInfo<ApplicationRow>
-//                         , token: JwtAuthenticationToken
+    fun getCountByFilter(
+                         @RequestBody body: PageInfo<ApplicationRow>,
+                         token: JwtAuthenticationToken
     ): Mono<Long> {
-//        val tokenBody = tokenService.getEmployeeDataFromToken(token)
+        val tokenBody = tokenService.getEmployeeDataFromToken(token)
         return rectorService.getCountByFilter(tokenBody, body)
     }
 
     @PostMapping("application/approve")
-    fun approveApplication(@RequestBody body: ApplicationInfo
-//                           , token: JwtAuthenticationToken
+    fun approveApplication(
+                           @RequestBody body: ApplicationInfo,
+                           token: JwtAuthenticationToken
     ): Mono<Application> {
-//        val tokenBody = tokenService.getEmployeeDataFromToken(token)
+        val tokenBody = tokenService.getEmployeeDataFromToken(token)
         return rectorService.approveApplication(tokenBody, body)
     }
 
     @PostMapping("application/getFull")
-    fun getFullApplication(@RequestBody id: Long
-//                           , token: JwtAuthenticationToken
-    ) : Mono<ApplicationInfo>{
-//        val tokenBody = tokenService.getEmployeeDataFromToken(token)
+    fun getFullApplication(
+                           @RequestBody id: Long,
+                           token: JwtAuthenticationToken
+    ): Mono<ApplicationInfo>{
+        val tokenBody = tokenService.getEmployeeDataFromToken(token)
         return rectorService.getFullApplication(tokenBody, id)
     }
 
     @PostMapping("application/reject")
-    fun rejectApplication(@RequestBody body: ApplicationInfo):Mono<Application>
-//                          ,token: JwtAuthenticationToken)
+    fun rejectApplication(
+                          @RequestBody body: ApplicationInfo,
+                          token: JwtAuthenticationToken
+    ): Mono<Application>
     {
-//        val tokenBody = tokenService.getEmployeeDataFromToken(token)
+       val tokenBody = tokenService.getEmployeeDataFromToken(token)
         return rectorService.rejectApplication(tokenBody, body);
     }
 
 
-//    @ExceptionHandler(value = [InvalidRequestBodyException::class])
-//    fun catchInvalidRequestBodyException(ex: RuntimeException): ResponseEntity<ErrorsDetails> {
-//        val errorDetails = ErrorsDetails(Date(), ex.toString(), ex.message!!)
-//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDetails)
-//    }
-//
-//    @ExceptionHandler(value = [ObjectNotFoundException::class])
-//    fun catchObjectNotFoundException(ex: RuntimeException): ResponseEntity<ErrorsDetails> {
-//        val errorDetails = ErrorsDetails(Date(), ex.toString(), ex.message!!)
-//        return ResponseEntity.status(HttpStatus.GONE).body(errorDetails)
-//    }
-//
-//    @ExceptionHandler(value = [RectorNotFoundException::class])
-//    fun catchRectorNotFoundException(ex: RuntimeException): ResponseEntity<ErrorsDetails> {
-//        val errorDetails = ErrorsDetails(Date(), ex.toString(), ex.message!!)
-//        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorDetails)
-//    }
+    @ExceptionHandler(value = [InvalidRequestBodyException::class])
+    fun catchInvalidRequestBodyException(ex: RuntimeException): ResponseEntity<ErrorsDetails> {
+        val errorDetails = ErrorsDetails(Date(), ex.toString(), ex.message!!)
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDetails)
+    }
+
+    @ExceptionHandler(value = [ObjectNotFoundException::class])
+    fun catchObjectNotFoundException(ex: RuntimeException): ResponseEntity<ErrorsDetails> {
+        val errorDetails = ErrorsDetails(Date(), ex.toString(), ex.message!!)
+        return ResponseEntity.status(HttpStatus.GONE).body(errorDetails)
+    }
+
+    @ExceptionHandler(value = [RectorNotFoundException::class])
+    fun catchRectorNotFoundException(ex: RuntimeException): ResponseEntity<ErrorsDetails> {
+        val errorDetails = ErrorsDetails(Date(), ex.toString(), ex.message!!)
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorDetails)
+    }
 }

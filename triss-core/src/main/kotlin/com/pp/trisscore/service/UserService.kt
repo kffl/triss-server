@@ -56,8 +56,7 @@ class UserService(private val employeeService: EmployeeService,
             throw EmployeeNotFoundException("User Not Found")
         validationService.validateCreateApplicationInfo(applicationInfo, user)
         val institute = instituteService.findInstituteByName(applicationInfo.institute.name)
-        val prepaymentId = prepaymentService.createPrepayment(applicationInfo.advancePayments)
-                .map { x -> x.id }
+        val prepaymentId = prepaymentService.createPrepayment(applicationInfo.advancePayments).map { x -> x.id }
                 .switchIfEmpty(Mono.error(ObjectNotFoundException("PrepaymentId")))
         val placeId = placeService.getPlace(applicationInfo.place).map { x -> x.id }
                 .switchIfEmpty(Mono.error(ObjectNotFoundException("PlaceId")))
@@ -68,6 +67,4 @@ class UserService(private val employeeService: EmployeeService,
                 }
         return application.flatMap { x -> transportService.save(applicationInfo.transport, x.id!!) }
     }
-
-
 }

@@ -75,11 +75,10 @@ class DirectorServiceTest(@Autowired val directorService: DirectorService,
 
         val x = assertThrows<UnauthorizedException> {
             directorService.approveApplication(existingDirectorToken,
-                    exampleApplicationInfoForDirector.copy(financialSource = correctFinancialSource,
-                            application = correctApplicationForDirector.copy(status = Status.WaitingForDirector))).block()
+                    exampleApplicationInfoForDirector.copy(financialSource = correctFinancialSource, application = correctApplicationForDirector
+                            .copy(status = Status.WaitingForWilda))).block()
         }
-        assertEquals("Status must be WaitingForWilda", x.message)
-    }
+        assertEquals("Status must be WaitingForDirector", x.message)
 
     //Director rejectApplication
     @Test

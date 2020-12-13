@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @CrossOrigin
 @RequestMapping("/institute")
-data class InstituteController(val instituteService: InstituteService)
+data class InstituteController(private val instituteService: InstituteService)
 {
     @GetMapping("/all")
-    fun getAllInstitute()=instituteService.getAllInstitute()
+    fun getAllInstitute()=instituteService.getAllInstitute().collectList()
 }
