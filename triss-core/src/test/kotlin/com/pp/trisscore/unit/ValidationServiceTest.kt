@@ -10,20 +10,13 @@ import com.pp.trisscore.data.TestData.Companion.correctPlace
 import com.pp.trisscore.data.TestData.Companion.exampleApplicationInfo
 import com.pp.trisscore.data.TestData.Companion.exampleApplicationInfoForDirector
 import com.pp.trisscore.data.TestData.Companion.exampleApplicationInfoForWaitingForWilda
-import com.pp.trisscore.data.TestData.Companion.existingDirectorToken
 import com.pp.trisscore.data.TestData.Companion.existingUserEmployee
-import com.pp.trisscore.data.TestData.Companion.newEmployee
 import com.pp.trisscore.exceptions.InvalidRequestBodyException
-import com.pp.trisscore.exceptions.UnauthorizedException
 import com.pp.trisscore.exceptions.WrongDateException
-import com.pp.trisscore.model.applicationinfoelements.AdvancePaymentsInfo
-import com.pp.trisscore.model.architecture.ApplicationInfo
-import com.pp.trisscore.model.classes.*
 import com.pp.trisscore.model.enums.*
 import com.pp.trisscore.service.ValidationService
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 import java.time.LocalDate
 
@@ -87,7 +80,7 @@ class ValidationServiceTest() {
     //validateApproveApplicationInfo tests
     @Test
     fun shouldNotValidateApproveApplicationInfoWrongRole(){
-        val result = assertThrows<UnauthorizedException> {
+        val result = assertThrows<InvalidRequestBodyException> {
             validationService.validateApproveApplicationInfo(exampleApplicationInfoForDirector, Role.USER)
         }
         assertEquals("User don't have access to this", result.message)
@@ -95,7 +88,7 @@ class ValidationServiceTest() {
 
     @Test
     fun shouldNotValidateApproveApplicationInfoWrongStatus(){
-        val result = assertThrows<UnauthorizedException> {
+        val result = assertThrows<InvalidRequestBodyException> {
             validationService.validateApproveApplicationInfo(exampleApplicationInfoForDirector.copy(
                     application = correctApplication.copy(status = Status.WaitingForRector)), Role.DIRECTOR )
         }

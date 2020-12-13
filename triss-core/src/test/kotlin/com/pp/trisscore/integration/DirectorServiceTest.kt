@@ -87,12 +87,12 @@ class DirectorServiceTest(@Autowired val directorService: DirectorService,
         val x = assertThrows<UnauthorizedException>{
             directorService.rejectApplication(existingUserToken, exampleApplicationInfoForDirector).block()
         }
-        assertEquals("Employee don't have access to this.", x.message)
+        assertEquals("User 170387 Jan Kowalczyk don't have access to this.", x.message)
     }
 
     @Test
     fun shouldNotRejectApplicationWrongStatus(){
-        val x = assertThrows<UnauthorizedException>{
+        val x = assertThrows<InvalidRequestBodyException>{
             directorService.rejectApplication(existingDirectorToken, exampleApplicationInfoForDirector.copy(
                     application = correctApplicationForDirector.copy(status = Status.WaitingForWilda))).block()
         }

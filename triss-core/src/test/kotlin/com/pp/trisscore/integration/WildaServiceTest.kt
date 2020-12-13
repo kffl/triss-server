@@ -3,15 +3,14 @@ package com.pp.trisscore.integration
 import com.pp.trisscore.data.TestData.Companion.correctApplicationForWaitingForWilda
 import com.pp.trisscore.data.TestData.Companion.exampleApplicationInfoForWaitingForWilda
 import com.pp.trisscore.data.TestData.Companion.existingDirectorToken
-import com.pp.trisscore.data.TestData.Companion.existingRectorToken
 import com.pp.trisscore.data.TestData.Companion.existingUserToken
 import com.pp.trisscore.data.TestData.Companion.existingWildaToken
 import com.pp.trisscore.data.TestData.Companion.pageInfo
+import com.pp.trisscore.exceptions.InvalidRequestBodyException
 import com.pp.trisscore.exceptions.UnauthorizedException
 import com.pp.trisscore.model.enums.Status
 import com.pp.trisscore.service.WildaService
 import io.r2dbc.spi.ConnectionFactory
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -52,7 +51,7 @@ class WildaServiceTest(@Autowired val wildaService: WildaService,
     @Test
     fun shouldNotGetWildaCountWrongRole() {
         val x = assertThrows<UnauthorizedException> { wildaService.getCountByFilter(existingDirectorToken, pageInfo).block() }
-        Assertions.assertEquals("User 167711 Andrzej Nowak don't have access to this.", x.message)
+        assertEquals("User 167711 Andrzej Nowak don't have access to this.", x.message)
     }
 
     //Wilda approveApplication
@@ -61,7 +60,7 @@ class WildaServiceTest(@Autowired val wildaService: WildaService,
         val x = assertThrows<UnauthorizedException> {
             wildaService.approveApplication(existingDirectorToken, exampleApplicationInfoForWaitingForWilda).block()
         }
-        Assertions.assertEquals("User 167711 Andrzej Nowak don't have access to this.", x.message)
+        assertEquals("User 167711 Andrzej Nowak don't have access to this.", x.message)
     }
 
     @Test
@@ -79,12 +78,12 @@ class WildaServiceTest(@Autowired val wildaService: WildaService,
         val x = assertThrows<UnauthorizedException>{
             wildaService.rejectApplication(existingUserToken, exampleApplicationInfoForWaitingForWilda).block()
         }
-        assertEquals("Employee don't have access to this.", x.message)
+        assertEquals("User 170387 Jan Kowalczyk don't have access to this.", x.message)
     }
 
     @Test
     fun shouldNotRejectApplicationWrongStatus(){
-        val x = assertThrows<UnauthorizedException>{
+        val x = assertThrows<InvalidRequestBodyException>{
             wildaService.rejectApplication(existingWildaToken, exampleApplicationInfoForWaitingForWilda.copy(
                     application = correctApplicationForWaitingForWilda.copy(status = Status.WaitingForRector))).block()
         }
