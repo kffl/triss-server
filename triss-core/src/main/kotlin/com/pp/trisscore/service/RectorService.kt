@@ -64,7 +64,6 @@ class RectorService(
     private fun validateRejectAndSaveApplication(dbApplication: ApplicationInfo, reqApplication: ApplicationInfo): Mono<Application> {
         comparisonService.compareApplicationsInfo(dbApplication, reqApplication, role)
         return applicationService.saveApplication(reqApplication.application.copy(status = Status.RejectedByDirector))
-
     }
 
 }
