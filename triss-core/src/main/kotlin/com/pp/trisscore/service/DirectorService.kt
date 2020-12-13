@@ -7,6 +7,7 @@ import com.pp.trisscore.model.architecture.PageInfo
 import com.pp.trisscore.model.architecture.TokenData
 import com.pp.trisscore.model.classes.Application
 import com.pp.trisscore.model.enums.Role
+import com.pp.trisscore.model.enums.Status
 import com.pp.trisscore.model.rows.ApplicationRow
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -44,7 +45,7 @@ class DirectorService(val employeeService: EmployeeService,
     fun validateApproveAndSaveApplication(dbApplication: ApplicationInfo, reqApplication: ApplicationInfo): Mono<Application> {
         comparisonService.compareApplicationsInfo(dbApplication, reqApplication, Role.DIRECTOR)
         return financialSourceService.save(reqApplication.financialSource!!)
-                .flatMap { x -> applicationService.saveApplication(reqApplication.application.copy(financialSourceId = x.id)) }
+                .flatMap { x -> applicationService.saveApplication(reqApplication.application.copy(status = Status.WaitingForWilda,financialSourceId = x.id)) }
     }
 
 
@@ -68,7 +69,6 @@ class DirectorService(val employeeService: EmployeeService,
 
     private fun validateRejectAndSaveApplication(dbApplication: ApplicationInfo, reqApplication: ApplicationInfo): Mono<Application> {
         comparisonService.compareApplicationsInfo(dbApplication, reqApplication, role)
-        return applicationService.saveApplication(reqApplication.application)
-
+        return applicationService.saveApplication(reqApplication.application.copy(status = Status.RejectedByDirector))
     }
 }

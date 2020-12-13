@@ -6,7 +6,6 @@ import com.pp.trisscore.model.applicationinfoelements.AdvancePaymentsInfo
 import com.pp.trisscore.model.architecture.ApplicationInfo
 import com.pp.trisscore.model.classes.*
 import com.pp.trisscore.model.enums.Role
-import com.pp.trisscore.model.enums.Status
 import org.springframework.stereotype.Service
 
 @Service
@@ -34,15 +33,15 @@ class ComparisonService {
     private fun compareApplications(role: Role,dbApplication: Application, reqApplication: Application) {
         when (role) {
             Role.WILDA -> {
-                if (dbApplication.copy(wildaComments = reqApplication.wildaComments) != reqApplication.copy(status = Status.WaitingForWilda))
+                if (dbApplication.copy(wildaComments = reqApplication.wildaComments) != reqApplication)
                     throw InvalidRequestBodyException("ApplicationFinancialSourceId in DB differs from the request's one")
             }
             Role.DIRECTOR -> {
-                if (dbApplication.copy(directorComments = reqApplication.directorComments) != reqApplication.copy(status = Status.WaitingForDirector))
+                if (dbApplication.copy(directorComments = reqApplication.directorComments) != reqApplication)
                     throw InvalidRequestBodyException("ApplicationFinancialSourceId in DB differs from the request's one")
             }
             Role.RECTOR -> {
-                if (dbApplication.copy(rectorComments = reqApplication.rectorComments) != reqApplication.copy(status = Status.WaitingForRector))
+                if (dbApplication.copy(rectorComments = reqApplication.rectorComments) != reqApplication)
                     throw InvalidRequestBodyException("ApplicationFinancialSourceId in DB differs from the request's one")
             }
             Role.USER -> {
