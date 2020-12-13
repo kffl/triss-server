@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono
 @RestController
 @CrossOrigin
 @RequestMapping("/enum")
-class EnumController(val enumService: EnumService) {
+class EnumController(private val enumService: EnumService) {
 
     @GetMapping("/documentType")
     fun getDocumentTypes() = enumService.getDocumentTypes()

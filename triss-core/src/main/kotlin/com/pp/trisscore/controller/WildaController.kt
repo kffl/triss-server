@@ -5,7 +5,9 @@ import com.pp.trisscore.model.architecture.PageInfo
 import com.pp.trisscore.model.architecture.TokenData
 import com.pp.trisscore.model.classes.Application
 import com.pp.trisscore.model.rows.ApplicationRow
+import com.pp.trisscore.service.TokenService
 import com.pp.trisscore.service.WildaService
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
 import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
@@ -13,49 +15,54 @@ import reactor.core.publisher.Mono
 @RestController
 @CrossOrigin
 @RequestMapping("/wilda")
-class WildaController(val wildaService: WildaService) {
-
-    val tokenBody = TokenData(2, "Jan", "Kowalski")
+class WildaController(private val wildaService: WildaService,
+                      private val tokenService: TokenService) {
 
 
     @PostMapping("/application/get")
     fun getApplications(
-//            token: JwtAuthenticationToken,
-            @RequestBody pageInfo: PageInfo<ApplicationRow>): Flux<ApplicationRow> {
-//        val tokenBody = tokenService.getEmployeeDataFromToken(token)
-        return wildaService.getApplications(pageInfo, tokenBody)
+                        @RequestBody pageInfo: PageInfo<ApplicationRow>,
+                        token: JwtAuthenticationToken
+    ): Mono<List<ApplicationRow>> {
+        val tokenBody = tokenService.getEmployeeDataFromToken(token)
+        return wildaService.getApplications(pageInfo, tokenBody).collectList()
     }
 
     @PostMapping("/application/count")
-    fun getCountByFilter(@RequestBody body: PageInfo<ApplicationRow>
-//                         , token: JwtAuthenticationToken
+    fun getCountByFilter(
+                         @RequestBody body: PageInfo<ApplicationRow>,
+                         token: JwtAuthenticationToken
     ): Mono<Long> {
-//        val tokenBody = tokenService.getEmployeeDataFromToken(token)
+        val tokenBody = tokenService.getEmployeeDataFromToken(token)
         return wildaService.getCountByFilter(tokenBody, body)
     }
 
     @PostMapping("application/getFull")
-    fun getFullApplication(@RequestBody id: Long
-//                           , token: JwtAuthenticationToken
+    fun getFullApplication(
+                           @RequestBody id: Long,
+                           token: JwtAuthenticationToken
     ): Mono<ApplicationInfo> {
-//        val tokenBody = tokenService.getEmployeeDataFromToken(token)
+        val tokenBody = tokenService.getEmployeeDataFromToken(token)
         return wildaService.getFullApplication(tokenBody, id)
     }
 
     @PostMapping("application/reject")
-    fun rejectApplication(@RequestBody body: ApplicationInfo): Mono<Application>
-//                          , token: JwtAuthenticationToken)
+    fun rejectApplication(
+                          @RequestBody body: ApplicationInfo,
+                          token: JwtAuthenticationToken
+    ): Mono<Application>
     {
-//        val tokenBody = tokenService.getEmployeeDataFromToken(token)
+        val tokenBody = tokenService.getEmployeeDataFromToken(token)
         return wildaService.rejectApplication(tokenBody, body)
     }
 
 
     @PostMapping("application/approve")
-    fun approveApplication(@RequestBody body: ApplicationInfo
-//                           , token: JwtAuthenticationToken
+    fun approveApplication(
+                           @RequestBody body: ApplicationInfo,
+                           token: JwtAuthenticationToken
     ): Mono<Application> {
-//        val tokenBody = tokenService.getEmployeeDataFromToken(token)
+        val tokenBody = tokenService.getEmployeeDataFromToken(token)
         return wildaService.approveApplication(tokenBody, body)
     }
 }
