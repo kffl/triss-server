@@ -16,7 +16,7 @@ class ComparisonServiceTest() {
     private val place = Place(0,"Poland","Warszawa")
     private val financialSource = FinancialSource(0, "AllocationAccountNumber", "MPK","Source","TRISS")
     private val transport = Transport(0, 0, "Poznań", "Tokio",
-            LocalDate.parse("2020-11-30"),30,12, Vehicle.Plane, "RyanAir")
+            LocalDate.parse("2020-11-30"),30,12, 1, "RyanAir")
     private val advancePaymentsInfo = AdvancePaymentsInfo(1000.toBigDecimal(), 4, 2000.toBigDecimal(), 4)
     private val advanceApplication = AdvanceApplication(0, 0, LocalDate.parse("2020-11-28"),
             LocalDate.parse("2020-12-03"), 1, 1000.toBigDecimal(), 1, 1000.toBigDecimal(),

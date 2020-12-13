@@ -12,7 +12,21 @@ DROP TABLE IF EXISTS PrepaymentFee;
 DROP TABLE IF EXISTS Institute;
 DROP TABLE IF EXISTS DocumentType;
 DROP TABLE IF EXISTS PaymentType;
+DROP TABLE IF EXISTS Vehicle;
 
+CREATE TABLE Vehicle
+(
+    id      BIGSERIAL PRIMARY KEY,
+    namePl  varchar(255) UNIQUE NOT NULL,
+    nameEng varchar(255) UNIQUE NOT NULL
+);
+
+INSERT INTO Vehicle (namePl, nameEng)
+VALUES ('Samolot', 'Plane'),
+       ('Samochód', 'Car'),
+       ('Autobus', 'Bus'),
+       ('Pociąg', 'Train'),
+       ('Inny', 'Other');
 
 CREATE TABLE PaymentType
 (
@@ -296,24 +310,25 @@ CREATE TABLE Transport
     departureHour   INTEGER      NOT NULL,
     departureMinute INTEGER      NOT NULL,
     carrier         VARCHAR(255) NOT NULL,
-    vehicleSelect   VARCHAR(255) NOT NULL,
-    CONSTRAINT application_tr_fk FOREIGN KEY (applicationID) REFERENCES Application (id)
+    vehicleSelect   BIGINT       NOT NULL,
+    CONSTRAINT application_tr_fk FOREIGN KEY (applicationID) REFERENCES Application (id),
+    CONSTRAINT vehicle_tr_fk FOREIGN KEY (vehicleSelect) REFERENCES Vehicle (id)
 );
 
 INSERT INTO Transport (applicationID, destinationFrom, destinationTo, departureDay, departureHour, departureMinute,
                        vehicleSelect, carrier)
-VALUES (1, 'Poznań', 'Los Angeles', '2020-12-12', 6, 30, 'Plane', 'LOT'),
-       (1, 'Los Angeles', 'Poznań', '2020-12-14', 20, 10, 'Plane', 'RyanAir'),
-       (2, 'Poznań', 'Montreal', '2020-11-10', 4, 24, 'Plane', 'LOT'),
-       (2, 'Montreal', 'Poznań', '2020-11-13', 5, 30, 'Plane', 'RyanAir'),
-       (3, 'Poznań', 'Berlin', '2020-12-12', 10, 10, 'Plane', 'RyanAir'),
-       (3, 'Berlin', 'Poznań', '2020-12-15', 12, 30, 'Plane', 'RyanAir'),
-       (4, 'Poznań', 'Berlin', '2020-12-12', 10, 10, 'Plane', 'RyanAir'),
-       (4, 'Berlin', 'Poznań', '2020-12-15', 12, 30, 'Plane', 'RyanAir'),
-       (5, 'Poznań', 'Berlin', '2020-12-12', 10, 10, 'Plane', 'RyanAir'),
-       (5, 'Berlin', 'Poznań', '2020-12-15', 12, 30, 'Plane', 'RyanAir'),
-       (6, 'Poznań', 'Berlin', '2020-12-12', 10, 10, 'Plane', 'RyanAir'),
-       (6, 'Berlin', 'Poznań', '2020-12-15', 12, 30, 'Plane', 'RyanAir');
+VALUES (1, 'Poznań', 'Los Angeles', '2020-12-12', 6, 30, 1, 'LOT'),
+       (1, 'Los Angeles', 'Poznań', '2020-12-14', 20, 10, 1, 'RyanAir'),
+       (2, 'Poznań', 'Montreal', '2020-11-10', 4, 24, 1, 'LOT'),
+       (2, 'Montreal', 'Poznań', '2020-11-13', 5, 30, 1, 'RyanAir'),
+       (3, 'Poznań', 'Berlin', '2020-12-12', 10, 10, 1, 'RyanAir'),
+       (3, 'Berlin', 'Poznań', '2020-12-15', 12, 30, 1, 'RyanAir'),
+       (4, 'Poznań', 'Berlin', '2020-12-12', 10, 10, 1, 'RyanAir'),
+       (4, 'Berlin', 'Poznań', '2020-12-15', 12, 30, 1, 'RyanAir'),
+       (5, 'Poznań', 'Berlin', '2020-12-12', 10, 10, 1, 'RyanAir'),
+       (5, 'Berlin', 'Poznań', '2020-12-15', 12, 30, 1, 'RyanAir'),
+       (6, 'Poznań', 'Berlin', '2020-12-12', 10, 10, 1, 'RyanAir'),
+       (6, 'Berlin', 'Poznań', '2020-12-15', 12, 30, 1, 'RyanAir');
 
 CREATE VIEW ApplicationRow AS
 SELECT Application.id,

@@ -68,6 +68,6 @@ class UserService(private val employeeService: EmployeeService,
                 .flatMap { data ->
                     applicationService.saveApplication(applicationService.fillApplication(applicationInfo, user.employeeId!!, data.t2.placeId!!, data.t1!!, data.t2.id!!, data.t3.id!!))
                 }
-        return application.flatMap { x -> transportService.save(applicationInfo.transport, x.id!!) }
+        return application.flatMap { x -> transportService.saveAll(applicationInfo.transport, x.id!!) }
     }
 }

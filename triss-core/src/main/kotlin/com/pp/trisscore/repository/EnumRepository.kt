@@ -14,11 +14,4 @@ class EnumRepository{
         return statusesList
     }
 
-    fun getVehicles(): List<EnumModel> {
-        val vehiclesList:MutableList<EnumModel> = mutableListOf()
-        for(vehicle in Vehicle.values()){
-            vehiclesList.add(EnumModel(vehicle.ordinal, vehicle.namePl, vehicle.nameEng))
-        }
-        return vehiclesList
-    }
 }
