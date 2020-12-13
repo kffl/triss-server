@@ -17,7 +17,7 @@ class ComparisonServiceTest() {
     private val financialSource = FinancialSource(0, "AllocationAccountNumber", "MPK","Source","TRISS")
     private val transport = Transport(0, 0, "Poznań", "Tokio",
             LocalDate.parse("2020-11-30"),30,12, Vehicle.Plane, "RyanAir")
-    private val advancePaymentsInfo = AdvancePaymentsInfo(1000.toBigDecimal(), PaymentType.Transfer, 2000.toBigDecimal(), PaymentType.Transfer)
+    private val advancePaymentsInfo = AdvancePaymentsInfo(1000.toBigDecimal(), 4, 2000.toBigDecimal(), 4)
     private val advanceApplication = AdvanceApplication(0, 0, LocalDate.parse("2020-11-28"),
             LocalDate.parse("2020-12-03"), 1, 1000.toBigDecimal(), 1, 1000.toBigDecimal(),
             800.toBigDecimal(), 600.toBigDecimal(), null, null, 1000.toBigDecimal(), 1000.toBigDecimal(),
@@ -98,7 +98,7 @@ class ComparisonServiceTest() {
     @Test
     fun shouldCompareAdvancePaymentsAndThrow() {
         assertThrows(InvalidRequestBodyException::class.java){
-            comparisonService.compareAdvancePayments(advancePaymentsInfo, advancePaymentsInfo.copy(conferenceFeePaymentTypeSelect = PaymentType.Cash))
+            comparisonService.compareAdvancePayments(advancePaymentsInfo, advancePaymentsInfo.copy(conferenceFeePaymentTypeSelect = 1))
         }
     }
     @Test

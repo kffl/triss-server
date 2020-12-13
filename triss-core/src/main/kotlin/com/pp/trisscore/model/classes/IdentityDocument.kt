@@ -1,6 +1,5 @@
 package com.pp.trisscore.model.classes
 
-import com.pp.trisscore.model.enums.DocumentType
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
@@ -19,7 +18,7 @@ data class IdentityDocument (
         @Column("employeeId")
         val employeeId: Long?,
         @Column("type")
-        val type: Int,
+        val type: Long,
         @Column("number")
         val number: String
 )

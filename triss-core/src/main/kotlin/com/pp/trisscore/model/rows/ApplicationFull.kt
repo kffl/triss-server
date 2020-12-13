@@ -3,7 +3,6 @@ package com.pp.trisscore.model.rows
 import com.pp.trisscore.model.applicationinfoelements.AdvancePaymentsInfo
 import com.pp.trisscore.model.architecture.ApplicationInfo
 import com.pp.trisscore.model.classes.*
-import com.pp.trisscore.model.enums.PaymentType
 import com.pp.trisscore.model.enums.Status
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Column
@@ -137,14 +136,14 @@ data class ApplicationFull(
         @Column("paAmount")
         val paAmount: BigDecimal,
         @Column("paPaymentType")
-        val paPaymentType: PaymentType,
+        val paPaymentType: Long,
         //conferenceFeeData
         @Column("pcId")
         val pcId: Long?,
         @Column("pcAmount")
         val pcAmount: BigDecimal,
         @Column("pcPaymentType")
-        val pcPaymentType: PaymentType
+        val pcPaymentType: Long
 ) {
     fun getApplication() = Application(
             id = id, firstName = firstName, surname = surname,

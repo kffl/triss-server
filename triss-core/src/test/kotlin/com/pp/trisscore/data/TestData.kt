@@ -116,8 +116,8 @@ interface TestData {
                 travelCosts = BigDecimal(100).setScale(2), travelDietAmount = BigDecimal(100).setScale(2),
                 advanceSum = BigDecimal(100 + 100 + 100 + 100).setScale(2))
         val correctAdvancePaymentsInfoForDirector = AdvancePaymentsInfo(conferenceFeeValue = BigDecimal.valueOf(100).setScale(2),
-                conferenceFeePaymentTypeSelect = PaymentType.Blik, accommodationFeeValue = BigDecimal.valueOf(100).setScale(2),
-                accommodationFeePaymentTypeSelect = PaymentType.Card)
+                conferenceFeePaymentTypeSelect = 2, accommodationFeeValue = BigDecimal.valueOf(100).setScale(2),
+                accommodationFeePaymentTypeSelect = 3)
         val correctPlaceForDirector = Place(id = 5, city = "Berlin", country = "Niemcy")
         val exampleApplicationInfoForDirector = ApplicationInfo(
                 application = correctApplicationForDirector,
@@ -168,8 +168,8 @@ interface TestData {
                 accommodationQuantity = 10, accommodationLimit = BigDecimal(10).setScale(2), accommodationSum = BigDecimal(100).setScale(2),
                 otherCostsAmount = BigDecimal(100.00).setScale(2), otherCostsDescription = "blablabla", placeId = null, travelCosts = BigDecimal(100).setScale(2),
                 travelDietAmount = BigDecimal(100).setScale(2), advanceSum = BigDecimal(100 + 100 + 100 + 100).setScale(2))
-        val correctAdvancePaymentsInfo = AdvancePaymentsInfo(conferenceFeeValue = BigDecimal.valueOf(100).setScale(2), conferenceFeePaymentTypeSelect = PaymentType.Blik,
-                accommodationFeeValue = BigDecimal.valueOf(100).setScale(2), accommodationFeePaymentTypeSelect = PaymentType.Card)
+        val correctAdvancePaymentsInfo = AdvancePaymentsInfo(conferenceFeeValue = BigDecimal.valueOf(100).setScale(2), conferenceFeePaymentTypeSelect = 2,
+                accommodationFeeValue = BigDecimal.valueOf(100).setScale(2), accommodationFeePaymentTypeSelect = 3)
         val correctPlace = Place(id = null, city = "Berlin", country = "Niemcy")
         val exampleApplicationInfo = ApplicationInfo(
                 application = correctApplication,

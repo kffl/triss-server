@@ -11,7 +11,21 @@ DROP TABLE IF EXISTS Prepayment;
 DROP TABLE IF EXISTS PrepaymentFee;
 DROP TABLE IF EXISTS Institute;
 DROP TABLE IF EXISTS DocumentType;
+DROP TABLE IF EXISTS PaymentType;
 
+
+CREATE TABLE PaymentType
+(
+    id      BIGSERIAL PRIMARY KEY,
+    namePl  varchar(255) UNIQUE NOT NULL,
+    nameEng varchar(255) UNIQUE NOT NULL
+);
+
+INSERT INTO PaymentType (namePl, nameEng)
+VALUES ('Gotówka', 'Cash'),
+       ('Blik', 'Blik'),
+       ('Karta', 'Card'),
+       ('Przelew', 'Transfer');
 
 CREATE TABLE DocumentType
 (
@@ -19,6 +33,7 @@ CREATE TABLE DocumentType
     namePl  varchar(255) UNIQUE NOT NULL,
     nameEng varchar(255) UNIQUE NOT NULL
 );
+
 INSERT INTO DocumentType (namePl, nameEng)
 VALUES ('Dowód osobisty', 'ID card'),
        ('Paszport', 'Passport'),
@@ -85,16 +100,17 @@ CREATE TABLE PrepaymentFee
 (
     id          BIGSERIAL PRIMARY KEY,
     amount      DECIMAL(7, 2) NOT NULL,
-    paymentType VARCHAR(255)  NOT NULL
+    paymentType BIGINT        NOT NULL,
+    CONSTRAINT paymentType_pf_fk FOREIGN KEY (paymentType) REFERENCES PaymentType (id)
 );
 
 INSERT INTO PrepaymentFee (amount, paymentType)
-VALUES (2500, 'Cash'),
-       (1250, 'Card'),
-       (1400, 'Transfer'),
-       (3000.50, 'Transfer'),
-       (100, 'Blik'),
-       (100, 'Card');
+VALUES (2500, 1),
+       (1250, 3),
+       (1400, 4),
+       (3000.50, 4),
+       (100, 2),
+       (100, 3);
 
 CREATE TABLE Prepayment
 (
@@ -225,7 +241,7 @@ CREATE TABLE Application
     CONSTRAINT financialSource_ap_fk FOREIGN KEY (financialSourceId) REFERENCES FinancialSource (id),
     CONSTRAINT advanceApplication_ap_fk FOREIGN KEY (advanceApplicationId) REFERENCES AdvanceApplication (id),
     CONSTRAINT prepayment_ap_fk FOREIGN KEY (prepaymentId) REFERENCES Prepayment (id),
-    CONSTRAINT documentType_ap_fk FOREIGN KEY (identityDocumentType) REFERENCES DocumentType(id)
+    CONSTRAINT documentType_ap_fk FOREIGN KEY (identityDocumentType) REFERENCES DocumentType (id)
 );
 
 INSERT INTO Application (firstName, surname, birthDate, phoneNumber, academicDegree, employeeId, identityDocumentType,
@@ -387,3 +403,12 @@ FROM APPLICATION A
          JOIN Prepayment PR on A.prepaymentId = PR.id
          JOIN PrepaymentFee PA on PR.accommodationFeeId = PA.id
          JOIN PrepaymentFee PC on PR.conferenceFeeId = PC.id;
+
+
+
+
+
+
+
+
+

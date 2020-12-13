@@ -1,6 +1,5 @@
 package com.pp.trisscore.model.classes
 
-import com.pp.trisscore.model.enums.PaymentType
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
@@ -20,5 +19,5 @@ data class PrepaymentFee (
         @Column("amount")
         val amount: BigDecimal,
         @Column("paymentType")
-        val paymentType: PaymentType
+        val paymentType: Long
 )

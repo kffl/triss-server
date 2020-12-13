@@ -6,9 +6,10 @@ import reactor.core.publisher.Mono
 
 @Service
 class EnumService(val enumRepository: EnumRepository,
-                  val documentTypeService: DocumentTypeService) {
+                  val documentTypeService: DocumentTypeService,
+                  val paymentTypeService: PaymentTypeService) {
     fun getDocumentTypes() = documentTypeService.getDocumentTypes().collectList()
-    fun getPaymentTypes() = Mono.just(enumRepository.getPaymentTypes())
+    fun getPaymentTypes() = paymentTypeService.getPaymentTypes().collectList()
     fun getStatuses() = Mono.just(enumRepository.getStatuses())
     fun getVehicles() = Mono.just(enumRepository.getVehicles())
     fun getAllEnum(): Any {

@@ -6,14 +6,6 @@ import org.springframework.stereotype.Repository
 @Repository
 class EnumRepository{
 
-    fun getPaymentTypes(): List<EnumModel> {
-        val paymentTypesList:MutableList<EnumModel> = mutableListOf()
-        for(paymentType in PaymentType.values()){
-            paymentTypesList.add(EnumModel(paymentType.ordinal, paymentType.namePl, paymentType.nameEng))
-        }
-        return paymentTypesList
-    }
-
     fun getStatuses(): List<EnumModel> {
         val statusesList:MutableList<EnumModel> = mutableListOf()
         for(status in Status.values()){
