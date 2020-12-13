@@ -52,7 +52,7 @@ class WildaServiceTest(@Autowired val wildaService: WildaService,
     @Test
     fun shouldNotGetWildaCountWrongRole() {
         val x = assertThrows<UnauthorizedException> { wildaService.getCountByFilter(existingDirectorToken, pageInfo).block() }
-        Assertions.assertEquals("Employee don't have access to this.", x.message)
+        assertEquals("Employee don't have access to this.", x.message)
     }
 
     //Wilda approveApplication
@@ -61,7 +61,7 @@ class WildaServiceTest(@Autowired val wildaService: WildaService,
         val x = assertThrows<UnauthorizedException> {
             wildaService.approveApplication(existingDirectorToken, exampleApplicationInfoForWaitingForWilda).block()
         }
-        Assertions.assertEquals("Employee don't have access to this.", x.message)
+        assertEquals("Employee don't have access to this.", x.message)
     }
 
     @Test
@@ -70,15 +70,14 @@ class WildaServiceTest(@Autowired val wildaService: WildaService,
             wildaService.approveApplication(existingWildaToken, exampleApplicationInfoForWaitingForWilda.copy(
                     application = correctApplicationForWaitingForWilda.copy(status = Status.WaitingForRector))).block()
         }
-        Assertions.assertEquals("Status must be WaitingForWilda", x.message)
+        assertEquals("Status must be WaitingForWilda", x.message)
     }
 
     //Wilda rejectApplication
     @Test
     fun shouldNotRejectApplicationWrongRole(){
         val x = assertThrows<UnauthorizedException>{
-            wildaService.rejectApplication(existingUserToken, exampleApplicationInfoForWaitingForWilda.copy(
-                    application = correctApplicationForWaitingForWilda.copy(status = Status.RejectedByWilda))).block()
+            wildaService.rejectApplication(existingUserToken, exampleApplicationInfoForWaitingForWilda).block()
         }
         assertEquals("Employee don't have access to this.", x.message)
     }
@@ -86,9 +85,10 @@ class WildaServiceTest(@Autowired val wildaService: WildaService,
     @Test
     fun shouldNotRejectApplicationWrongStatus(){
         val x = assertThrows<UnauthorizedException>{
-            wildaService.rejectApplication(existingWildaToken, exampleApplicationInfoForWaitingForWilda).block()
+            wildaService.rejectApplication(existingWildaToken, exampleApplicationInfoForWaitingForWilda.copy(
+                    application = correctApplicationForWaitingForWilda.copy(status = Status.WaitingForRector))).block()
         }
-        assertEquals("Status must be RejectedByWilda", x.message)
+        assertEquals("Status must be WaitingForWilda", x.message)
     }
 
     @Test

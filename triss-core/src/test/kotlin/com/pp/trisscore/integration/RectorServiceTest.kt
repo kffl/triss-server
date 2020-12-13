@@ -41,13 +41,13 @@ class RectorServiceTest(@Autowired val rectorService: RectorService,
     @Test
     fun shouldGetRectorCount() {
         val x = rectorService.getCountByFilter(existingRectorToken, pageInfo).block()
-        Assertions.assertEquals(1, x)
+        assertEquals(1, x)
     }
 
     @Test
     fun shouldNotGetRectorCountWrongRole() {
         val x = assertThrows<UnauthorizedException> { rectorService.getCountByFilter(existingDirectorToken, pageInfo).block() }
-        Assertions.assertEquals("Employee don't have access to this.", x.message)
+        assertEquals("Employee don't have access to this.", x.message)
     }
 
     //Rector approveApplication
@@ -56,7 +56,7 @@ class RectorServiceTest(@Autowired val rectorService: RectorService,
         val x = assertThrows<UnauthorizedException> {
             rectorService.approveApplication(existingDirectorToken, exampleApplicationInfoForRector).block()
         }
-        Assertions.assertEquals("Employee don't have access to this.", x.message)
+        assertEquals("Employee don't have access to this.", x.message)
     }
 
     @Test
@@ -65,15 +65,14 @@ class RectorServiceTest(@Autowired val rectorService: RectorService,
             rectorService.approveApplication(existingRectorToken, exampleApplicationInfoForRector.copy(
                     application = correctApplicationForRector.copy(status = Status.Accepted))).block()
         }
-        Assertions.assertEquals("Status must be WaitingForRector", x.message)
+        assertEquals("Status must be WaitingForRector", x.message)
     }
 
     //Rector rejectApplication
     @Test
     fun shouldNotRejectApplicationWrongRole(){
         val x = assertThrows<UnauthorizedException>{
-            rectorService.rejectApplication(existingUserToken, exampleApplicationInfoForRector.copy(
-                    application = correctApplicationForRector.copy(status = Status.RejectedByRector))).block()
+            rectorService.rejectApplication(existingUserToken, exampleApplicationInfoForRector).block()
         }
         assertEquals("Employee don't have access to this.", x.message)
     }
@@ -81,9 +80,10 @@ class RectorServiceTest(@Autowired val rectorService: RectorService,
     @Test
     fun shouldNotRejectApplicationWrongStatus(){
         val x = assertThrows<UnauthorizedException>{
-            rectorService.rejectApplication(existingRectorToken, exampleApplicationInfoForRector).block()
+            rectorService.rejectApplication(existingRectorToken, exampleApplicationInfoForRector.copy(
+                    application = correctApplicationForRector.copy(status = Status.Accepted))).block()
         }
-        assertEquals("Status must be RejectedByRector", x.message)
+        assertEquals("Status must be WaitingForRector", x.message)
     }
 
     @Test

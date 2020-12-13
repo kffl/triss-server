@@ -99,7 +99,7 @@ class ValidationServiceTest() {
             validationService.validateApproveApplicationInfo(exampleApplicationInfoForDirector.copy(
                     application = correctApplication.copy(status = Status.WaitingForRector)), Role.DIRECTOR )
         }
-        assertEquals("Status must be WaitingForWilda", result.message)
+        assertEquals("Status must be WaitingForDirector", result.message)
     }
 
     @Test
