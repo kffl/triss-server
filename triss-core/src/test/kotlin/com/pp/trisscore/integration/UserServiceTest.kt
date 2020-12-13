@@ -15,6 +15,7 @@ import com.pp.trisscore.data.TestData.Companion.existingUserToken
 import com.pp.trisscore.data.TestData.Companion.filter
 import com.pp.trisscore.data.TestData.Companion.getExampleForUserApplication
 import com.pp.trisscore.data.TestData.Companion.pageInfo
+import com.pp.trisscore.exceptions.RequestDataDiffersFromDatabaseDataException
 import com.pp.trisscore.service.UserService
 import io.r2dbc.spi.ConnectionFactory
 import org.junit.jupiter.api.*
@@ -103,8 +104,8 @@ class UserServiceTest(@Autowired val userService: UserService,
     @Test
     fun shouldNotCreateNewApplicationWrongUserDataInApplication() {
         val before = userService.getCountByFilter(existingDirectorToken, pageInfo.copy(filter = filter.copy(employeeId = existingDirectorToken.employeeId))).block()
-        val x = assertThrows<InvalidRequestBodyException> { userService.createApplication(existingDirectorToken, exampleApplicationInfo.copy(application = getExampleForUserApplication(existingUserEmployee))).block()!!.applicationID }
-        assertEquals("FirstName is not equal first name in database", x.message)
+        val x = assertThrows<RequestDataDiffersFromDatabaseDataException> { userService.createApplication(existingDirectorToken, exampleApplicationInfo.copy(application = getExampleForUserApplication(existingUserEmployee))).block()!!.applicationID }
+        assertEquals("FirstName in DB differs from the request's FirstName", x.message)
         val after = userService.getCountByFilter(existingDirectorToken, pageInfo.copy(filter = filter.copy(employeeId = existingDirectorToken.employeeId))).block()
         assertEquals(after, before)
     }

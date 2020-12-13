@@ -1,5 +1,6 @@
 package com.pp.trisscore.exceptions
 
-import java.lang.RuntimeException
-
-class RectorNotFoundException(message : String) : RuntimeException(message)
+class RectorNotFoundException(message: String)
+    : RuntimeException(message) {
+    constructor(id: String, firstName: String, surname: String) : this("Rector $id $firstName $surname not found.")
+}

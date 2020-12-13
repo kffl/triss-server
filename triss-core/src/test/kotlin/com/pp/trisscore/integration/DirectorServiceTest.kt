@@ -51,7 +51,7 @@ class DirectorServiceTest(@Autowired val directorService: DirectorService,
     @Test
     fun shouldNotGetDirectorCountWrongRole() {
         val x = assertThrows<UnauthorizedException> { directorService.getCountByFilter(existingUserToken, pageInfo).block() }
-        assertEquals("Employee don't have access to this.", x.message)
+        assertEquals("User 170387 Jan Kowalczyk don't have access to this.", x.message)
     }
 
     //Director approveApplication
@@ -67,13 +67,13 @@ class DirectorServiceTest(@Autowired val directorService: DirectorService,
             directorService.approveApplication(existingUserToken,
                     exampleApplicationInfoForDirector.copy(financialSource = correctFinancialSource)).block()
         }
-        assertEquals("Employee don't have access to this.", x.message)
+        assertEquals("User 170387 Jan Kowalczyk don't have access to this.", x.message)
     }
 
     @Test
     fun shouldNotApproveApplicationWrongStatus() {
 
-        val x = assertThrows<UnauthorizedException> {
+        val x = assertThrows<InvalidRequestBodyException> {
             directorService.approveApplication(existingDirectorToken,
                     exampleApplicationInfoForDirector.copy(financialSource = correctFinancialSource, application = correctApplicationForDirector
                             .copy(status = Status.WaitingForWilda))).block()

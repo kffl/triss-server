@@ -7,10 +7,7 @@ import reactor.core.publisher.Mono
 
 @Service
 class AdvanceApplicationService(val advanceApplicationRepostiory: AdvanceApplicationRepostiory) {
-    fun createAdvanceApplication(advanceApplication: AdvanceApplication, placeId:Long): Mono<AdvanceApplication> {
-        return advanceApplicationRepostiory.save(advanceApplication.copy(placeId=placeId))
-}
-
-
-
+    fun createAdvanceApplication(advanceApplication: AdvanceApplication, placeId: Long): Mono<AdvanceApplication> {
+        return advanceApplicationRepostiory.save(advanceApplication.copy(placeId = placeId))
+    }
 }
