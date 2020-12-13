@@ -98,7 +98,7 @@ class ComparisonServiceTest() {
 
     @Test
     fun shouldCompareAdvancePaymentsAndThrow() {
-        assertThrows(InvalidRequestBodyException::class.java){
+        assertThrows(RequestDataDiffersFromDatabaseDataException::class.java){
             comparisonService.compareAdvancePayments(advancePaymentsInfo, advancePaymentsInfo.copy(conferenceFeePaymentTypeSelect = 1))
         }
     }
