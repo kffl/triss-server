@@ -45,7 +45,7 @@ class WildaService(private val employeeService: EmployeeService,
 
     private fun validateApproveAndSaveApplication(dbApplicationInfo: ApplicationInfo, reqApplicationInfo: ApplicationInfo): Mono<out Application>? {
         comparisonService.compareApplicationsInfo(dbApplicationInfo, reqApplicationInfo, role)
-        return applicationService.saveApplication(reqApplicationInfo.application.copy(status = Status.WaitingForDirector))
+        return applicationService.saveApplication(reqApplicationInfo.application.copy(status = Status.WaitingForRector))
     }
 
     fun getFullApplication(tokenBody: TokenData, id: Long): Mono<ApplicationInfo> {
