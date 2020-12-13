@@ -12,15 +12,14 @@ import reactor.core.publisher.Mono
 class EmployeeService(val employeeRepository: EmployeeRepository,
                       val instituteService: InstituteService) {
 
-    fun findEmployeeAndCheckRole(tokenData: TokenData, role: Role): Mono<Employee> {
-        return employeeRepository.findByEmployeeIdAndEmployeeType(tokenData.employeeId, role)
-                .switchIfEmpty(Mono.error(UnauthorizedException("Employee don't have access to this.")))
+    fun findEmployeeAndCheckRole(tokenBody: TokenData, role: Role): Mono<Employee> {
+        return employeeRepository.findByEmployeeIdAndEmployeeType(tokenBody.employeeId, role)
+                .switchIfEmpty(Mono.error(UnauthorizedException(tokenBody.employeeId.toString(), tokenBody.firstname, tokenBody.surname)))
     }
 
-    fun findEmployee(t: TokenData) =
-            employeeRepository.findByEmployeeId(t.employeeId)
-                    .switchIfEmpty(Mono.error(EmployeeNotFoundException("Employee "+ t.employeeId + " " + t.firstname + " " + t.surname +" not Found")))
-
+    fun findEmployee(tokenBody: TokenData) =
+            employeeRepository.findByEmployeeId(tokenBody.employeeId)
+                    .switchIfEmpty(Mono.error(UserNotFoundException(tokenBody.employeeId.toString(), tokenBody.firstname, tokenBody.surname)))
     fun updateEmployee(tokenData: TokenData, employee: Employee): Mono<Employee> {
         if (employee.id == null)
             throw InvalidRequestBodyException("Id cannot be null")
@@ -33,9 +32,9 @@ class EmployeeService(val employeeRepository: EmployeeRepository,
         if (employee.surname != tokenData.surname)
             throw InvalidRequestBodyException("Employee surname must equal to surname in token")
         return instituteService.findInstituteById(employee.instituteID)
-                .switchIfEmpty(Mono.error(ObjectNotFoundException("Institute Not Exists.")))
+                .switchIfEmpty(Mono.error(ObjectNotFoundException("Institute")))
                 .flatMap { x -> employeeRepository.findByEmployeeId(tokenData.employeeId) }
-                .switchIfEmpty(Mono.error { EmployeeNotFoundException("Employee not exists") })
+                .switchIfEmpty( Mono.error { UserNotFoundException(tokenData.employeeId.toString(),tokenData.firstname,tokenData.surname) })
                 .flatMap { actualEmployee -> updateEmployee2(actualEmployee, employee) }
     }
 
@@ -68,14 +67,14 @@ class EmployeeService(val employeeRepository: EmployeeRepository,
         if (employee.employeeType != Role.USER)
             throw InvalidRequestBodyException("employeeType must be USER")
         return instituteService.findInstituteById(employee.instituteID)
-                .switchIfEmpty(Mono.error(ObjectNotFoundException("Institute " + employee.instituteID + " not exists.")))
+                .switchIfEmpty(Mono.error(ObjectNotFoundException("employee instituteID")))
                 .flatMap { x -> employeeRepository.findByEmployeeId(tokenData.employeeId) }
                 .flatMap { x -> ifUserFoundThrowException(x) }
                 .switchIfEmpty(employeeRepository.save(employee))
     }
 
     fun ifUserFoundThrowException(employee: Employee): Mono<Employee>
-            = throw UserAllReadyExistsException("User " + employee.employeeId + " " + employee.firstName + " " + employee.surname + " already Exists")
+            = throw UserAllReadyExistsException(employee.employeeId.toString(),employee.firstName,employee.surname)
 
 
 }

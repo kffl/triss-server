@@ -62,7 +62,7 @@ class EmployeeServiceTest(@Autowired val employeeService: EmployeeService,
     @Test
     fun shouldNotCreateEmployeeBecauseAlreadyExists() {
         val x = assertThrows<UserAllReadyExistsException> { employeeService.newEmployee(existingUserToken, existingUserEmployee.copy(id = null)).block() }
-        assertEquals("User All Ready Exists", x.message)
+        assertEquals("User 170387 Jan Kowalczyk already exists.", x.message)
     }
 
     //Update Employee
@@ -86,7 +86,7 @@ class EmployeeServiceTest(@Autowired val employeeService: EmployeeService,
     @Test
     fun shouldNotUpdateEmployeeBecauseUserDontExists() {
         val x = assertThrows<UserNotFoundException> { employeeService.updateEmployee(newEmployeeTokenData, newEmployee.copy(id = 10)).block() }
-        assertEquals("User not exists", x.message)
+        assertEquals("User 1999 Marcel TOLEN not found.", x.message)
     }
 
 
@@ -99,8 +99,8 @@ class EmployeeServiceTest(@Autowired val employeeService: EmployeeService,
 
     @Test
     fun shouldNotGetNotExistingInDatabaseEmployeeData() {
-        val x = assertThrows<EmployeeNotFoundException> { employeeService.findEmployee(newEmployeeTokenData).block()}
-        assertEquals("Employee not Found", x.message)
+        val x = assertThrows<UserNotFoundException> { employeeService.findEmployee(newEmployeeTokenData).block()}
+        assertEquals("User 1999 Marcel TOLEN not found.", x.message)
     }
 
     ////Get Employee Data And Check Role
@@ -113,12 +113,12 @@ class EmployeeServiceTest(@Autowired val employeeService: EmployeeService,
     @Test
     fun shouldNotGetExistingEmployeeDataAndCheckRoleWrongRole() {
         val x = assertThrows<UnauthorizedException> {  employeeService.findEmployeeAndCheckRole(existingUserToken, Role.DIRECTOR).block()}
-        assertEquals("Employee don't have access to this.", x.message)
+        assertEquals("User 170387 Jan Kowalczyk don't have access to this.", x.message)
     }
 
     @Test
     fun shouldNotGetExistingEmployeeDataAndCheckRoleNotExistingUser() {
         val x = assertThrows<UnauthorizedException> { employeeService.findEmployeeAndCheckRole(newEmployeeTokenData, Role.DIRECTOR).block()}
-        assertEquals("Employee don't have access to this.", x.message)
+        assertEquals("User 1999 Marcel TOLEN don't have access to this.", x.message)
     }
 }

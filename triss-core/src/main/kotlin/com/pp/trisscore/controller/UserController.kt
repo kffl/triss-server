@@ -61,22 +61,17 @@ class UserController(private val userService: UserService,
         return userService.createApplication(tokenData, body)
     }
 
-    @ExceptionHandler(value = [InvalidRequestBodyException::class])
+    @ExceptionHandler(value = [InvalidRequestBodyException::class, RequestDataDiffersFromDatabaseDataException::class,
+        UserAllReadyExistsException::class, WrongDateException::class])
     fun catchInvalidRequestBodyException(ex: RuntimeException): ResponseEntity<ErrorsDetails> {
         val errorDetails = ErrorsDetails(Date(), ex.toString(), ex.message!!)
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDetails)
     }
 
-    @ExceptionHandler(value = [ObjectNotFoundException::class])
-    fun catchObjectNotFoundException(ex: RuntimeException): ResponseEntity<ErrorsDetails> {
+    @ExceptionHandler(value = [ObjectNotFoundException::class,UserNotFoundException::class])
+    fun catchNotFoundException(ex: RuntimeException): ResponseEntity<ErrorsDetails> {
         val errorDetails = ErrorsDetails(Date(), ex.toString(), ex.message!!)
         return ResponseEntity.status(HttpStatus.GONE).body(errorDetails)
-    }
-
-    @ExceptionHandler(value = [UserNotFoundException::class])
-    fun catchUserNotFoundException(ex: RuntimeException): ResponseEntity<ErrorsDetails> {
-        val errorDetails = ErrorsDetails(Date(), ex.toString(), ex.message!!)
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorDetails)
     }
 
     @ExceptionHandler(value = [UnauthorizedException::class])
