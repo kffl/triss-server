@@ -3,7 +3,6 @@ package com.pp.trisscore.model.rows
 import com.pp.trisscore.model.applicationinfoelements.AdvancePaymentsInfo
 import com.pp.trisscore.model.architecture.ApplicationInfo
 import com.pp.trisscore.model.classes.*
-import com.pp.trisscore.model.enums.DocumentType
 import com.pp.trisscore.model.enums.PaymentType
 import com.pp.trisscore.model.enums.Status
 import org.springframework.data.annotation.Id
@@ -31,7 +30,7 @@ data class ApplicationFull(
         @Column("employeeId")
         val employeeId: Long?,
         @Column("identityDocumentType")
-        val identityDocumentType: DocumentType,
+        val identityDocumentType: Long,
         @Column("identityDocumentNumber")
         val identityDocumentNumber: String,
         @Column("createdOn")
@@ -101,7 +100,7 @@ data class ApplicationFull(
         val fFinancialSource: String?,
         @Column("fProject")
         val fProject: String?,
-        //AdvanceApplication DAta
+        //AdvanceApplication Data
         @Column("aaId")
         val aaId: Long?,
         @Column("aaPlaceId")

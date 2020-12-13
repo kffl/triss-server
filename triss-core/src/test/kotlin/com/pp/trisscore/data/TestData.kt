@@ -32,7 +32,7 @@ interface TestData {
         //Different types of applications
         val correctApplicationForWaitingForWilda = Application(id = 5, firstName = "Jan", surname = "Kowalczyk",
                 birthDate = LocalDate.of(2000, 1, 1), academicDegree = "Prof.",
-                phoneNumber = "+48 123456789", employeeId = 170387, identityDocumentType = DocumentType.Passport,
+                phoneNumber = "+48 123456789", employeeId = 170387, identityDocumentType = 2,
                 identityDocumentNumber = "AB6789000", createdOn = LocalDate.of(2020, 12, 1), placeId = 5,
                 abroadStartDate = LocalDate.of(2020, 12, 12), abroadEndDate = LocalDate.of(2020,12,15),
                 instituteId = 1, purpose = "Konferencja", conference = "AntyCovid2020", subject = " TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą",
@@ -51,7 +51,7 @@ interface TestData {
 
         val correctApplicationForAccepted = Application(id = 6, firstName = "Jan", surname = "Kowalczyk",
                 birthDate = LocalDate.of(2000, 1, 1), academicDegree = "Prof.",
-                phoneNumber = "+48 123456789", employeeId = 170387, identityDocumentType = DocumentType.Passport,
+                phoneNumber = "+48 123456789", employeeId = 170387, identityDocumentType = 1,
                 identityDocumentNumber = "AB6789000", createdOn = LocalDate.of(2020, 12, 1), placeId = 5,
                 abroadStartDate = LocalDate.of(2020, 12, 12), abroadEndDate = LocalDate.of(2020,12,15),
                 instituteId = 1, purpose = "Konferencja", conference = "AntyCovid2020", subject = " TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą",
@@ -71,7 +71,7 @@ interface TestData {
 
         val correctApplicationForRector = Application(id = 4, firstName = "Jan", surname = "Kowalczyk",
                 birthDate = LocalDate.of(2000, 1, 1), academicDegree = "Prof.",
-                phoneNumber = "+48 123456789", employeeId = 170387, identityDocumentType = DocumentType.Passport,
+                phoneNumber = "+48 123456789", employeeId = 170387, identityDocumentType = 2,
                 identityDocumentNumber = "AB6789000", createdOn = LocalDate.of(2020, 12, 1), placeId = 5,
                 abroadStartDate = LocalDate.of(2020, 12, 12), abroadEndDate = LocalDate.of(2020,12,15),
                 instituteId = 1, purpose = "Konferencja", conference = "AntyCovid2020", subject = " TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą",
@@ -91,7 +91,7 @@ interface TestData {
 
         val correctApplicationForDirector = Application(id = 3, firstName = "Jan", surname = "Kowalczyk",
                 birthDate = LocalDate.of(2000, 1, 1), academicDegree = "Prof.",
-                phoneNumber = "+48 123456789", employeeId = 170387, identityDocumentType = DocumentType.Passport,
+                phoneNumber = "+48 123456789", employeeId = 170387, identityDocumentType = 2,
                 identityDocumentNumber = "AB6789000", createdOn = LocalDate.of(2020, 12, 1), placeId = 5,
                 abroadStartDate = LocalDate.of(2020, 12, 12), abroadEndDate = LocalDate.of(2020,12,15),
                 instituteId = 1, purpose = "Konferencja", conference = "AntyCovid2020", subject = " TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą",
@@ -154,7 +154,7 @@ interface TestData {
 
 
         val correctApplication = Application(id = null, firstName = "Jan", surname = "Kowalczyk", birthDate = LocalDate.of(2000, 1, 1)
-                , academicDegree = "Prof.", phoneNumber = "+48 123456789", employeeId = 1, identityDocumentType = DocumentType.Passport,
+                , academicDegree = "Prof.", phoneNumber = "+48 123456789", employeeId = 1, identityDocumentType = 2,
                 identityDocumentNumber = "identityDocumentNumber", createdOn = null, placeId = null,
                 abroadStartDate = LocalDate.now().plusDays(10), abroadEndDate = LocalDate.now().plusDays(40),
                 instituteId = 1, purpose = "prupose", conference = "conference", subject = "subject", conferenceStartDate = LocalDate.now().plusDays(11),

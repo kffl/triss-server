@@ -1,6 +1,5 @@
-
-DROP VIEW IF EXISTS  ApplicationFull;
-DROP VIEW IF EXISTS  ApplicationRow;
+DROP VIEW IF EXISTS ApplicationFull;
+DROP VIEW IF EXISTS ApplicationRow;
 DROP TABLE IF EXISTS TRANSPORT;
 DROP TABLE IF EXISTS Application;
 DROP TABLE IF EXISTS AdvanceApplication;
@@ -11,6 +10,20 @@ DROP TABLE IF EXISTS Place;
 DROP TABLE IF EXISTS Prepayment;
 DROP TABLE IF EXISTS PrepaymentFee;
 DROP TABLE IF EXISTS Institute;
+DROP TABLE IF EXISTS DocumentType;
+
+
+CREATE TABLE DocumentType
+(
+    id      BIGSERIAL PRIMARY KEY,
+    namePl  varchar(255) UNIQUE NOT NULL,
+    nameEng varchar(255) UNIQUE NOT NULL
+);
+INSERT INTO DocumentType (namePl, nameEng)
+VALUES ('Dowód osobisty', 'ID card'),
+       ('Paszport', 'Passport'),
+       ('Prawo jazdy', 'Driving license'),
+       ('Inne', 'Other');
 
 CREATE TABLE Institute
 (
@@ -111,7 +124,7 @@ CREATE TABLE Employee
     CONSTRAINT institute_em_fk FOREIGN KEY (instituteID) REFERENCES Institute (id)
 );
 
-INSERT INTO Employee(employeeId,firstName,surname,birthDate,academicDegree,phoneNumber,employeeType,instituteID)
+INSERT INTO Employee(employeeId, firstName, surname, birthDate, academicDegree, phoneNumber, employeeType, instituteID)
 VALUES (170387, 'Jan', 'Kowalczyk', '2000-01-01', 'Prof.', '+48 123456789', 'USER', 1),
        (2, 'Jan', 'Kowalski', '1990-03-21', 'Prof.', '+48 321456987', 'WILDA', 1),
        (3, 'Jerzy', 'Zbiałowierzy', '1980-05-15', 'Prof.', '+48 541236987', 'RECTOR', 1),
@@ -121,15 +134,16 @@ CREATE TABLE IdentityDocument
 (
     id         BIGSERIAL PRIMARY KEY,
     employeeID BIGINT       NOT NULL,
-    type       VARCHAR(255) NOT NULL,
+    type       BIGINT       NOT NULL,
     number     VARCHAR(255) NOT NULL,
-    CONSTRAINT employee_id_fk FOREIGN KEY (employeeID) REFERENCES Employee(employeeId)
+    CONSTRAINT employee_id_fk FOREIGN KEY (employeeID) REFERENCES Employee (employeeId),
+    CONSTRAINT documentType_id_fk FOREIGN KEY (type) REFERENCES DocumentType (id)
 );
 
 INSERT INTO IdentityDocument (employeeID, type, number)
-VALUES (170387, 'IdCard', 'ABC12345'),
-       (170387, 'Passport', 'DE6789000'),
-       (2, 'Passport', 'ZE8000199');
+VALUES (170387, 1, 'ABC12345'),
+       (170387, 2, 'DE6789000'),
+       (2, 2, 'ZE8000199');
 
 CREATE TABLE FinancialSource
 (
@@ -182,7 +196,7 @@ CREATE TABLE Application
     phoneNumber              varchar(255) NOT NULL,
     employeeId               BIGINT       NOT NULL,
 --  Document Info
-    identityDocumentType     VARCHAR(255) NOT NULL,
+    identityDocumentType     BIGINT       NOT NULL,
     identityDocumentNumber   VARCHAR(255) NOT NULL,
     createdOn                DATE         NOT NULL,
     placeId                  BIGINT       NOT NULL,
@@ -206,11 +220,12 @@ CREATE TABLE Application
     rectorComments           VARCHAR(255),
     status                   VARCHAR(255) NOT NULL,
     CONSTRAINT institute_ap_fk FOREIGN KEY (instituteId) REFERENCES Institute (id),
-    CONSTRAINT employee_ap_fk FOREIGN KEY (employeeId) REFERENCES Employee(employeeId),
+    CONSTRAINT employee_ap_fk FOREIGN KEY (employeeId) REFERENCES Employee (employeeId),
     CONSTRAINT place_ap_fk FOREIGN KEY (placeId) REFERENCES Place (id),
     CONSTRAINT financialSource_ap_fk FOREIGN KEY (financialSourceId) REFERENCES FinancialSource (id),
     CONSTRAINT advanceApplication_ap_fk FOREIGN KEY (advanceApplicationId) REFERENCES AdvanceApplication (id),
-    CONSTRAINT prepayment_ap_fk FOREIGN KEY (prepaymentId) REFERENCES Prepayment (id)
+    CONSTRAINT prepayment_ap_fk FOREIGN KEY (prepaymentId) REFERENCES Prepayment (id),
+    CONSTRAINT documentType_ap_fk FOREIGN KEY (identityDocumentType) REFERENCES DocumentType(id)
 );
 
 INSERT INTO Application (firstName, surname, birthDate, phoneNumber, academicDegree, employeeId, identityDocumentType,
@@ -220,44 +235,44 @@ INSERT INTO Application (firstName, surname, birthDate, phoneNumber, academicDeg
                          abroadEndDateInsurance,
                          selfInsured, advanceApplicationId, prepaymentId, comments, wildaComments, directorComments,
                          rectorComments, status)
-VALUES  ('Jan', 'Kowalczyk', '2000-01-01', '+48 123456789', 'Prof.', 170387, 'IdCard', 'ABC12345', '2020-11-03', 1, 1,
+VALUES ('Jan', 'Kowalczyk', '2000-01-01', '+48 123456789', 'Prof.', 170387, 1, 'ABC12345', '2020-11-03', 1, 1,
         '2020-12-12',
         '2020-12-15', 'Konferencja', 'AntyCovid2020',
         ' TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą',
         '2020-12-13', '2020-12-14', NULL, '2020-12-12', '2020-12-15', FALSE, 1, 1, NULL, NULL, NULL, NULL,
         'WaitingForDirector'),
-        ('Jan', 'Kowalski', '1990-03-21', '+48 321456987', 'Prof.', 2, 'Passport', 'DE6789000', '2020-11-04', 4, 2,
+       ('Jan', 'Kowalski', '1990-03-21', '+48 321456987', 'Prof.', 2, 2, 'DE6789000', '2020-11-04', 4, 2,
         '2020-11-10',
         '2020-11-13', 'Konferencja', 'AntyCovid2020',
         ' TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą',
         '2020-11-10', '2020-11-13', 1, '2020-11-10', '2020-11-13', FALSE, 2, 2, NULL, NULL, NULL, NULL,
         'WaitingForDirector'),
-        ('Jan', 'Kowalczyk', '2000-01-01', '+48 123456789', 'Prof.', 170387, 'Passport', 'AB6789000', '2020-12-01', 5, 1,
-         '2020-12-12', '2020-12-15', 'Konferencja', 'AntyCovid2020',
-         ' TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą',
-         '2020-12-13', '2020-12-14', NULL, '2020-12-12', '2020-12-15', FALSE, 3, 3, 'comments', NULL, NULL, NULL,
-         'WaitingForDirector'),
+       ('Jan', 'Kowalczyk', '2000-01-01', '+48 123456789', 'Prof.', 170387, 2, 'AB6789000', '2020-12-01', 5, 1,
+        '2020-12-12', '2020-12-15', 'Konferencja', 'AntyCovid2020',
+        ' TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą',
+        '2020-12-13', '2020-12-14', NULL, '2020-12-12', '2020-12-15', FALSE, 3, 3, 'comments', NULL, NULL, NULL,
+        'WaitingForDirector'),
 -- Rector Applications
-         ('Jan', 'Kowalczyk', '2000-01-01', '+48 123456789', 'Prof.', 170387, 'Passport', 'AB6789000', '2020-12-01', 5, 1,
-         '2020-12-12', '2020-12-15', 'Konferencja', 'AntyCovid2020',
-         ' TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą',
-         '2020-12-13', '2020-12-14', 1, '2020-12-12', '2020-12-15', FALSE, 3, 3, 'User Comments', NULL,
-         'Director comments', NULL, 'WaitingForRector'),
+       ('Jan', 'Kowalczyk', '2000-01-01', '+48 123456789', 'Prof.', 170387, 2, 'AB6789000', '2020-12-01', 5, 1,
+        '2020-12-12', '2020-12-15', 'Konferencja', 'AntyCovid2020',
+        ' TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą',
+        '2020-12-13', '2020-12-14', 1, '2020-12-12', '2020-12-15', FALSE, 3, 3, 'User Comments', NULL,
+        'Director comments', NULL, 'WaitingForRector'),
 -- Wilda Applications
-         ('Jan', 'Kowalczyk', '2000-01-01', '+48 123456789', 'Prof.', 170387, 'Passport', 'AB6789000', '2020-12-01', 5, 1,
-         '2020-12-12', '2020-12-15', 'Konferencja', 'AntyCovid2020',
-         ' TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą',
-         '2020-12-13', '2020-12-14', 1, '2020-12-12', '2020-12-15', FALSE, 3, 3, 'User Comments', NULL,
-         'Director comments', NULL, 'WaitingForWilda'),
-         ('Jan', 'Kowalczyk', '2000-01-01', '+48 123456789', 'Prof.', 170387, 'Passport', 'AB6789000', '2020-12-01', 5, 1,
-         '2020-12-12', '2020-12-15', 'Konferencja', 'AntyCovid2020',
-         ' TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą',
-         '2020-12-13', '2020-12-14', 1, '2020-12-12', '2020-12-15', FALSE, 3, 3, 'User Comments', NULL,
-         'Director comments', NULL, 'Accepted');
+       ('Jan', 'Kowalczyk', '2000-01-01', '+48 123456789', 'Prof.', 170387, 2, 'AB6789000', '2020-12-01', 5, 1,
+        '2020-12-12', '2020-12-15', 'Konferencja', 'AntyCovid2020',
+        ' TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą',
+        '2020-12-13', '2020-12-14', 1, '2020-12-12', '2020-12-15', FALSE, 3, 3, 'User Comments', NULL,
+        'Director comments', NULL, 'WaitingForWilda'),
+       ('Jan', 'Kowalczyk', '2000-01-01', '+48 123456789', 'Prof.', 170387, 2, 'AB6789000', '2020-12-01', 5, 1,
+        '2020-12-12', '2020-12-15', 'Konferencja', 'AntyCovid2020',
+        ' TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą',
+        '2020-12-13', '2020-12-14', 1, '2020-12-12', '2020-12-15', FALSE, 3, 3, 'User Comments', NULL,
+        'Director comments', NULL, 'Accepted');
 
 CREATE TABLE Transport
 (
-    id              BIGSERIAL    PRIMARY KEY,
+    id              BIGSERIAL PRIMARY KEY,
     applicationID   BIGINT       NOT NULL,
     destinationFrom VARCHAR(255) NOT NULL,
     destinationTo   VARCHAR(255) NOT NULL,
@@ -269,20 +284,20 @@ CREATE TABLE Transport
     CONSTRAINT application_tr_fk FOREIGN KEY (applicationID) REFERENCES Application (id)
 );
 
-INSERT INTO Transport (applicationID,destinationFrom, destinationTo, departureDay, departureHour, departureMinute,
+INSERT INTO Transport (applicationID, destinationFrom, destinationTo, departureDay, departureHour, departureMinute,
                        vehicleSelect, carrier)
-VALUES (1,'Poznań', 'Los Angeles', '2020-12-12', 6, 30, 'Plane', 'LOT'),
-       (1,'Los Angeles', 'Poznań', '2020-12-14', 20, 10, 'Plane', 'RyanAir'),
-       (2,'Poznań', 'Montreal', '2020-11-10', 4, 24, 'Plane', 'LOT'),
-       (2,'Montreal', 'Poznań', '2020-11-13', 5, 30, 'Plane', 'RyanAir'),
-       (3,'Poznań','Berlin','2020-12-12',10 ,10 ,'Plane','RyanAir'),
-       (3,'Berlin','Poznań','2020-12-15',12 ,30 ,'Plane','RyanAir'),
-       (4,'Poznań','Berlin','2020-12-12',10 ,10 ,'Plane','RyanAir'),
-       (4,'Berlin','Poznań','2020-12-15',12 ,30 ,'Plane','RyanAir'),
-       (5,'Poznań','Berlin','2020-12-12',10 ,10 ,'Plane','RyanAir'),
-       (5,'Berlin','Poznań','2020-12-15',12 ,30 ,'Plane','RyanAir'),
-       (6,'Poznań','Berlin','2020-12-12',10 ,10 ,'Plane','RyanAir'),
-       (6,'Berlin','Poznań','2020-12-15',12 ,30 ,'Plane','RyanAir');
+VALUES (1, 'Poznań', 'Los Angeles', '2020-12-12', 6, 30, 'Plane', 'LOT'),
+       (1, 'Los Angeles', 'Poznań', '2020-12-14', 20, 10, 'Plane', 'RyanAir'),
+       (2, 'Poznań', 'Montreal', '2020-11-10', 4, 24, 'Plane', 'LOT'),
+       (2, 'Montreal', 'Poznań', '2020-11-13', 5, 30, 'Plane', 'RyanAir'),
+       (3, 'Poznań', 'Berlin', '2020-12-12', 10, 10, 'Plane', 'RyanAir'),
+       (3, 'Berlin', 'Poznań', '2020-12-15', 12, 30, 'Plane', 'RyanAir'),
+       (4, 'Poznań', 'Berlin', '2020-12-12', 10, 10, 'Plane', 'RyanAir'),
+       (4, 'Berlin', 'Poznań', '2020-12-15', 12, 30, 'Plane', 'RyanAir'),
+       (5, 'Poznań', 'Berlin', '2020-12-12', 10, 10, 'Plane', 'RyanAir'),
+       (5, 'Berlin', 'Poznań', '2020-12-15', 12, 30, 'Plane', 'RyanAir'),
+       (6, 'Poznań', 'Berlin', '2020-12-12', 10, 10, 'Plane', 'RyanAir'),
+       (6, 'Berlin', 'Poznań', '2020-12-15', 12, 30, 'Plane', 'RyanAir');
 
 CREATE VIEW ApplicationRow AS
 SELECT Application.id,

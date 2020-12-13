@@ -2,14 +2,12 @@ package com.pp.trisscore.controller
 
 import com.pp.trisscore.model.architecture.ApplicationInfo
 import com.pp.trisscore.model.architecture.PageInfo
-import com.pp.trisscore.model.architecture.TokenData
 import com.pp.trisscore.model.classes.Application
 import com.pp.trisscore.model.rows.ApplicationRow
 import com.pp.trisscore.service.TokenService
 import com.pp.trisscore.service.WildaService
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
 import org.springframework.web.bind.annotation.*
-import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
 @RestController

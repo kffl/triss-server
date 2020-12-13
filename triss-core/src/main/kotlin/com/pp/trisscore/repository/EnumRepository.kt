@@ -5,13 +5,6 @@ import org.springframework.stereotype.Repository
 
 @Repository
 class EnumRepository{
-    fun getDocumentTypes(): List<EnumModel> {
-        val documentTypesList:MutableList<EnumModel> = mutableListOf()
-        for(documentType in DocumentType.values()){
-            documentTypesList.add(EnumModel(documentType.ordinal, documentType.namePl, documentType.nameEng))
-        }
-        return documentTypesList
-    }
 
     fun getPaymentTypes(): List<EnumModel> {
         val paymentTypesList:MutableList<EnumModel> = mutableListOf()

@@ -23,7 +23,7 @@ class ComparisonServiceTest() {
             800.toBigDecimal(), 600.toBigDecimal(), null, null, 1000.toBigDecimal(), 1000.toBigDecimal(),
             3400.toBigDecimal())
     private val application = Application(0, "Jan", "Kowalczyk", LocalDate.parse("1990-01-01"),
-            "Prof.", "+48 123456789", 170387, DocumentType.IdCard,"ABC12345",
+            "Prof.", "+48 123456789", 170387, 1,"ABC12345",
             LocalDate.parse("2020-11-03"), 1, LocalDate.parse("2020-12-12"), LocalDate.parse("2020-12-15"),
             0,"Konferencja", "AntyCovid2020", "TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą",
             LocalDate.parse("2020-12-13"), LocalDate.parse("2020-12-14"), null, LocalDate.parse("2020-12-12"),
