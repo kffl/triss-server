@@ -154,16 +154,16 @@ interface TestData {
 
 
         val correctApplication = Application(id = null, firstName = "Jan", surname = "Kowalczyk", birthDate = LocalDate.of(2000, 1, 1)
-                , academicDegree = "Prof.", phoneNumber = "+48 123456789", employeeId = 1, identityDocumentType = DocumentType.Passport,
+                , academicDegree = "Prof.", phoneNumber = "+48 123456789", employeeId = 170387, identityDocumentType = DocumentType.Passport,
                 identityDocumentNumber = "identityDocumentNumber", createdOn = null, placeId = null,
-                abroadStartDate = LocalDate.now().plusDays(10), abroadEndDate = LocalDate.now().plusDays(40),
-                instituteId = 1, purpose = "prupose", conference = "conference", subject = "subject", conferenceStartDate = LocalDate.now().plusDays(11),
-                conferenceEndDate = LocalDate.now().plusDays(39), financialSourceId = null, abroadStartDateInsurance = LocalDate.now().plusDays(10)
-                , abroadEndDateInsurance = LocalDate.now().plusDays(40), selfInsured = false, advanceApplicationId = null, prepaymentId = null, comments = "blablabla",
+                abroadStartDate = LocalDate.of(2020,12,12), abroadEndDate = LocalDate.of(2020,12,15),
+                instituteId = 1, purpose = "purpose", conference = "conference", subject = "subject", conferenceStartDate = LocalDate.of(2020,12,13),
+                conferenceEndDate = LocalDate.of(2020,12,14), financialSourceId = null, abroadStartDateInsurance = LocalDate.of(2020,12,12)
+                , abroadEndDateInsurance = LocalDate.of(2020,12,15), selfInsured = false, advanceApplicationId = null, prepaymentId = null, comments = "blablabla",
                 wildaComments = null, directorComments = null, rectorComments = null, status = Status.WaitingForDirector)
-        val correctTransportList = listOf(Transport(id = null, applicationID = null, destinationFrom = "Poznań", destinationTo = "Berlin", departureDay = LocalDate.now().plusDays(10), departureHour = 10, departureMinute = 10, vehicleSelect = Vehicle.Bus, carrier = "carrier"),
-                Transport(id = null, applicationID = null, destinationFrom = "Berlin", destinationTo = "Poznań", departureDay = LocalDate.now().plusDays(10), departureHour = 10, departureMinute = 10, vehicleSelect = Vehicle.Bus, carrier = "carrier"))
-        val correctAdvanceApplication = AdvanceApplication(id = null, startDate = LocalDate.now().plusDays(10), endDate = LocalDate.now().plusDays(40),
+        val correctTransportList = listOf(Transport(id = null, applicationID = null, destinationFrom = "Poznań", destinationTo = "Berlin", departureDay = LocalDate.of(2020,12,15), departureHour = 10, departureMinute = 10, vehicleSelect = Vehicle.Bus, carrier = "carrier"),
+                Transport(id = null, applicationID = null, destinationFrom = "Berlin", destinationTo = "Poznań", departureDay = LocalDate.of(2020,12,12), departureHour = 10, departureMinute = 10, vehicleSelect = Vehicle.Bus, carrier = "carrier"))
+        val correctAdvanceApplication = AdvanceApplication(id = null, startDate = LocalDate.of(2020,12,12), endDate = LocalDate.of(2020,12,15),
                 residenceDietAmount = BigDecimal(10).setScale(2), residenceDietQuantity = 10, residenceDietSum = BigDecimal(100).setScale(2),
                 accommodationQuantity = 10, accommodationLimit = BigDecimal(10).setScale(2), accommodationSum = BigDecimal(100).setScale(2),
                 otherCostsAmount = BigDecimal(100.00).setScale(2), otherCostsDescription = "blablabla", placeId = null, travelCosts = BigDecimal(100).setScale(2),

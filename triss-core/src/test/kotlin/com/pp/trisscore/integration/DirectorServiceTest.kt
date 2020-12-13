@@ -75,12 +75,34 @@ class DirectorServiceTest(@Autowired val directorService: DirectorService,
 
         val x = assertThrows<UnauthorizedException> {
             directorService.approveApplication(existingDirectorToken,
-                    exampleApplicationInfoForDirector.copy(financialSource = correctFinancialSource, application = correctApplicationForDirector
-                            .copy(status = Status.WaitingForDirector))).block()
+                    exampleApplicationInfoForDirector.copy(financialSource = correctFinancialSource,
+                            application = correctApplicationForDirector.copy(status = Status.WaitingForDirector))).block()
         }
         assertEquals("Status must be WaitingForWilda", x.message)
-
     }
+
+    //Director rejectApplication
+    @Test
+    fun shouldNotRejectApplicationWrongRole(){
+        val x = assertThrows<UnauthorizedException>{
+            directorService.rejectApplication(existingUserToken, exampleApplicationInfoForDirector.copy(
+                    application = correctApplicationForDirector.copy(status = Status.RejectedByDirector))).block()
+        }
+        assertEquals("Employee don't have access to this.", x.message)
+    }
+
+    @Test
+    fun shouldNotRejectApplicationWrongStatus(){
+        val x = assertThrows<UnauthorizedException>{
+            directorService.rejectApplication(existingDirectorToken, exampleApplicationInfoForDirector).block()
+        }
+        assertEquals("Status must be RejectedByDirector", x.message)
+    }
+
+
+
+
+
 
     @Test
     fun shouldGetApplicationFull() {

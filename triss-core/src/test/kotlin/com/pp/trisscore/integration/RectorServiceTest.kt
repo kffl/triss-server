@@ -4,13 +4,14 @@ import com.pp.trisscore.data.TestData.Companion.correctApplicationForRector
 import com.pp.trisscore.data.TestData.Companion.exampleApplicationInfoForRector
 import com.pp.trisscore.data.TestData.Companion.existingDirectorToken
 import com.pp.trisscore.data.TestData.Companion.existingRectorToken
+import com.pp.trisscore.data.TestData.Companion.existingUserToken
 import com.pp.trisscore.data.TestData.Companion.pageInfo
-import com.pp.trisscore.exceptions.InvalidRequestBodyException
 import com.pp.trisscore.exceptions.UnauthorizedException
 import com.pp.trisscore.model.enums.Status
 import com.pp.trisscore.service.RectorService
 import io.r2dbc.spi.ConnectionFactory
 import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -65,6 +66,24 @@ class RectorServiceTest(@Autowired val rectorService: RectorService,
                     application = correctApplicationForRector.copy(status = Status.WaitingForRector))).block()
         }
         Assertions.assertEquals("Status must be Accepted", x.message)
+    }
+
+    //Rector rejectApplication
+    @Test
+    fun shouldNotRejectApplicationWrongRole(){
+        val x = assertThrows<UnauthorizedException>{
+            rectorService.rejectApplication(existingUserToken, exampleApplicationInfoForRector.copy(
+                    application = correctApplicationForRector.copy(status = Status.RejectedByRector))).block()
+        }
+        assertEquals("Employee don't have access to this.", x.message)
+    }
+
+    @Test
+    fun shouldNotRejectApplicationWrongStatus(){
+        val x = assertThrows<UnauthorizedException>{
+            rectorService.rejectApplication(existingRectorToken, exampleApplicationInfoForRector).block()
+        }
+        assertEquals("Status must be RejectedByRector", x.message)
     }
 
     @Test
