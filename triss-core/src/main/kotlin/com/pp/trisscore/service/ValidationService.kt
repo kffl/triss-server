@@ -186,15 +186,15 @@ class ValidationService {
         when (role) {
             Role.DIRECTOR -> {
                 if (application.status != StatusEnum.WaitingForDirector.value)
-                    throw(UnauthorizedException("Status must be WaitingForDirector"))
+                    throw(InvalidRequestBodyException("Status must be WaitingForDirector"))
             }
             Role.WILDA -> {
                 if (application.status != StatusEnum.WaitingForWilda.value)
-                    throw(UnauthorizedException("Status must be WaitingForWilda"))
+                    throw(InvalidRequestBodyException("Status must be WaitingForWilda"))
             }
             Role.RECTOR -> {
                 if (application.status != StatusEnum.WaitingForRector.value)
-                    throw(UnauthorizedException("Status must be WaitingForRector"))
+                    throw(InvalidRequestBodyException("Status must be WaitingForRector"))
             }
             Role.USER -> {
                 throw InvalidRequestBodyException("User don't have access to this")
