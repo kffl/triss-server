@@ -35,13 +35,14 @@ class RectorService(
     }
 
     fun approveApplication(tokenBody: TokenData, body: ApplicationInfo): Mono<Application> {
+         validationService.validateApproveApplicationInfo(body,role)
         return employeeService.findEmployeeAndCheckRole(tokenBody, role).switchIfEmpty(Mono.error(UnauthorizedException("")))
                 .flatMap { applicationFullService.getFullApplication(body.application.id!!) }
                 .flatMap { x -> validateApproveAndSaveApplication(x, body) }
     }
 
     private fun validateApproveAndSaveApplication(dbApplicationInfo: ApplicationInfo?, reqApplicationInfo: ApplicationInfo): Mono<out Application>? {
-        comparisonService.compareApproveApplicationsInfo(dbApplicationInfo!!, reqApplicationInfo, role)
+        comparisonService.compareApplicationsInfo(dbApplicationInfo!!, reqApplicationInfo, role)
         return applicationService.saveApplication(reqApplicationInfo.application)
     }
 
@@ -61,7 +62,7 @@ class RectorService(
     }
 
     private fun validateRejectAndSaveApplication(dbApplication: ApplicationInfo, reqApplication: ApplicationInfo): Mono<Application> {
-        comparisonService.compareRejectedApplicationsInfo(dbApplication, reqApplication, role)
+        comparisonService.compareApplicationsInfo(dbApplication, reqApplication, role)
         return applicationService.saveApplication(reqApplication.application)
 
     }

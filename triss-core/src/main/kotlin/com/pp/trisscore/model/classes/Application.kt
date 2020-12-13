@@ -58,9 +58,9 @@ data class Application(
         @Column("financialSourceId")
         val financialSourceId: Long?,
         @Column("abroadStartDateInsurance")
-        val abroadStartDateInsurance: LocalDate,
+        val abroadStartDateInsurance: LocalDate?,
         @Column("abroadEndDateInsurance")
-        val abroadEndDateInsurance: LocalDate,
+        val abroadEndDateInsurance: LocalDate?,
         @Column("selfInsured")
         val selfInsured:Boolean,
         @Column("advanceApplicationId")

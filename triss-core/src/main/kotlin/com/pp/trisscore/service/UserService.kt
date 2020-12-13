@@ -8,7 +8,6 @@ import com.pp.trisscore.model.architecture.PageInfo
 import com.pp.trisscore.model.architecture.TokenData
 import com.pp.trisscore.model.classes.Employee
 import com.pp.trisscore.model.classes.Transport
-import com.pp.trisscore.model.enums.Role
 import com.pp.trisscore.model.rows.ApplicationRow
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -26,8 +25,6 @@ class UserService(private val employeeService: EmployeeService,
                   private val prepaymentService: PrepaymentService,
                   private val placeService: PlaceService,
                   private val transportService: TransportService) {
-
-    private val role: Role = Role.USER
 
     fun getMyApplications(tokenData: TokenData, body: PageInfo<ApplicationRow>): Flux<ApplicationRow> {
         if (tokenData.employeeId != body.filter.employeeId)
@@ -57,7 +54,7 @@ class UserService(private val employeeService: EmployeeService,
     fun createApplication2(applicationInfo: ApplicationInfo, user: Employee?): Mono<Transport> {
         if (user == null)
             throw EmployeeNotFoundException("User Not Found")
-        validationService.validateUserApplication(applicationInfo, user)
+        validationService.validateCreateApplicationInfo(applicationInfo, user)
         val institute = instituteService.findInstituteByName(applicationInfo.institute.name)
         val prepaymentId = prepaymentService.createPrepayment(applicationInfo.advancePayments)
                 .map { x -> x.id }

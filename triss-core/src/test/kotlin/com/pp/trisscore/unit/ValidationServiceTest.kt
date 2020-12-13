@@ -9,20 +9,18 @@ import org.junit.jupiter.api.assertDoesNotThrow
 
 class ValidationServiceTest {
 
-    private val goodFinancialSource = FinancialSource(null, "AllocationAccountNumberHere","MPK_1","Budżet PP","TRISS")
     private val validationService = ValidationService()
 
-    @Test
-    fun shouldNotValidateFinancialSourceAndThrowInvalidRequestBody() {
-       assertThrows(InvalidRequestBodyException::class.java){
-           validationService.validateApproveFinancialSource(goodFinancialSource.copy(allocationAccount = null, mpk = null, financialSource = null, project = null))
-       }
-    }
 
-    @Test
-    fun shouldValidateFinancialSource(){
-        assertDoesNotThrow("Should not throw an InvalidRequestBodyException"){
-            validationService.validateApproveFinancialSource(goodFinancialSource)
-        }
-    }
+
+
+
+
+
+
+
+
+
+
+
 }

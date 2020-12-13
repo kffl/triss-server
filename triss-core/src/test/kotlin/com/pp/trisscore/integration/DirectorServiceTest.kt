@@ -72,12 +72,14 @@ class DirectorServiceTest(@Autowired val directorService: DirectorService,
 
     @Test
     fun shouldNotApproveApplicationWrongStatus() {
-        val x = assertThrows<InvalidRequestBodyException> {
+
+        val x = assertThrows<UnauthorizedException> {
             directorService.approveApplication(existingDirectorToken,
                     exampleApplicationInfoForDirector.copy(financialSource = correctFinancialSource, application = correctApplicationForDirector
                             .copy(status = Status.WaitingForDirector))).block()
         }
-        assertEquals("ApplicationStatus in DB differs from the request's one", x.message)
+        assertEquals("Status must be WaitingForWilda", x.message)
+
     }
 
     @Test

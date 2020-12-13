@@ -60,11 +60,11 @@ class RectorServiceTest(@Autowired val rectorService: RectorService,
 
     @Test
     fun shouldNotApproveApplicationWrongStatus() {
-        val x = assertThrows<InvalidRequestBodyException> {
+        val x = assertThrows<UnauthorizedException> {
             rectorService.approveApplication(existingRectorToken, exampleApplicationInfoForRector.copy(
-                    application = correctApplicationForRector.copy(status = Status.WaitingForDirector))).block()
+                    application = correctApplicationForRector.copy(status = Status.WaitingForRector))).block()
         }
-        Assertions.assertEquals("ApplicationStatus in DB differs from the request's one", x.message)
+        Assertions.assertEquals("Status must be Accepted", x.message)
     }
 
     @Test
