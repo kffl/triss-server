@@ -25,19 +25,22 @@ class DirectorService(val employeeService: EmployeeService,
 
     val role = Role.DIRECTOR
     fun getApplications(pageInfo: PageInfo<ApplicationRow>, tokenBody: TokenData): Flux<ApplicationRow> {
-        return employeeService.findEmployeeAndCheckRole(tokenBody, role).switchIfEmpty(Mono.error(UnauthorizedException("")))
+        return employeeService.findEmployeeAndCheckRole(tokenBody, role)
+                .switchIfEmpty(Mono.error(UnauthorizedException(tokenBody.employeeId.toString(), tokenBody.firstname, tokenBody.surname)))
                 .flatMapMany { x -> applicationService.getAllByFilter(pageInfo.copy(pageInfo.filter.copy(instituteId = x!!.instituteID!!))) }
     }
 
     fun getCountByFilter(tokenBody: TokenData, pageInfo: PageInfo<ApplicationRow>): Mono<Long> {
-        return employeeService.findEmployeeAndCheckRole(tokenBody, role).switchIfEmpty(Mono.error(UnauthorizedException("")))
+        return employeeService.findEmployeeAndCheckRole(tokenBody, role)
+                .switchIfEmpty(Mono.error(UnauthorizedException(tokenBody.employeeId.toString(), tokenBody.firstname, tokenBody.surname)))
                 .flatMap { x -> applicationService.getCountByFilter(pageInfo.copy(pageInfo.filter.copy(instituteId = x!!.instituteID!!))) }
     }
 
     @Transactional
     fun approveApplication(tokenBody: TokenData, body: ApplicationInfo): Mono<Application> {
         validationService.validateApproveApplicationInfo(body, role)
-        return employeeService.findEmployeeAndCheckRole(tokenBody, role).switchIfEmpty(Mono.error(UnauthorizedException("")))
+        return employeeService.findEmployeeAndCheckRole(tokenBody, role)
+                .switchIfEmpty(Mono.error(UnauthorizedException(tokenBody.employeeId.toString(), tokenBody.firstname, tokenBody.surname)))
                 .flatMap { x -> applicationFullService.getFullDirectorApplication(body.application.id!!, x!!) }
                 .flatMap { x -> validateApproveAndSaveApplication(x, body) }
     }
@@ -46,24 +49,25 @@ class DirectorService(val employeeService: EmployeeService,
         comparisonService.compareApplicationsInfo(dbApplication, reqApplication, Role.DIRECTOR)
         return financialSourceService.save(reqApplication.financialSource!!)
                 .flatMap { x -> applicationService.saveApplication(reqApplication.application.copy(status = StatusEnum.WaitingForWilda.value,financialSourceId = x.id)) }
+
     }
 
 
     fun getFullApplication(tokenBody: TokenData, id: Long): Mono<ApplicationInfo> {
-        return employeeService.findEmployeeAndCheckRole(tokenBody, role).switchIfEmpty(Mono.error(UnauthorizedException("")))
+        return employeeService.findEmployeeAndCheckRole(tokenBody, role)
+                .switchIfEmpty(Mono.error(UnauthorizedException(tokenBody.employeeId.toString(), tokenBody.firstname, tokenBody.surname)))
                 .flatMap { x -> applicationFullService.getFullDirectorApplication(id, x!!) }
     }
 
 
-
     @Transactional
     fun rejectApplication(tokenBody: TokenData, body: ApplicationInfo): Mono<Application> {
-        validationService.validateRejectApplicationInfo(body,role)
-        return employeeService.findEmployeeAndCheckRole(tokenBody,role)
-                .switchIfEmpty(Mono.error(UnauthorizedException("")))
-                .flatMap{x -> applicationFullService.getFullDirectorApplication(body.application.id!!,x!!)}
-                .switchIfEmpty(Mono.error(ObjectNotFoundException("")))
-                .flatMap { x -> validateRejectAndSaveApplication(x,body)}
+        validationService.validateRejectApplicationInfo(body, role)
+        return employeeService.findEmployeeAndCheckRole(tokenBody, role)
+                .switchIfEmpty(Mono.error(UnauthorizedException(tokenBody.employeeId.toString(), tokenBody.firstname, tokenBody.surname)))
+                .flatMap { x -> applicationFullService.getFullDirectorApplication(body.application.id!!, x!!) }
+                .switchIfEmpty(Mono.error(ObjectNotFoundException("Application")))
+                .flatMap { x -> validateRejectAndSaveApplication(x, body) }
 
     }
 

@@ -1,8 +1,8 @@
 package com.pp.trisscore.service
 
-import com.pp.trisscore.exceptions.EmployeeNotFoundException
 import com.pp.trisscore.exceptions.InvalidRequestBodyException
 import com.pp.trisscore.exceptions.ObjectNotFoundException
+import com.pp.trisscore.exceptions.UserNotFoundException
 import com.pp.trisscore.model.architecture.ApplicationInfo
 import com.pp.trisscore.model.architecture.PageInfo
 import com.pp.trisscore.model.architecture.TokenData
@@ -54,7 +54,7 @@ class UserService(private val employeeService: EmployeeService,
     @Transactional
     fun createApplication2(applicationInfo: ApplicationInfo, user: Employee?): Mono<Transport> {
         if (user == null)
-            throw EmployeeNotFoundException("User Not Found")
+            throw UserNotFoundException("User Not Found.")
         validationService.validateCreateApplicationInfo(applicationInfo, user)
         val institute = instituteService.findInstituteByName(applicationInfo.institute.name)
         val prepaymentId = prepaymentService.createPrepayment(applicationInfo.advancePayments).map { x -> x.id }

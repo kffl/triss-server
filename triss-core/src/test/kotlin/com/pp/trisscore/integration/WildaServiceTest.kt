@@ -52,7 +52,7 @@ class WildaServiceTest(@Autowired val wildaService: WildaService,
     @Test
     fun shouldNotGetWildaCountWrongRole() {
         val x = assertThrows<UnauthorizedException> { wildaService.getCountByFilter(existingDirectorToken, pageInfo).block() }
-        Assertions.assertEquals("Employee don't have access to this.", x.message)
+        Assertions.assertEquals("User 167711 Andrzej Nowak don't have access to this.", x.message)
     }
 
     //Wilda approveApplication
@@ -61,12 +61,12 @@ class WildaServiceTest(@Autowired val wildaService: WildaService,
         val x = assertThrows<UnauthorizedException> {
             wildaService.approveApplication(existingDirectorToken, exampleApplicationInfoForWaitingForWilda).block()
         }
-        Assertions.assertEquals("Employee don't have access to this.", x.message)
+        Assertions.assertEquals("User 167711 Andrzej Nowak don't have access to this.", x.message)
     }
 
     @Test
     fun shouldNotApproveApplicationWrongStatus() {
-        val x = assertThrows<UnauthorizedException> {
+        val x = assertThrows<InvalidRequestBodyException> {
             wildaService.approveApplication(existingWildaToken, exampleApplicationInfoForWaitingForWilda.copy(
                     application = correctApplicationForWaitingForWilda.copy(status = StatusEnum.WaitingForRector.value))).block()
         }

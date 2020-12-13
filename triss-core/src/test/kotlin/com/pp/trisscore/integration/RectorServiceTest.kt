@@ -45,7 +45,7 @@ class RectorServiceTest(@Autowired val rectorService: RectorService,
     @Test
     fun shouldNotGetRectorCountWrongRole() {
         val x = assertThrows<UnauthorizedException> { rectorService.getCountByFilter(existingDirectorToken, pageInfo).block() }
-        Assertions.assertEquals("Employee don't have access to this.", x.message)
+        Assertions.assertEquals("User 167711 Andrzej Nowak don't have access to this.", x.message)
     }
 
     //Rector approveApplication
@@ -54,12 +54,12 @@ class RectorServiceTest(@Autowired val rectorService: RectorService,
         val x = assertThrows<UnauthorizedException> {
             rectorService.approveApplication(existingDirectorToken, exampleApplicationInfoForRector).block()
         }
-        Assertions.assertEquals("Employee don't have access to this.", x.message)
+        Assertions.assertEquals("User 167711 Andrzej Nowak don't have access to this.", x.message)
     }
 
     @Test
     fun shouldNotApproveApplicationWrongStatus() {
-        val x = assertThrows<UnauthorizedException> {
+        val x = assertThrows<InvalidRequestBodyException> {
             rectorService.approveApplication(existingRectorToken, exampleApplicationInfoForRector.copy(
                     application = correctApplicationForRector.copy(status = StatusEnum.Accepted.value))).block()
         }

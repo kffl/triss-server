@@ -1,6 +1,7 @@
 package com.pp.trisscore.service
 
 import com.pp.trisscore.exceptions.InvalidRequestBodyException
+import com.pp.trisscore.exceptions.RequestDataDiffersFromDatabaseDataException
 import com.pp.trisscore.exceptions.UnauthorizedException
 import com.pp.trisscore.exceptions.WrongDateException
 import com.pp.trisscore.model.architecture.ApplicationInfo
@@ -55,7 +56,7 @@ class ValidationService {
         if (place.city.isBlank())
             throw InvalidRequestBodyException("City cannot be null")
         if (place.country.isBlank())
-            throw InvalidRequestBodyException("City cannot be null")
+            throw InvalidRequestBodyException("Country cannot be null")
     }
 
     private fun validatePlace(place: Place) {
@@ -64,7 +65,7 @@ class ValidationService {
         if (place.city.isBlank())
             throw InvalidRequestBodyException("City cannot be null")
         if (place.country.isBlank())
-            throw InvalidRequestBodyException("City cannot be null")
+            throw InvalidRequestBodyException("Country cannot be null")
     }
 
 
@@ -101,15 +102,15 @@ class ValidationService {
         if (application.id != null)
             throw(InvalidRequestBodyException("Application Id must be null"))
         if (application.firstName != user.firstName)
-            throw(InvalidRequestBodyException("FirstName is not equal first name in database"))
+            throw(RequestDataDiffersFromDatabaseDataException("FirstName"))
         if (application.surname != user.surname)
-            throw(InvalidRequestBodyException("Surname in Application differ from the User one"))
+            throw(RequestDataDiffersFromDatabaseDataException("Surname"))
         if (application.academicDegree != user.academicDegree)
-            throw(InvalidRequestBodyException("AcademicDegree in Application differ from the User one"))
+            throw(RequestDataDiffersFromDatabaseDataException("AcademicDegree"))
         if (application.phoneNumber != user.phoneNumber)
-            throw(InvalidRequestBodyException("Phone number in Application differ from the User one"))
+            throw(RequestDataDiffersFromDatabaseDataException("Phone number"))
         if (application.employeeId != user.employeeId)
-            throw(InvalidRequestBodyException("EmployeeId in Application differ from the User one"))
+            throw(RequestDataDiffersFromDatabaseDataException("EmployeeId"))
         if (application.identityDocumentNumber.isBlank())
             throw(InvalidRequestBodyException("identityDocumentNumber in Application is  blank"))
         if (application.createdOn != null)
@@ -196,7 +197,7 @@ class ValidationService {
                     throw(UnauthorizedException("Status must be WaitingForRector"))
             }
             Role.USER -> {
-                throw UnauthorizedException("User don't have access to this")
+                throw InvalidRequestBodyException("User don't have access to this")
             }
         }
     }

@@ -7,8 +7,5 @@ import reactor.core.publisher.Mono
 
 @Service
 class PrepaymentFeeService(val prepaymentFeeRepository: PrepaymentFeeRepository) {
-
-
     fun createPrepaymentFee(fee: PrepaymentFee): Mono<PrepaymentFee> = prepaymentFeeRepository.save(fee)
-
 }

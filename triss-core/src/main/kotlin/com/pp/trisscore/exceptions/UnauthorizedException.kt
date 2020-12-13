@@ -1,5 +1,6 @@
 package com.pp.trisscore.exceptions
 
-import java.lang.RuntimeException
-
-class UnauthorizedException(message:String): RuntimeException(message)
+class UnauthorizedException(message: String)
+    : RuntimeException(message) {
+    constructor(id: String, firstName: String, surname: String) : this("User $id $firstName $surname don't have access to this.")
+}

@@ -1,6 +1,7 @@
 package com.pp.trisscore.unit
 
 import com.pp.trisscore.exceptions.InvalidRequestBodyException
+import com.pp.trisscore.exceptions.RequestDataDiffersFromDatabaseDataException
 import com.pp.trisscore.model.applicationinfoelements.AdvancePaymentsInfo
 import com.pp.trisscore.model.classes.*
 import com.pp.trisscore.model.enums.*
@@ -32,7 +33,7 @@ class ComparisonServiceTest() {
 
     @Test
     fun shouldCompareInstitutesAndThrowInvalidRequestBody() {
-        assertThrows(InvalidRequestBodyException::class.java){
+        assertThrows(RequestDataDiffersFromDatabaseDataException::class.java){
             comparisonService.compareInstitutes(institute, institute.copy(name = "Instytut Matematyki"))
         }
     }
@@ -45,7 +46,7 @@ class ComparisonServiceTest() {
 
     @Test
     fun shouldComparePlacesAndThrowInvalidRequestBody() {
-        assertThrows(InvalidRequestBodyException::class.java){
+        assertThrows(RequestDataDiffersFromDatabaseDataException::class.java){
             comparisonService.comparePlaces(place, place.copy(city = "Poznań"))
         }
     }
@@ -58,7 +59,7 @@ class ComparisonServiceTest() {
 
     @Test
     fun shouldCompareFinancialSourcesAndThrow() {
-        assertThrows(InvalidRequestBodyException::class.java){
+        assertThrows(RequestDataDiffersFromDatabaseDataException::class.java){
             comparisonService.compareFinancialSources(financialSource, financialSource.copy(mpk = null))
         }
     }
@@ -71,7 +72,7 @@ class ComparisonServiceTest() {
 
     @Test
     fun shouldCompareTransportsAndThrow() {
-        assertThrows(InvalidRequestBodyException::class.java){
+        assertThrows(RequestDataDiffersFromDatabaseDataException::class.java){
             comparisonService.compareTransports(transport, transport.copy(carrier = "LOT"))
         }
     }
@@ -84,7 +85,7 @@ class ComparisonServiceTest() {
 
     @Test
     fun shouldCompareAdvanceApplicationAndThrow() {
-        assertThrows(InvalidRequestBodyException::class.java){
+        assertThrows(RequestDataDiffersFromDatabaseDataException::class.java){
             comparisonService.compareAdvanceApplication(advanceApplication, advanceApplication.copy(advanceSum = 5000.toBigDecimal()))
         }
     }

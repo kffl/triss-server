@@ -36,7 +36,8 @@ class RectorService(
 
     fun approveApplication(tokenBody: TokenData, body: ApplicationInfo): Mono<Application> {
          validationService.validateApproveApplicationInfo(body,role)
-        return employeeService.findEmployeeAndCheckRole(tokenBody, role).switchIfEmpty(Mono.error(UnauthorizedException("")))
+        return employeeService.findEmployeeAndCheckRole(tokenBody, role)
+                .switchIfEmpty(Mono.error(UnauthorizedException(tokenBody.employeeId.toString(), tokenBody.firstname, tokenBody.surname)))
                 .flatMap { applicationFullService.getFullApplication(body.application.id!!) }
                 .flatMap { x -> validateApproveAndSaveApplication(x, body) }
     }
@@ -47,7 +48,8 @@ class RectorService(
     }
 
     fun getFullApplication(tokenBody: TokenData, id: Long): Mono<ApplicationInfo> {
-        return employeeService.findEmployeeAndCheckRole(tokenBody, role).switchIfEmpty(Mono.error(UnauthorizedException("")))
+        return employeeService.findEmployeeAndCheckRole(tokenBody, role)
+                .switchIfEmpty(Mono.error(UnauthorizedException(tokenBody.employeeId.toString(), tokenBody.firstname, tokenBody.surname)))
                 .flatMap { applicationFullService.getFullApplication(id) }
     }
 
@@ -55,9 +57,9 @@ class RectorService(
     fun rejectApplication(tokenBody: TokenData, body: ApplicationInfo): Mono<Application> {
         validationService.validateRejectApplicationInfo(body, role)
         return employeeService.findEmployeeAndCheckRole(tokenBody, role)
-                .switchIfEmpty(Mono.error(UnauthorizedException("")))
+                .switchIfEmpty(Mono.error(UnauthorizedException(tokenBody.employeeId.toString(), tokenBody.firstname, tokenBody.surname)))
                 .flatMap { x -> applicationFullService.getFullDirectorApplication(body.application.id!!, x!!) }
-                .switchIfEmpty(Mono.error(ObjectNotFoundException("")))
+                .switchIfEmpty(Mono.error(ObjectNotFoundException("Application")))
                 .flatMap { x -> validateRejectAndSaveApplication(x, body) }
     }
 
