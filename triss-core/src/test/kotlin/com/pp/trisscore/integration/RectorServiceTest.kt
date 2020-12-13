@@ -62,9 +62,9 @@ class RectorServiceTest(@Autowired val rectorService: RectorService,
     fun shouldNotApproveApplicationWrongStatus() {
         val x = assertThrows<UnauthorizedException> {
             rectorService.approveApplication(existingRectorToken, exampleApplicationInfoForRector.copy(
-                    application = correctApplicationForRector.copy(status = Status.WaitingForRector))).block()
+                    application = correctApplicationForRector.copy(status = Status.Accepted))).block()
         }
-        Assertions.assertEquals("Status must be Accepted", x.message)
+        Assertions.assertEquals("Status must be WaitingForRector", x.message)
     }
 
     @Test

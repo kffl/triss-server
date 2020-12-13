@@ -26,8 +26,6 @@ import java.util.*
 class DirectorController(private val directorService: DirectorService,
                          private val tokenService: TokenService) {
 
-    val tokenBody = TokenData(167711, "Andrzej", "Nowak")
-
     @PostMapping("application/get")
     fun getApplications(
                         @RequestBody pageInfo: PageInfo<ApplicationRow>,

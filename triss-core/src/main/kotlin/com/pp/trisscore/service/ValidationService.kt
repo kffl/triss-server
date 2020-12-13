@@ -14,7 +14,7 @@ import java.time.LocalDate
 class ValidationService {
 
     fun validateApproveApplicationInfo(applicationInfo: ApplicationInfo, role: Role) {
-        validateApproveStatus(applicationInfo.application, role)
+        validateStatus(applicationInfo.application, role)
         validateInstitute(applicationInfo.institute)
         validatePlace(applicationInfo.place)
         validateAdvanceApplication(applicationInfo.advanceApplication)
@@ -23,7 +23,7 @@ class ValidationService {
     }
 
     fun validateRejectApplicationInfo(applicationInfo: ApplicationInfo, role: Role) {
-        validateRejectStatus(applicationInfo.application, role)
+        validateStatus(applicationInfo.application, role)
         validateInstitute(applicationInfo.institute)
         validatePlace(applicationInfo.place)
         validateAdvanceApplication(applicationInfo.advanceApplication)
@@ -151,6 +151,7 @@ class ValidationService {
             throw(InvalidRequestBodyException("Wilda comments must be null"))
         if (application.status != Status.WaitingForDirector)
             throw(InvalidRequestBodyException("Application Status must be WaitingForDirector"))
+
     }
 
     private fun validateApplication(application: Application, role: Role) {
@@ -176,49 +177,29 @@ class ValidationService {
                 if (application.financialSourceId == null)
                     throw(InvalidRequestBodyException("FinancialSourceId cannot null"))
         }
+
     }
 
 
-    private fun validateApproveStatus(application: Application, role: Role) {
+    private fun validateStatus(application: Application, role: Role) {
         when (role) {
             Role.DIRECTOR -> {
+                if (application.status != Status.WaitingForDirector)
+                    throw(UnauthorizedException("Status must be WaitingForDirector"))
+            }
+            Role.WILDA -> {
                 if (application.status != Status.WaitingForWilda)
                     throw(UnauthorizedException("Status must be WaitingForWilda"))
             }
-            Role.WILDA -> {
+            Role.RECTOR -> {
                 if (application.status != Status.WaitingForRector)
                     throw(UnauthorizedException("Status must be WaitingForRector"))
             }
-            Role.RECTOR -> {
-                if (application.status != Status.Accepted)
-                    throw(UnauthorizedException("Status must be Accepted"))
-            }
             Role.USER -> {
                 throw UnauthorizedException("User don't have access to this")
             }
         }
     }
-
-    private fun validateRejectStatus(application: Application, role: Role) {
-        when (role) {
-            Role.DIRECTOR -> {
-                if (application.status != Status.RejectedByDirector)
-                    throw(UnauthorizedException("Status must be RejectedByDirector"))
-            }
-            Role.WILDA -> {
-                if (application.status != Status.RejectedByWilda)
-                    throw(UnauthorizedException("Status must be RejectedByWilda"))
-            }
-            Role.RECTOR -> {
-                if (application.status != Status.RejectedByRector)
-                    throw(UnauthorizedException("Status must be RejectedByRector"))
-            }
-            Role.USER -> {
-                throw UnauthorizedException("User don't have access to this")
-            }
-        }
-    }
-
 
     private fun checkStartDateBeforeEndDate(startDate: LocalDate, endDate: LocalDate, message: String) {
         if (startDate.isAfter(endDate)) {
