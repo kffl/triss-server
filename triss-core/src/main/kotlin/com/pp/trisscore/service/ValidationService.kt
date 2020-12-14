@@ -34,14 +34,27 @@ class ValidationService {
     }
 
     fun validateCreateApplicationInfo(applicationInfo: ApplicationInfo, user: Employee) {
-        if (user.employeeType == null)
-            throw InvalidRequestBodyException("This user has no Role")
+
+        validateEmployee(user)
         if (applicationInfo.financialSource != null)
             throw(InvalidRequestBodyException("FinancialSource must be null"))
         validateCreateApplication(applicationInfo.application, user)
         validateCreatePlace(applicationInfo.place)
         validateCreateAdvanceApplication(applicationInfo.advanceApplication)
         validateInstitute(applicationInfo.institute)
+    }
+
+    private fun validateEmployee(user: Employee) {
+        if (user.employeeType == null)
+            throw InvalidRequestBodyException("This user has no Role")
+        if (user.instituteID == null)
+            throw InvalidRequestBodyException("This user has no Institute")
+        if (user.academicDegree == null)
+            throw InvalidRequestBodyException("This user has no Academic Degree")
+        if (user.birthDate == null)
+            throw InvalidRequestBodyException("This user has no birthDate")
+        if (user.phoneNumber == null)
+            throw InvalidRequestBodyException("This user has no phone number")
     }
 
     private fun validateInstitute(institute: Institute) {

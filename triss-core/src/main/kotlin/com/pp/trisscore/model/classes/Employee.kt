@@ -25,11 +25,11 @@ data class Employee (
         @Column("surname")
         val surname: String,
         @Column("birthDate")
-        val birthDate: LocalDate,
+        val birthDate: LocalDate?,
         @Column("phoneNumber")
-        val phoneNumber: String,
+        val phoneNumber: String?,
         @Column("academicDegree")
-        val academicDegree: String,
+        val academicDegree: String?,
         @Column("instituteID")
         val instituteID: Long?,
         @Column("employeeType")
