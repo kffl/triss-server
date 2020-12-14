@@ -24,7 +24,8 @@ class UserService(private val employeeService: EmployeeService,
                   private val instituteService: InstituteService,
                   private val prepaymentService: PrepaymentService,
                   private val placeService: PlaceService,
-                  private val transportService: TransportService) {
+                  private val transportService: TransportService,
+                  private val documentTypeService: DocumentTypeService) {
 
     fun getMyApplications(tokenData: TokenData, body: PageInfo<ApplicationRow>): Flux<ApplicationRow> {
         if (tokenData.employeeId != body.filter.employeeId)
@@ -60,11 +61,13 @@ class UserService(private val employeeService: EmployeeService,
                 .switchIfEmpty(Mono.error(ObjectNotFoundException("PrepaymentId")))
         val placeId = placeService.getPlace(applicationInfo.place).map { x -> x.id }
                 .switchIfEmpty(Mono.error(ObjectNotFoundException("PlaceId")))
+        val documentType = documentTypeService.findById(applicationInfo.application.identityDocumentType)
+                .switchIfEmpty(Mono.error(ObjectNotFoundException("DocumentType")))
         val advanceApplication = placeId.flatMap { x -> advanceApplicationService.createAdvanceApplication(applicationInfo.advanceApplication, x!!) }
-        val application = Mono.zip(prepaymentId, advanceApplication, institute)
+        val application = Mono.zip(prepaymentId, advanceApplication, institute,documentType)
                 .flatMap { data ->
                     applicationService.saveApplication(applicationService.fillApplication(applicationInfo, user.employeeId!!, data.t2.placeId!!, data.t1!!, data.t2.id!!, data.t3.id!!))
                 }
-        return application.flatMap { x -> transportService.save(applicationInfo.transport, x.id!!) }
+        return application.flatMap { x -> transportService.saveAll(applicationInfo.transport, x.id!!) }
     }
 }

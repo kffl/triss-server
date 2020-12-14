@@ -1,11 +1,8 @@
 package com.pp.trisscore.model.classes
 
-import com.pp.trisscore.model.enums.DocumentType
-import com.pp.trisscore.model.enums.Status
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
-import java.sql.Date
 import java.time.LocalDate
 
 /**
@@ -32,7 +29,7 @@ data class Application(
         @Column("employeeId")
         val employeeId: Long?,
         @Column("identityDocumentType")
-        val identityDocumentType: DocumentType,
+        val identityDocumentType: Long,
         @Column("identityDocumentNumber")
         val identityDocumentNumber: String,
         @Column("createdOn")
@@ -76,5 +73,5 @@ data class Application(
         @Column("rectorComments")
         val rectorComments: String?,
         @Column("status")
-        val status: Status?
+        val status: Long?
 )

@@ -7,7 +7,7 @@ import com.pp.trisscore.model.architecture.PageInfo
 import com.pp.trisscore.model.architecture.TokenData
 import com.pp.trisscore.model.classes.Application
 import com.pp.trisscore.model.enums.Role
-import com.pp.trisscore.model.enums.Status
+import com.pp.trisscore.model.enums.StatusEnum
 import com.pp.trisscore.model.rows.ApplicationRow
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -25,15 +25,13 @@ class WildaService(private val employeeService: EmployeeService,
     private val role = Role.WILDA
 
     fun getApplications(pageInfo: PageInfo<ApplicationRow>, tokenBody: TokenData): Flux<ApplicationRow> {
-        return employeeService.findEmployeeAndCheckRole(tokenBody, role)
-                .switchIfEmpty(Mono.error(UnauthorizedException(tokenBody.employeeId.toString(), tokenBody.firstname, tokenBody.surname)))
-                .flatMapMany { x -> applicationService.getAllByFilter(pageInfo.copy(pageInfo.filter.copy(status = Status.WaitingForWilda))) }
+        return employeeService.findEmployeeAndCheckRole(tokenBody, role).switchIfEmpty(Mono.error(UnauthorizedException("You do not have permission to perform this action")))
+                .flatMapMany { x -> applicationService.getAllByFilter(pageInfo.copy(pageInfo.filter.copy(status = StatusEnum.WaitingForWilda.value))) }
     }
 
     fun getCountByFilter(tokenBody: TokenData, pageInfo: PageInfo<ApplicationRow>): Mono<Long> {
-        return employeeService.findEmployeeAndCheckRole(tokenBody, role)
-                .switchIfEmpty(Mono.error(UnauthorizedException(tokenBody.employeeId.toString(), tokenBody.firstname, tokenBody.surname)))
-                .flatMap { x -> applicationService.getCountByFilter(pageInfo.copy(pageInfo.filter.copy(status = Status.WaitingForWilda))) }
+        return employeeService.findEmployeeAndCheckRole(tokenBody, role).switchIfEmpty(Mono.error(UnauthorizedException("You do not have permission to perform this action")))
+                .flatMap { x -> applicationService.getCountByFilter(pageInfo.copy(pageInfo.filter.copy(status = StatusEnum.WaitingForWilda.value))) }
     }
 
     fun approveApplication(tokenBody: TokenData, body: ApplicationInfo): Mono<Application> {
@@ -47,7 +45,7 @@ class WildaService(private val employeeService: EmployeeService,
 
     private fun validateApproveAndSaveApplication(dbApplicationInfo: ApplicationInfo, reqApplicationInfo: ApplicationInfo): Mono<Application>? {
         comparisonService.compareApplicationsInfo(dbApplicationInfo, reqApplicationInfo, role)
-        return applicationService.saveApplication(reqApplicationInfo.application.copy(status = Status.WaitingForRector))
+        return applicationService.saveApplication(reqApplicationInfo.application.copy(status = StatusEnum.WaitingForRector.value))
     }
 
     fun getFullApplication(tokenBody: TokenData, id: Long): Mono<ApplicationInfo> {
@@ -68,7 +66,7 @@ class WildaService(private val employeeService: EmployeeService,
 
     private fun validateRejectAndSaveApplication(dbApplication: ApplicationInfo, reqApplication: ApplicationInfo): Mono<Application> {
         comparisonService.compareApplicationsInfo(dbApplication, reqApplication, role)
-        return applicationService.saveApplication(reqApplication.application.copy(status = Status.RejectedByWilda))
+        return applicationService.saveApplication(reqApplication.application.copy(status = StatusEnum.RejectedByWilda.value))
     }
 
 }

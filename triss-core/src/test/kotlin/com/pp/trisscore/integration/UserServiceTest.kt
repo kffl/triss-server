@@ -2,7 +2,7 @@ package com.pp.trisscore.integration
 
 import com.pp.trisscore.exceptions.InvalidRequestBodyException
 import com.pp.trisscore.model.classes.FinancialSource
-import com.pp.trisscore.model.enums.Status
+import com.pp.trisscore.model.enums.StatusEnum
 import com.pp.trisscore.data.TestData.Companion.correctAdvanceApplication
 import com.pp.trisscore.data.TestData.Companion.correctAdvancePaymentsInfo
 import com.pp.trisscore.data.TestData.Companion.correctInstitute
@@ -122,7 +122,7 @@ class UserServiceTest(@Autowired val userService: UserService,
     @Test
     fun shouldNotCreateNewApplicationWrongStatusInApplication() {
         val before = userService.getCountByFilter(existingDirectorToken, pageInfo.copy(filter = filter.copy(employeeId = existingDirectorToken.employeeId))).block()
-        val x = assertThrows<InvalidRequestBodyException> { userService.createApplication(existingDirectorToken, exampleApplicationInfo.copy(application = getExampleForUserApplication(existingDirector).copy(status = Status.Accepted))).block()!!.applicationID }
+        val x = assertThrows<InvalidRequestBodyException> { userService.createApplication(existingDirectorToken, exampleApplicationInfo.copy(application = getExampleForUserApplication(existingDirector).copy(status = StatusEnum.Accepted.value))).block()!!.applicationID }
         assertEquals("Application Status must be WaitingForDirector", x.message)
         val after = userService.getCountByFilter(existingDirectorToken, pageInfo.copy(filter = filter.copy(employeeId = existingDirectorToken.employeeId))).block()
         assertEquals(after, before)
