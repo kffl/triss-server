@@ -164,9 +164,9 @@ CREATE TABLE Employee
     employeeId     BIGINT UNIQUE,
     firstName      varchar(255) NOT NULL,
     surname        varchar(255) NOT NULL,
-    birthDate      DATE         NOT NULL,
-    academicDegree varchar(255) NOT NULL,
-    phoneNumber    varchar(255) NOT NULL,
+    birthDate      DATE        ,
+    academicDegree varchar(255),
+    phoneNumber    varchar(255),
     employeeType   varchar(255),
     instituteID    BIGINT,
     CONSTRAINT institute_em_fk FOREIGN KEY (instituteID) REFERENCES Institute (id)

@@ -164,19 +164,20 @@ CREATE TABLE Employee
     employeeId     BIGINT UNIQUE,
     firstName      varchar(255) NOT NULL,
     surname        varchar(255) NOT NULL,
-    birthDate      DATE         NOT NULL,
-    academicDegree varchar(255) NOT NULL,
-    phoneNumber    varchar(255) NOT NULL,
+    birthDate      DATE        ,
+    academicDegree varchar(255),
+    phoneNumber    varchar(255),
     employeeType   varchar(255),
     instituteID    BIGINT,
     CONSTRAINT institute_em_fk FOREIGN KEY (instituteID) REFERENCES Institute (id)
 );
 
 INSERT INTO Employee(employeeId, firstName, surname, birthDate, academicDegree, phoneNumber, employeeType, instituteID)
-VALUES (170387, 'Jan', 'Kowalczyk', '2000-01-01', 'Prof.', '+48 123456789', 'USER', 1),
-       (2, 'Jan', 'Kowalski', '1990-03-21', 'Prof.', '+48 321456987', 'WILDA', 1),
-       (3, 'Jerzy', 'Zbiałowierzy', '1980-05-15', 'Prof.', '+48 541236987', 'RECTOR', 1),
-       (167711, 'Andrzej', 'Nowak', '1988-07-16', 'Prof.', '+48 987456321', 'DIRECTOR', 1);
+VALUES
+(170387, 'Jan', 'Kowalczyk', '2000-01-01', 'Prof.', '+48 123456789', 'USER', 1),
+(2, 'Jan', 'Kowalski', '1990-03-21', 'Prof.', '+48 321456987', 'WILDA', 1),
+(3, 'Jerzy', 'Zbiałowierzy', '1980-05-15', 'Prof.', '+48 541236987', 'RECTOR', 1),
+(167711, 'Andrzej', 'Nowak', '1988-07-16', 'Prof.', '+48 987456321', 'DIRECTOR', 1);
 
 CREATE TABLE IdentityDocument
 (
@@ -440,12 +441,3 @@ FROM APPLICATION A
          JOIN Prepayment PR on A.prepaymentId = PR.id
          JOIN PrepaymentFee PA on PR.accommodationFeeId = PA.id
          JOIN PrepaymentFee PC on PR.conferenceFeeId = PC.id;
-
-
-
-
-
-
-
-
-
