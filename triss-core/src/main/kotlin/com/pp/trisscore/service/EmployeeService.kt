@@ -75,7 +75,7 @@ class EmployeeService(val employeeRepository: EmployeeRepository,
     }
 
     fun newEmployee(tokenBody: TokenData): Mono<Employee> {
-        val employee = Employee(id = null, employeeId = null, firstName = tokenBody.firstname, surname = tokenBody.surname,
+        val employee = Employee(id = null, employeeId = tokenBody.employeeId, firstName = tokenBody.firstname, surname = tokenBody.surname,
                 birthDate = null, phoneNumber = null, academicDegree = null, instituteID = null, employeeType = Role.USER)
         return employeeRepository.save(employee)
     }
