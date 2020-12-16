@@ -87,5 +87,10 @@ class DirectorController(private val directorService: DirectorService,
         val errorDetails = ErrorsDetails(Date(), ex.toString(), ex.message!!)
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorDetails)
     }
+    @ExceptionHandler(value = [Exception::class])
+    fun catchAllExceptions(ex: RuntimeException): ResponseEntity<ErrorsDetails> {
+        val errorDetails = ErrorsDetails(Date(), ex.toString(), ex.message!!)
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorDetails)
+    }
 }
 
