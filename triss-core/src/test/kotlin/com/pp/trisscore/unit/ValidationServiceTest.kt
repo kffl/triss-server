@@ -90,7 +90,7 @@ class ValidationServiceTest() {
     fun shouldNotValidateApproveApplicationInfoWrongStatus(){
         val result = assertThrows<InvalidRequestBodyException> {
             validationService.validateApproveApplicationInfo(exampleApplicationInfoForDirector.copy(
-                    application = correctApplication.copy(status = Status.WaitingForRector)), Role.DIRECTOR )
+                    application = correctApplication.copy(status = StatusEnum.WaitingForRector.value)), Role.DIRECTOR )
         }
         assertEquals("Status must be WaitingForDirector", result.message)
     }

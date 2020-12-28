@@ -81,7 +81,7 @@ class RectorServiceTest(@Autowired val rectorService: RectorService,
     fun shouldNotRejectApplicationWrongStatus(){
         val x = assertThrows<InvalidRequestBodyException>{
             rectorService.rejectApplication(existingRectorToken, exampleApplicationInfoForRector.copy(
-                    application = correctApplicationForRector.copy(status = Status.Accepted))).block()
+                    application = correctApplicationForRector.copy(status = StatusEnum.Accepted.value))).block()
         }
         assertEquals("Status must be WaitingForRector", x.message)
     }

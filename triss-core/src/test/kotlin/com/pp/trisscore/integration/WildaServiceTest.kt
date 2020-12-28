@@ -85,7 +85,7 @@ class WildaServiceTest(@Autowired val wildaService: WildaService,
     fun shouldNotRejectApplicationWrongStatus(){
         val x = assertThrows<InvalidRequestBodyException>{
             wildaService.rejectApplication(existingWildaToken, exampleApplicationInfoForWaitingForWilda.copy(
-                    application = correctApplicationForWaitingForWilda.copy(status = Status.WaitingForRector))).block()
+                    application = correctApplicationForWaitingForWilda.copy(status = StatusEnum.WaitingForRector.value))).block()
         }
         assertEquals("Status must be WaitingForWilda", x.message)
     }

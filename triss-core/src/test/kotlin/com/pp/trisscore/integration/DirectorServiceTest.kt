@@ -94,7 +94,7 @@ class DirectorServiceTest(@Autowired val directorService: DirectorService,
     fun shouldNotRejectApplicationWrongStatus(){
         val x = assertThrows<InvalidRequestBodyException>{
             directorService.rejectApplication(existingDirectorToken, exampleApplicationInfoForDirector.copy(
-                    application = correctApplicationForDirector.copy(status = Status.WaitingForWilda))).block()
+                    application = correctApplicationForDirector.copy(status = StatusEnum.WaitingForWilda.value))).block()
         }
         assertEquals("Status must be WaitingForDirector", x.message)
     }
