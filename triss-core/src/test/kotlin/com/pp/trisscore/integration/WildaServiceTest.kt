@@ -8,7 +8,7 @@ import com.pp.trisscore.data.TestData.Companion.existingWildaToken
 import com.pp.trisscore.data.TestData.Companion.pageInfo
 import com.pp.trisscore.exceptions.InvalidRequestBodyException
 import com.pp.trisscore.exceptions.UnauthorizedException
-import com.pp.trisscore.model.enums.Status
+import com.pp.trisscore.model.enums.StatusEnum
 import com.pp.trisscore.service.WildaService
 import io.r2dbc.spi.ConnectionFactory
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -67,7 +67,7 @@ class WildaServiceTest(@Autowired val wildaService: WildaService,
     fun shouldNotApproveApplicationWrongStatus() {
         val x = assertThrows<InvalidRequestBodyException> {
             wildaService.approveApplication(existingWildaToken, exampleApplicationInfoForWaitingForWilda.copy(
-                    application = correctApplicationForWaitingForWilda.copy(status = Status.WaitingForRector))).block()
+                    application = correctApplicationForWaitingForWilda.copy(status = StatusEnum.WaitingForRector.value))).block()
         }
         assertEquals("Status must be WaitingForWilda", x.message)
     }

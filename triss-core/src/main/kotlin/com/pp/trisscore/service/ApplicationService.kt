@@ -3,7 +3,7 @@ package com.pp.trisscore.service
 import com.pp.trisscore.model.architecture.ApplicationInfo
 import com.pp.trisscore.model.architecture.PageInfo
 import com.pp.trisscore.model.classes.Application
-import com.pp.trisscore.model.enums.Status
+import com.pp.trisscore.model.enums.StatusEnum
 import com.pp.trisscore.model.rows.ApplicationRow
 import com.pp.trisscore.repository.ApplicationRepository
 import com.pp.trisscore.repository.ApplicationRowRepository
@@ -32,6 +32,6 @@ class ApplicationService(
 
     fun fillApplication(applicationInfo: ApplicationInfo, userId: Long, placeId: Long, prepaymentId: Long, advanceApplicationId: Long, instituteId: Long): Application {
         return applicationInfo.application.copy(createdOn = LocalDate.now(), employeeId = userId, placeId = placeId,
-                prepaymentId = prepaymentId, advanceApplicationId = advanceApplicationId, instituteId = instituteId,status = Status.WaitingForDirector)
+                prepaymentId = prepaymentId, advanceApplicationId = advanceApplicationId, instituteId = instituteId,status = StatusEnum.WaitingForDirector.value)
     }
 }

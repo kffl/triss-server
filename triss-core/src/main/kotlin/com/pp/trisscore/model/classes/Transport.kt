@@ -1,10 +1,8 @@
 package com.pp.trisscore.model.classes
 
-import com.pp.trisscore.model.enums.Vehicle
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
-import java.sql.Date
 import java.time.LocalDate
 
 @Table("Transport")
@@ -25,7 +23,7 @@ data class Transport(
         @Column("departureHour")
         val departureHour: Int,
         @Column("vehicleSelect")
-        val vehicleSelect:Vehicle,
+        val vehicleSelect:Long,
         @Column("carrier")
         val carrier: String
 )

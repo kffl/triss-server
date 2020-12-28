@@ -4,7 +4,6 @@ import com.pp.trisscore.exceptions.*
 import com.pp.trisscore.model.architecture.ApplicationInfo
 import com.pp.trisscore.model.architecture.ErrorsDetails
 import com.pp.trisscore.model.architecture.PageInfo
-import com.pp.trisscore.model.architecture.TokenData
 import com.pp.trisscore.model.classes.Application
 import com.pp.trisscore.model.rows.ApplicationRow
 import com.pp.trisscore.service.TokenService
@@ -13,7 +12,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
 import org.springframework.web.bind.annotation.*
-import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.util.*
 
@@ -89,6 +87,9 @@ class WildaController(private val wildaService: WildaService,
         val errorDetails = ErrorsDetails(Date(), ex.toString(), ex.message!!)
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorDetails)
     }
-
-
+    @ExceptionHandler(value = [Exception::class])
+    fun catchAllExceptions(ex: RuntimeException): ResponseEntity<ErrorsDetails> {
+        val errorDetails = ErrorsDetails(Date(), ex.toString(), ex.message!!)
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorDetails)
+    }
 }

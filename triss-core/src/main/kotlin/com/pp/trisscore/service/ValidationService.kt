@@ -7,7 +7,7 @@ import com.pp.trisscore.exceptions.WrongDateException
 import com.pp.trisscore.model.architecture.ApplicationInfo
 import com.pp.trisscore.model.classes.*
 import com.pp.trisscore.model.enums.Role
-import com.pp.trisscore.model.enums.Status
+import com.pp.trisscore.model.enums.StatusEnum
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 
@@ -34,14 +34,27 @@ class ValidationService {
     }
 
     fun validateCreateApplicationInfo(applicationInfo: ApplicationInfo, user: Employee) {
-        if (user.employeeType == null)
-            throw InvalidRequestBodyException("This user has no Role")
+
+        validateEmployee(user)
         if (applicationInfo.financialSource != null)
             throw(InvalidRequestBodyException("FinancialSource must be null"))
         validateCreateApplication(applicationInfo.application, user)
         validateCreatePlace(applicationInfo.place)
         validateCreateAdvanceApplication(applicationInfo.advanceApplication)
         validateInstitute(applicationInfo.institute)
+    }
+
+    private fun validateEmployee(user: Employee) {
+        if (user.employeeType == null)
+            throw InvalidRequestBodyException("This user has no Role")
+        if (user.instituteID == null)
+            throw InvalidRequestBodyException("This user has no Institute")
+        if (user.academicDegree == null)
+            throw InvalidRequestBodyException("This user has no Academic Degree")
+        if (user.birthDate == null)
+            throw InvalidRequestBodyException("This user has no birthDate")
+        if (user.phoneNumber == null)
+            throw InvalidRequestBodyException("This user has no phone number")
     }
 
     private fun validateInstitute(institute: Institute) {
@@ -150,7 +163,7 @@ class ValidationService {
             throw(InvalidRequestBodyException("Rector comments must be null"))
         if (application.wildaComments != null)
             throw(InvalidRequestBodyException("Wilda comments must be null"))
-        if (application.status != Status.WaitingForDirector)
+        if (application.status != StatusEnum.WaitingForDirector.value)
             throw(InvalidRequestBodyException("Application Status must be WaitingForDirector"))
 
     }
@@ -185,15 +198,15 @@ class ValidationService {
     private fun validateStatus(application: Application, role: Role) {
         when (role) {
             Role.DIRECTOR -> {
-                if (application.status != Status.WaitingForDirector)
+                if (application.status != StatusEnum.WaitingForDirector.value)
                     throw(InvalidRequestBodyException("Status must be WaitingForDirector"))
             }
             Role.WILDA -> {
-                if (application.status != Status.WaitingForWilda)
+                if (application.status != StatusEnum.WaitingForWilda.value)
                     throw(InvalidRequestBodyException("Status must be WaitingForWilda"))
             }
             Role.RECTOR -> {
-                if (application.status != Status.WaitingForRector)
+                if (application.status != StatusEnum.WaitingForRector.value)
                     throw(InvalidRequestBodyException("Status must be WaitingForRector"))
             }
             Role.USER -> {

@@ -32,7 +32,7 @@ interface TestData {
         //Different types of applications
         val correctApplicationForWaitingForWilda = Application(id = 5, firstName = "Jan", surname = "Kowalczyk",
                 birthDate = LocalDate.of(2000, 1, 1), academicDegree = "Prof.",
-                phoneNumber = "+48 123456789", employeeId = 170387, identityDocumentType = DocumentType.Passport,
+                phoneNumber = "+48 123456789", employeeId = 170387, identityDocumentType = 2,
                 identityDocumentNumber = "AB6789000", createdOn = LocalDate.of(2020, 12, 1), placeId = 5,
                 abroadStartDate = LocalDate.of(2020, 12, 12), abroadEndDate = LocalDate.of(2020,12,15),
                 instituteId = 1, purpose = "Konferencja", conference = "AntyCovid2020", subject = " TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą",
@@ -40,18 +40,18 @@ interface TestData {
                 financialSourceId = 1, abroadStartDateInsurance = LocalDate.of(2020,12,12),
                 abroadEndDateInsurance = LocalDate.of(2020,12,15), selfInsured = false,
                 advanceApplicationId = 3, prepaymentId = 3, comments = "User Comments",
-                wildaComments = null, directorComments = "Director comments", rectorComments = null, status = Status.WaitingForWilda)
+                wildaComments = null, directorComments = "Director comments", rectorComments = null, status = StatusEnum.WaitingForWilda.value)
         val correctTransportListForWaitingForWilda = listOf(
                 Transport(id = 5, applicationID = 5, destinationFrom = "Poznań", destinationTo = "Berlin",
                         departureDay = LocalDate.of(2020, 12, 12), departureHour = 10, departureMinute = 10,
-                        vehicleSelect = Vehicle.Plane, carrier = "RyanAir"),
+                        vehicleSelect = 1, carrier = "RyanAir"),
                 Transport(id = 6, applicationID = 5, destinationFrom = "Berlin", destinationTo = "Poznań",
                         departureDay = LocalDate.of(2020, 12, 15), departureHour = 12, departureMinute = 30,
-                        vehicleSelect = Vehicle.Plane, carrier = "RyanAir"))
+                        vehicleSelect = 1, carrier = "RyanAir"))
 
         val correctApplicationForAccepted = Application(id = 6, firstName = "Jan", surname = "Kowalczyk",
                 birthDate = LocalDate.of(2000, 1, 1), academicDegree = "Prof.",
-                phoneNumber = "+48 123456789", employeeId = 170387, identityDocumentType = DocumentType.Passport,
+                phoneNumber = "+48 123456789", employeeId = 170387, identityDocumentType = 1,
                 identityDocumentNumber = "AB6789000", createdOn = LocalDate.of(2020, 12, 1), placeId = 5,
                 abroadStartDate = LocalDate.of(2020, 12, 12), abroadEndDate = LocalDate.of(2020,12,15),
                 instituteId = 1, purpose = "Konferencja", conference = "AntyCovid2020", subject = " TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą",
@@ -59,19 +59,19 @@ interface TestData {
                 financialSourceId = 1, abroadStartDateInsurance = LocalDate.of(2020,12,12),
                 abroadEndDateInsurance = LocalDate.of(2020,12,15), selfInsured = false,
                 advanceApplicationId = 3, prepaymentId = 3, comments = "User Comments",
-                wildaComments = null, directorComments = "Director comments", rectorComments = null, status = Status.Accepted)
+                wildaComments = null, directorComments = "Director comments", rectorComments = null, status = StatusEnum.Accepted.value)
         val correctTransportListForAccepted = listOf(
                 Transport(id = 5, applicationID = 6, destinationFrom = "Poznań", destinationTo = "Berlin",
                         departureDay = LocalDate.of(2020, 12, 12), departureHour = 10, departureMinute = 10,
-                        vehicleSelect = Vehicle.Plane, carrier = "RyanAir"),
+                        vehicleSelect = 1, carrier = "RyanAir"),
                 Transport(id = 6, applicationID = 6, destinationFrom = "Berlin", destinationTo = "Poznań",
                         departureDay = LocalDate.of(2020, 12, 15), departureHour = 12, departureMinute = 30,
-                        vehicleSelect = Vehicle.Plane, carrier = "RyanAir"))
+                        vehicleSelect = 1, carrier = "RyanAir"))
 
 
         val correctApplicationForRector = Application(id = 4, firstName = "Jan", surname = "Kowalczyk",
                 birthDate = LocalDate.of(2000, 1, 1), academicDegree = "Prof.",
-                phoneNumber = "+48 123456789", employeeId = 170387, identityDocumentType = DocumentType.Passport,
+                phoneNumber = "+48 123456789", employeeId = 170387, identityDocumentType = 2,
                 identityDocumentNumber = "AB6789000", createdOn = LocalDate.of(2020, 12, 1), placeId = 5,
                 abroadStartDate = LocalDate.of(2020, 12, 12), abroadEndDate = LocalDate.of(2020,12,15),
                 instituteId = 1, purpose = "Konferencja", conference = "AntyCovid2020", subject = " TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą",
@@ -79,19 +79,19 @@ interface TestData {
                 financialSourceId = 1, abroadStartDateInsurance = LocalDate.of(2020,12,12),
                 abroadEndDateInsurance = LocalDate.of(2020,12,15), selfInsured = false,
                 advanceApplicationId = 3, prepaymentId = 3, comments = "User Comments",
-                wildaComments = null, directorComments = "Director comments", rectorComments = null, status = Status.WaitingForRector)
+                wildaComments = null, directorComments = "Director comments", rectorComments = null, status = StatusEnum.WaitingForRector.value)
         val correctTransportListForRector = listOf(
                 Transport(id = 5, applicationID = 4, destinationFrom = "Poznań", destinationTo = "Berlin",
                         departureDay = LocalDate.of(2020, 12, 12), departureHour = 10, departureMinute = 10,
-                        vehicleSelect = Vehicle.Plane, carrier = "RyanAir"),
+                        vehicleSelect = 1, carrier = "RyanAir"),
                 Transport(id = 6, applicationID = 4, destinationFrom = "Berlin", destinationTo = "Poznań",
                         departureDay = LocalDate.of(2020, 12, 15), departureHour = 12, departureMinute = 30,
-                        vehicleSelect = Vehicle.Plane, carrier = "RyanAir"))
+                        vehicleSelect = 1, carrier = "RyanAir"))
 
 
         val correctApplicationForDirector = Application(id = 3, firstName = "Jan", surname = "Kowalczyk",
                 birthDate = LocalDate.of(2000, 1, 1), academicDegree = "Prof.",
-                phoneNumber = "+48 123456789", employeeId = 170387, identityDocumentType = DocumentType.Passport,
+                phoneNumber = "+48 123456789", employeeId = 170387, identityDocumentType = 2,
                 identityDocumentNumber = "AB6789000", createdOn = LocalDate.of(2020, 12, 1), placeId = 5,
                 abroadStartDate = LocalDate.of(2020, 12, 12), abroadEndDate = LocalDate.of(2020,12,15),
                 instituteId = 1, purpose = "Konferencja", conference = "AntyCovid2020", subject = " TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą",
@@ -99,15 +99,15 @@ interface TestData {
                 financialSourceId = null, abroadStartDateInsurance = LocalDate.of(2020,12,12),
                 abroadEndDateInsurance = LocalDate.of(2020,12,15), selfInsured = false,
                 advanceApplicationId = 3, prepaymentId = 3, comments = "comments",
-                wildaComments = null, directorComments = null, rectorComments = null, status = Status.WaitingForDirector)
+                wildaComments = null, directorComments = null, rectorComments = null, status = StatusEnum.WaitingForDirector.value)
         val correctInstitute = Institute(id = 1, name = "Instytut Architektury i Planowania Przestrzennego", active = true)
         val correctTransportListForDirector = listOf(
                 Transport(id = 5, applicationID = 3, destinationFrom = "Poznań", destinationTo = "Berlin",
                         departureDay = LocalDate.of(2020, 12, 12), departureHour = 10, departureMinute = 10,
-                        vehicleSelect = Vehicle.Plane, carrier = "RyanAir"),
+                        vehicleSelect = 1, carrier = "RyanAir"),
                 Transport(id = 6, applicationID = 3, destinationFrom = "Berlin", destinationTo = "Poznań",
                         departureDay = LocalDate.of(2020, 12, 15), departureHour = 12, departureMinute = 30,
-                        vehicleSelect = Vehicle.Plane, carrier = "RyanAir"))
+                        vehicleSelect = 1, carrier = "RyanAir"))
         val correctAdvanceApplicationForDirector = AdvanceApplication(id = 3, startDate = LocalDate.of(2020, 12, 12),
                 endDate = LocalDate.of(2020, 12, 15), residenceDietAmount = BigDecimal(10).setScale(2),
                 residenceDietQuantity = 10, residenceDietSum = BigDecimal(100).setScale(2), accommodationQuantity = 10,
@@ -116,8 +116,8 @@ interface TestData {
                 travelCosts = BigDecimal(100).setScale(2), travelDietAmount = BigDecimal(100).setScale(2),
                 advanceSum = BigDecimal(100 + 100 + 100 + 100).setScale(2))
         val correctAdvancePaymentsInfoForDirector = AdvancePaymentsInfo(conferenceFeeValue = BigDecimal.valueOf(100).setScale(2),
-                conferenceFeePaymentTypeSelect = PaymentType.Blik, accommodationFeeValue = BigDecimal.valueOf(100).setScale(2),
-                accommodationFeePaymentTypeSelect = PaymentType.Card)
+                conferenceFeePaymentTypeSelect = 2, accommodationFeeValue = BigDecimal.valueOf(100).setScale(2),
+                accommodationFeePaymentTypeSelect = 3)
         val correctPlaceForDirector = Place(id = 5, city = "Berlin", country = "Niemcy")
         val exampleApplicationInfoForDirector = ApplicationInfo(
                 application = correctApplicationForDirector,
@@ -154,22 +154,22 @@ interface TestData {
 
 
         val correctApplication = Application(id = null, firstName = "Jan", surname = "Kowalczyk", birthDate = LocalDate.of(2000, 1, 1)
-                , academicDegree = "Prof.", phoneNumber = "+48 123456789", employeeId = 170387, identityDocumentType = DocumentType.Passport,
+                , academicDegree = "Prof.", phoneNumber = "+48 123456789", employeeId = 170387, identityDocumentType = 2,
                 identityDocumentNumber = "identityDocumentNumber", createdOn = null, placeId = null,
                 abroadStartDate = LocalDate.of(2020,12,12), abroadEndDate = LocalDate.of(2020,12,15),
                 instituteId = 1, purpose = "purpose", conference = "conference", subject = "subject", conferenceStartDate = LocalDate.of(2020,12,13),
                 conferenceEndDate = LocalDate.of(2020,12,14), financialSourceId = null, abroadStartDateInsurance = LocalDate.of(2020,12,12)
                 , abroadEndDateInsurance = LocalDate.of(2020,12,15), selfInsured = false, advanceApplicationId = null, prepaymentId = null, comments = "blablabla",
-                wildaComments = null, directorComments = null, rectorComments = null, status = Status.WaitingForDirector)
-        val correctTransportList = listOf(Transport(id = null, applicationID = null, destinationFrom = "Poznań", destinationTo = "Berlin", departureDay = LocalDate.of(2020,12,15), departureHour = 10, departureMinute = 10, vehicleSelect = Vehicle.Bus, carrier = "carrier"),
-                Transport(id = null, applicationID = null, destinationFrom = "Berlin", destinationTo = "Poznań", departureDay = LocalDate.of(2020,12,12), departureHour = 10, departureMinute = 10, vehicleSelect = Vehicle.Bus, carrier = "carrier"))
+                wildaComments = null, directorComments = null, rectorComments = null, status = StatusEnum.WaitingForDirector.value)
+        val correctTransportList = listOf(Transport(id = null, applicationID = null, destinationFrom = "Poznań", destinationTo = "Berlin", departureDay = LocalDate.of(2020,12,15), departureHour = 10, departureMinute = 10, vehicleSelect = 3, carrier = "carrier"),
+                Transport(id = null, applicationID = null, destinationFrom = "Berlin", destinationTo = "Poznań", departureDay = LocalDate.of(2020,12,12), departureHour = 10, departureMinute = 10, vehicleSelect = 3, carrier = "carrier"))
         val correctAdvanceApplication = AdvanceApplication(id = null, startDate = LocalDate.of(2020,12,12), endDate = LocalDate.of(2020,12,15),
                 residenceDietAmount = BigDecimal(10).setScale(2), residenceDietQuantity = 10, residenceDietSum = BigDecimal(100).setScale(2),
                 accommodationQuantity = 10, accommodationLimit = BigDecimal(10).setScale(2), accommodationSum = BigDecimal(100).setScale(2),
                 otherCostsAmount = BigDecimal(100.00).setScale(2), otherCostsDescription = "blablabla", placeId = null, travelCosts = BigDecimal(100).setScale(2),
                 travelDietAmount = BigDecimal(100).setScale(2), advanceSum = BigDecimal(100 + 100 + 100 + 100).setScale(2))
-        val correctAdvancePaymentsInfo = AdvancePaymentsInfo(conferenceFeeValue = BigDecimal.valueOf(100).setScale(2), conferenceFeePaymentTypeSelect = PaymentType.Blik,
-                accommodationFeeValue = BigDecimal.valueOf(100).setScale(2), accommodationFeePaymentTypeSelect = PaymentType.Card)
+        val correctAdvancePaymentsInfo = AdvancePaymentsInfo(conferenceFeeValue = BigDecimal.valueOf(100).setScale(2), conferenceFeePaymentTypeSelect = 2,
+                accommodationFeeValue = BigDecimal.valueOf(100).setScale(2), accommodationFeePaymentTypeSelect = 3)
         val correctPlace = Place(id = null, city = "Berlin", country = "Niemcy")
         val exampleApplicationInfo = ApplicationInfo(
                 application = correctApplication,
@@ -180,10 +180,10 @@ interface TestData {
                 advancePayments = correctAdvancePaymentsInfo,
                 place = correctPlace)
         val filter = ApplicationRow(id = null, firstName = null, surname = null,
-                employeeId = null, instituteName = null, instituteId = null, country = null, abroadEndDate = null, abroadStartDate = null, city = null, status = null)
+                employeeId = null, instituteName = null, instituteId = null, country = null, abroadEndDate = null, abroadStartDate = null, city = null, status = null,statusEng = null,statusPl = null)
         val pageInfo = PageInfo(filter = filter,
                 desc = false, orderBy = "id", pageSize = 100, pageNumber = 0)
-        fun getExampleForUserApplication(user: Employee) = correctApplication.copy(firstName = user.firstName, surname = user.surname, birthDate = user.birthDate, academicDegree = user.academicDegree, phoneNumber = user.phoneNumber, employeeId = user.employeeId, instituteId = user.instituteID)
+        fun getExampleForUserApplication(user: Employee) = correctApplication.copy(firstName = user.firstName, surname = user.surname, birthDate = user.birthDate!!, academicDegree = user.academicDegree!!, phoneNumber = user.phoneNumber!!, employeeId = user.employeeId, instituteId = user.instituteID)
     }
 
 }

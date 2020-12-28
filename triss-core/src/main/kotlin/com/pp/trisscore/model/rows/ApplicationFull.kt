@@ -3,9 +3,6 @@ package com.pp.trisscore.model.rows
 import com.pp.trisscore.model.applicationinfoelements.AdvancePaymentsInfo
 import com.pp.trisscore.model.architecture.ApplicationInfo
 import com.pp.trisscore.model.classes.*
-import com.pp.trisscore.model.enums.DocumentType
-import com.pp.trisscore.model.enums.PaymentType
-import com.pp.trisscore.model.enums.Status
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
@@ -31,7 +28,7 @@ data class ApplicationFull(
         @Column("employeeId")
         val employeeId: Long?,
         @Column("identityDocumentType")
-        val identityDocumentType: DocumentType,
+        val identityDocumentType: Long,
         @Column("identityDocumentNumber")
         val identityDocumentNumber: String,
         @Column("createdOn")
@@ -75,7 +72,7 @@ data class ApplicationFull(
         @Column("rectorComments")
         val rectorComments: String?,
         @Column("status")
-        val status: Status?,
+        val status: Long?,
         //PlaceData
         @Column("pId")
         val pId: Long?,
@@ -101,7 +98,7 @@ data class ApplicationFull(
         val fFinancialSource: String?,
         @Column("fProject")
         val fProject: String?,
-        //AdvanceApplication DAta
+        //AdvanceApplication Data
         @Column("aaId")
         val aaId: Long?,
         @Column("aaPlaceId")
@@ -138,14 +135,14 @@ data class ApplicationFull(
         @Column("paAmount")
         val paAmount: BigDecimal,
         @Column("paPaymentType")
-        val paPaymentType: PaymentType,
+        val paPaymentType: Long,
         //conferenceFeeData
         @Column("pcId")
         val pcId: Long?,
         @Column("pcAmount")
         val pcAmount: BigDecimal,
         @Column("pcPaymentType")
-        val pcPaymentType: PaymentType
+        val pcPaymentType: Long
 ) {
     fun getApplication() = Application(
             id = id, firstName = firstName, surname = surname,

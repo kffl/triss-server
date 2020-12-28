@@ -99,8 +99,8 @@ class EmployeeServiceTest(@Autowired val employeeService: EmployeeService,
 
     @Test
     fun shouldNotGetNotExistingInDatabaseEmployeeData() {
-        val x = assertThrows<UserNotFoundException> { employeeService.findEmployee(newEmployeeTokenData).block()}
-        assertEquals("User 1999 Marcel TOLEN not found.", x.message)
+        employeeService.findEmployee(newEmployeeTokenData).block()
+        assertEquals(5, employeeRepository.count().block())
     }
 
     ////Get Employee Data And Check Role

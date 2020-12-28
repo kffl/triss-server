@@ -58,4 +58,9 @@ class EmployeeController(private val employeeService: EmployeeService,
         val errorDetails = ErrorsDetails(Date(), ex.toString(), ex.message!!)
         return ResponseEntity.status(HttpStatus.GONE).body(errorDetails)
     }
+    @ExceptionHandler(value = [Exception::class])
+    fun catchAllExceptions(ex: RuntimeException): ResponseEntity<ErrorsDetails> {
+        val errorDetails = ErrorsDetails(Date(), ex.toString(), ex.message!!)
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorDetails)
+    }
 }

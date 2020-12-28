@@ -17,19 +17,19 @@ class ComparisonServiceTest() {
     private val place = Place(0,"Poland","Warszawa")
     private val financialSource = FinancialSource(0, "AllocationAccountNumber", "MPK","Source","TRISS")
     private val transport = Transport(0, 0, "Poznań", "Tokio",
-            LocalDate.parse("2020-11-30"),30,12, Vehicle.Plane, "RyanAir")
-    private val advancePaymentsInfo = AdvancePaymentsInfo(1000.toBigDecimal(), PaymentType.Transfer, 2000.toBigDecimal(), PaymentType.Transfer)
+            LocalDate.parse("2020-11-30"),30,12, 1, "RyanAir")
+    private val advancePaymentsInfo = AdvancePaymentsInfo(1000.toBigDecimal(), 4, 2000.toBigDecimal(), 4)
     private val advanceApplication = AdvanceApplication(0, 0, LocalDate.parse("2020-11-28"),
             LocalDate.parse("2020-12-03"), 1, 1000.toBigDecimal(), 1, 1000.toBigDecimal(),
             800.toBigDecimal(), 600.toBigDecimal(), null, null, 1000.toBigDecimal(), 1000.toBigDecimal(),
             3400.toBigDecimal())
     private val application = Application(0, "Jan", "Kowalczyk", LocalDate.parse("1990-01-01"),
-            "Prof.", "+48 123456789", 170387, DocumentType.IdCard,"ABC12345",
+            "Prof.", "+48 123456789", 170387, 1,"ABC12345",
             LocalDate.parse("2020-11-03"), 1, LocalDate.parse("2020-12-12"), LocalDate.parse("2020-12-15"),
             0,"Konferencja", "AntyCovid2020", "TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą",
             LocalDate.parse("2020-12-13"), LocalDate.parse("2020-12-14"), null, LocalDate.parse("2020-12-12"),
             LocalDate.parse("2020-12-15"), false, 1, 1, null, null,
-            null, null, Status.WaitingForDirector)
+            null, null, StatusEnum.WaitingForDirector.value)
 
     @Test
     fun shouldCompareInstitutesAndThrowInvalidRequestBody() {
@@ -99,7 +99,7 @@ class ComparisonServiceTest() {
     @Test
     fun shouldCompareAdvancePaymentsAndThrow() {
         assertThrows(RequestDataDiffersFromDatabaseDataException::class.java){
-            comparisonService.compareAdvancePayments(advancePaymentsInfo, advancePaymentsInfo.copy(conferenceFeePaymentTypeSelect = PaymentType.Cash))
+            comparisonService.compareAdvancePayments(advancePaymentsInfo, advancePaymentsInfo.copy(conferenceFeePaymentTypeSelect = 1))
         }
     }
     @Test

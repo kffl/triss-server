@@ -8,7 +8,7 @@ import com.pp.trisscore.data.TestData.Companion.existingUserToken
 import com.pp.trisscore.data.TestData.Companion.pageInfo
 import com.pp.trisscore.exceptions.InvalidRequestBodyException
 import com.pp.trisscore.exceptions.UnauthorizedException
-import com.pp.trisscore.model.enums.Status
+import com.pp.trisscore.model.enums.StatusEnum
 import com.pp.trisscore.service.DirectorService
 import io.r2dbc.spi.ConnectionFactory
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -76,7 +76,7 @@ class DirectorServiceTest(@Autowired val directorService: DirectorService,
         val x = assertThrows<InvalidRequestBodyException> {
             directorService.approveApplication(existingDirectorToken,
                     exampleApplicationInfoForDirector.copy(financialSource = correctFinancialSource, application = correctApplicationForDirector
-                            .copy(status = Status.WaitingForWilda))).block()
+                            .copy(status = StatusEnum.WaitingForWilda.value))).block()
         }
         assertEquals("Status must be WaitingForDirector", x.message)
     }
