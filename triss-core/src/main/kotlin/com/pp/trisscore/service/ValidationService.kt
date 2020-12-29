@@ -2,7 +2,6 @@ package com.pp.trisscore.service
 
 import com.pp.trisscore.exceptions.InvalidRequestBodyException
 import com.pp.trisscore.exceptions.RequestDataDiffersFromDatabaseDataException
-import com.pp.trisscore.exceptions.UnauthorizedException
 import com.pp.trisscore.exceptions.WrongDateException
 import com.pp.trisscore.model.architecture.ApplicationInfo
 import com.pp.trisscore.model.classes.*
@@ -34,7 +33,6 @@ class ValidationService {
     }
 
     fun validateCreateApplicationInfo(applicationInfo: ApplicationInfo, user: Employee) {
-
         validateEmployee(user)
         if (applicationInfo.financialSource != null)
             throw(InvalidRequestBodyException("FinancialSource must be null"))
@@ -42,6 +40,42 @@ class ValidationService {
         validateCreatePlace(applicationInfo.place)
         validateCreateAdvanceApplication(applicationInfo.advanceApplication)
         validateInstitute(applicationInfo.institute)
+        validateDates(applicationInfo)
+    }
+
+    fun validateDates(applicationInfo: ApplicationInfo) {
+        val application = applicationInfo.application
+        if (application.abroadStartDate.isAfter(application.abroadEndDate)) {
+            throw(WrongDateException("abroadStartDate is after abroadEndDate"))
+        }
+        if (!application.selfInsured) {
+            if (application.abroadStartDateInsurance != null && application.abroadEndDateInsurance != null) {
+                checkDateWithAbroadDates(
+                    application.abroadStartDateInsurance, application.abroadEndDateInsurance,
+                    application, "abroadInsurance"
+                )
+            } else {
+                throw InvalidRequestBodyException("abroadStartDate or abroadEndDate is missing")
+            }
+        }
+        checkDateWithAbroadDates(
+            application.conferenceStartDate, application.conferenceEndDate,
+            application, "conference"
+        )
+        applicationInfo.transport.forEach { x ->
+            checkDateWithAbroadDates(
+                x.departureDay,
+                x.departureDay,
+                application,
+                "departureDay"
+            )
+        }
+        checkDateWithAbroadDates(
+            applicationInfo.advanceApplication.startDate,
+            applicationInfo.advanceApplication.endDate,
+            application,
+            "advanceApplication"
+        )
     }
 
     private fun validateEmployee(user: Employee) {
@@ -130,16 +164,12 @@ class ValidationService {
             throw(InvalidRequestBodyException("createdOn in Application must be null"))
         if (application.placeId != null)
             throw(InvalidRequestBodyException("PlaceId must be null"))
-        checkStartDateBeforeEndDate(application.abroadStartDate,
-                application.abroadEndDate, "AbroadStartDate is after abroadEndDate.")
         if (application.purpose.isBlank())
             throw(InvalidRequestBodyException("Purpose cannot be blank"))
         if (application.conference.isBlank())
             throw(InvalidRequestBodyException("Conference cannot be blank"))
         if (application.subject.isBlank())
             throw(InvalidRequestBodyException("Subject cannot be blank"))
-        checkStartDateBeforeEndDate(application.conferenceStartDate,
-                application.conferenceEndDate, "ConferenceStartDate is after conferenceEndDate.")
         if (application.financialSourceId != null)
             throw(InvalidRequestBodyException("FinancialSourceId must be null"))
         if (application.selfInsured) {
@@ -194,7 +224,6 @@ class ValidationService {
 
     }
 
-
     private fun validateStatus(application: Application, role: Role) {
         when (role) {
             Role.DIRECTOR -> {
@@ -215,9 +244,21 @@ class ValidationService {
         }
     }
 
-    private fun checkStartDateBeforeEndDate(startDate: LocalDate, endDate: LocalDate, message: String) {
+    private fun checkDateWithAbroadDates(
+        startDate: LocalDate,
+        endDate: LocalDate,
+        application: Application,
+        dateName: String
+    ) {
         if (startDate.isAfter(endDate)) {
-            throw(WrongDateException(message))
+            throw(WrongDateException("${dateName}StartDate is after ${dateName}EndDate"))
+        }
+        if (endDate.isAfter(application.abroadEndDate)) {
+            throw(WrongDateException("${dateName}EndDate is after abroadEndDate"))
+        }
+        if (startDate.isBefore(application.abroadStartDate)) {
+            throw(WrongDateException("${dateName}Date is before abroadStartDate"))
         }
     }
 }
+
