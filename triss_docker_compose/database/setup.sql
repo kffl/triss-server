@@ -258,8 +258,8 @@ CREATE TABLE Application
     conferenceStartDate      DATE         NOT NULL,
     conferenceEndDate        DATE         NOT NULL,
     financialSourceId        BIGINT,
-    abroadStartDateInsurance DATE         NOT NULL,
-    abroadEndDateInsurance   DATE         NOT NULL,
+    abroadStartDateInsurance DATE         ,
+    abroadEndDateInsurance   DATE         ,
     selfInsured              BOOL         NOT NULL,
     advanceApplicationId     BIGINT       NOT NULL,
     prepaymentId             BIGINT       NOT NULL,
@@ -441,3 +441,6 @@ FROM APPLICATION A
          JOIN Prepayment PR on A.prepaymentId = PR.id
          JOIN PrepaymentFee PA on PR.accommodationFeeId = PA.id
          JOIN PrepaymentFee PC on PR.conferenceFeeId = PC.id;
+
+
+
