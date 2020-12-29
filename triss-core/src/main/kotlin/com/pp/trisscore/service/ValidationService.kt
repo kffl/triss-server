@@ -45,6 +45,10 @@ class ValidationService {
 
     fun validateDates(applicationInfo: ApplicationInfo) {
         val application = applicationInfo.application
+        if(!LocalDate.now().isBefore(application.abroadStartDate))
+            throw(WrongDateException("abroadEndDate cannot be in past"))
+        if(!LocalDate.now().isBefore(application.abroadEndDate))
+            throw(WrongDateException("abroadEndDate cannot be in past"))
         if (application.abroadStartDate.isAfter(application.abroadEndDate)) {
             throw(WrongDateException("abroadStartDate is after abroadEndDate"))
         }
@@ -54,6 +58,8 @@ class ValidationService {
                     application.abroadStartDateInsurance, application.abroadEndDateInsurance,
                     application, "abroadInsurance"
                 )
+                if(!LocalDate.now().plusDays(4).isBefore(application.abroadStartDate))
+                    throw(WrongDateException("insurance can be used only when application is crated 5 days or more before start date"))
             } else {
                 throw InvalidRequestBodyException("abroadStartDate or abroadEndDate is missing")
             }
@@ -95,7 +101,6 @@ class ValidationService {
         if (institute.name.isBlank())
             throw InvalidRequestBodyException("Institute name cannot be Blank")
     }
-
 
     private fun validateCreatePlace(place: Place) {
         if (place.id != null)

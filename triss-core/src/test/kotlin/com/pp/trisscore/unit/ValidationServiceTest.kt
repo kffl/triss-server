@@ -6,6 +6,7 @@ import com.pp.trisscore.service.ValidationService
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
+import java.time.LocalDate
 import java.util.*
 
 class ValidationServiceTest {
@@ -110,6 +111,36 @@ class ValidationServiceTest {
                             exampleApplicationInfo.transport.get(0)
                                 .copy(departureDay = exampleApplicationInfo.application.abroadEndDate.plusDays(1))
                         )
+                    )
+            )
+        }
+    }
+    @Test
+    fun shouldThrowWrongDateException_Inusurence_StartDateIsLessThan5DaysBeforeStart() {
+        assertThrows(WrongDateException::class.java) {
+            validationService.validateDates(
+                exampleApplicationInfo
+                    .copy(
+                        application = exampleApplicationInfo.application
+                            .copy(
+                                abroadStartDate = LocalDate.now().plusDays(4),
+                                abroadStartDateInsurance = LocalDate.now().plusDays(4)
+                            )
+                    )
+            )
+        }
+    }
+    @Test
+    fun shouldNotThrowWrongDateException_Inusurence() {
+        assertDoesNotThrow{
+            validationService.validateDates(
+                exampleApplicationInfo
+                    .copy(
+                        application = exampleApplicationInfo.application
+                            .copy(
+                                abroadStartDate = LocalDate.now().plusDays(5),
+                                abroadStartDateInsurance = LocalDate.now().plusDays(5)
+                            )
                     )
             )
         }
