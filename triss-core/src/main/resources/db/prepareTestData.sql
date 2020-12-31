@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS SettlementElement;
+DROP TABLE IF EXISTS SettlementApplication;
 DROP VIEW IF EXISTS ApplicationFull;
 DROP VIEW IF EXISTS ApplicationRow;
 DROP TABLE IF EXISTS TRANSPORT;
@@ -23,14 +25,15 @@ CREATE TABLE Status
     nameEng varchar(255) UNIQUE NOT NULL
 );
 
-INSERT INTO Status (id,namePl, nameEng)
-VALUES (1,'Oczekuje na dyrektora', 'Waiting for Director'),
-       (2,'Oczekuje na Wildę', 'Waiting for Wilda'),
-       (3,'Oczekuje na rektora', 'Waiting for Rector'),
-       (4,'Odrzucony przez Dyrektora', 'Rejected by Director'),
-       (5,'Odrzucony przez Wilde', 'Rejected by Wilda'),
-       (6,'Odrzucony przez Rectora', 'Rejected by Rector'),
-       (7,'Zaakceptowany', 'Accepted');
+INSERT INTO Status (id, namePl, nameEng)
+VALUES (0, 'Edition', 'Edit'),
+       (1, 'Oczekuje na dyrektora', 'Waiting for Director'),
+       (2, 'Oczekuje na Wildę', 'Waiting for Wilda'),
+       (3, 'Oczekuje na rektora', 'Waiting for Rector'),
+       (4, 'Odrzucony przez Dyrektora', 'Rejected by Director'),
+       (5, 'Odrzucony przez Wilde', 'Rejected by Wilda'),
+       (6, 'Odrzucony przez Rectora', 'Rejected by Rector'),
+       (7, 'Zaakceptowany', 'Accepted');
 
 CREATE TABLE Vehicle
 (
@@ -164,7 +167,7 @@ CREATE TABLE Employee
     employeeId     BIGINT UNIQUE,
     firstName      varchar(255) NOT NULL,
     surname        varchar(255) NOT NULL,
-    birthDate      DATE        ,
+    birthDate      DATE,
     academicDegree varchar(255),
     phoneNumber    varchar(255),
     employeeType   varchar(255),
@@ -173,11 +176,10 @@ CREATE TABLE Employee
 );
 
 INSERT INTO Employee(employeeId, firstName, surname, birthDate, academicDegree, phoneNumber, employeeType, instituteID)
-VALUES
-(170387, 'Jan', 'Kowalczyk', '2000-01-01', 'Prof.', '+48 123456789', 'USER', 1),
-(2, 'Jan', 'Kowalski', '1990-03-21', 'Prof.', '+48 321456987', 'WILDA', 1),
-(3, 'Jerzy', 'Zbiałowierzy', '1980-05-15', 'Prof.', '+48 541236987', 'RECTOR', 1),
-(167711, 'Andrzej', 'Nowak', '1988-07-16', 'Prof.', '+48 987456321', 'DIRECTOR', 1);
+VALUES (170387, 'Jan', 'Kowalczyk', '2000-01-01', 'Prof.', '+48 123456789', 'USER', 1),
+       (2, 'Jan', 'Kowalski', '1990-03-21', 'Prof.', '+48 321456987', 'WILDA', 1),
+       (3, 'Jerzy', 'Zbiałowierzy', '1980-05-15', 'Prof.', '+48 541236987', 'RECTOR', 1),
+       (167711, 'Andrzej', 'Nowak', '1988-07-16', 'Prof.', '+48 987456321', 'DIRECTOR', 1);
 
 CREATE TABLE IdentityDocument
 (
@@ -258,8 +260,8 @@ CREATE TABLE Application
     conferenceStartDate      DATE         NOT NULL,
     conferenceEndDate        DATE         NOT NULL,
     financialSourceId        BIGINT,
-    abroadStartDateInsurance DATE         ,
-    abroadEndDateInsurance   DATE         ,
+    abroadStartDateInsurance DATE,
+    abroadEndDateInsurance   DATE,
     selfInsured              BOOL         NOT NULL,
     advanceApplicationId     BIGINT       NOT NULL,
     prepaymentId             BIGINT       NOT NULL,
@@ -355,15 +357,15 @@ SELECT Application.id,
        firstName,
        surname,
        employeeId,
-       I.id   as instituteId,
-       I.name as instituteName,
+       I.id      as instituteId,
+       I.name    as instituteName,
        country,
        city,
        abroadStartDate,
        abroadEndDate,
        status,
        S.nameEng as statusEng,
-       S.namePl as statusPl
+       S.namePl  as statusPl
 FROM Application
          JOIN Place
               ON Place.id = Application.placeId
@@ -441,3 +443,26 @@ FROM APPLICATION A
          JOIN Prepayment PR on A.prepaymentId = PR.id
          JOIN PrepaymentFee PA on PR.accommodationFeeId = PA.id
          JOIN PrepaymentFee PC on PR.conferenceFeeId = PC.id;
+
+CREATE TABLE SettlementApplication
+(
+    id               BIGSERIAL PRIMARY KEY,
+    applicationId    BIGINT       NOT NULL,
+    status           VARCHAR(255) NOT NULL,
+    lastModifiedDate Date         NOT NULL,
+    CONSTRAINT application_sa_fk FOREIGN KEY (applicationId) REFERENCES Application (id),
+    CONSTRAINT status_sa_fk FOREIGN KEY (status) REFERENCES Status (id)
+);
+
+
+CREATE TABLE SettlementElement
+(
+    id                      BIGSERIAL PRIMARY KEY,
+    settlementApplicationId BIGINT        NOT NULL,
+    documentNumber          VARCHAR(255)  NOT NULL,
+    value                   DECIMAL(7, 2) NOT NULL,
+    comment                 VARCHAR(255)  NOT NULL,
+    scanLoc                 VARCHAR(255),
+    CONSTRAINT SettlementApplication_se_fk FOREIGN KEY (settlementApplicationId) REFERENCES SettlementApplication (id)
+);
+

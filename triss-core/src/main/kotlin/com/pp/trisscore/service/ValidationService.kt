@@ -2,6 +2,7 @@ package com.pp.trisscore.service
 
 import com.pp.trisscore.exceptions.InvalidRequestBodyException
 import com.pp.trisscore.exceptions.RequestDataDiffersFromDatabaseDataException
+import com.pp.trisscore.exceptions.UnauthorizedException
 import com.pp.trisscore.exceptions.WrongDateException
 import com.pp.trisscore.model.architecture.ApplicationInfo
 import com.pp.trisscore.model.classes.*
@@ -45,9 +46,9 @@ class ValidationService {
 
     fun validateDates(applicationInfo: ApplicationInfo) {
         val application = applicationInfo.application
-        if(!LocalDate.now().isBefore(application.abroadStartDate))
+        if (!LocalDate.now().isBefore(application.abroadStartDate))
             throw(WrongDateException("abroadEndDate cannot be in past"))
-        if(!LocalDate.now().isBefore(application.abroadEndDate))
+        if (!LocalDate.now().isBefore(application.abroadEndDate))
             throw(WrongDateException("abroadEndDate cannot be in past"))
         if (application.abroadStartDate.isAfter(application.abroadEndDate)) {
             throw(WrongDateException("abroadStartDate is after abroadEndDate"))
@@ -58,7 +59,7 @@ class ValidationService {
                     application.abroadStartDateInsurance, application.abroadEndDateInsurance,
                     application, "abroadInsurance"
                 )
-                if(!LocalDate.now().plusDays(4).isBefore(application.abroadStartDate))
+                if (!LocalDate.now().plusDays(4).isBefore(application.abroadStartDate))
                     throw(WrongDateException("insurance can be used only when application is crated 5 days or more before start date"))
             } else {
                 throw InvalidRequestBodyException("abroadStartDate or abroadEndDate is missing")
@@ -264,6 +265,15 @@ class ValidationService {
         if (startDate.isBefore(application.abroadStartDate)) {
             throw(WrongDateException("${dateName}Date is before abroadStartDate"))
         }
+    }
+
+    fun validateCreateSettlementApplication(application: Application, user: Employee){
+        if (!application.abroadEndDate.isBefore(LocalDate.now()))
+            throw(WrongDateException("This trip has not been completed."))
+        if (application.status != StatusEnum.Accepted.value)
+            throw(InvalidRequestBodyException("Status must be Accepted"))
+        if (application.employeeId != user.employeeId)
+            throw UnauthorizedException("This is not a user {${user.employeeId},${user.firstName},${user.surname}} application")
     }
 }
 

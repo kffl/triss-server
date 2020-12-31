@@ -26,7 +26,8 @@ CREATE TABLE Status
 );
 
 INSERT INTO Status (id, namePl, nameEng)
-VALUES (1, 'Oczekuje na dyrektora', 'Waiting for Director'),
+VALUES (0, 'Edition', 'Edit'),
+       (1, 'Oczekuje na dyrektora', 'Waiting for Director'),
        (2, 'Oczekuje na Wildę', 'Waiting for Wilda'),
        (3, 'Oczekuje na rektora', 'Waiting for Rector'),
        (4, 'Odrzucony przez Dyrektora', 'Rejected by Director'),
@@ -446,30 +447,22 @@ FROM APPLICATION A
 CREATE TABLE SettlementApplication
 (
     id               BIGSERIAL PRIMARY KEY,
-    applicationId    BIGINT UNIQUE NOT NULL,
-    status           VARCHAR(255)  NOT NULL,
-    firstName        VARCHAR(255)  NOT NULL,
-    surname          VARCHAR(255)  NOT NULL,
-    startDate        Date          NOT NULL,
-    endDate          Date          NOT NULL,
-    lastModification Date          NOT NULL,
-    CONSTRAINT application_sa_fk FOREIGN KEY (applicationId) REFERENCES Application (id)
+    applicationId    BIGINT       NOT NULL,
+    status           VARCHAR(255) NOT NULL,
+    lastModifiedDate Date         NOT NULL,
+    CONSTRAINT application_sa_fk FOREIGN KEY (applicationId) REFERENCES Application (id),
+    CONSTRAINT status_sa_fk FOREIGN KEY (status) REFERENCES Status (id)
 );
 
-CREATE TABLE scanImages
-(
- id BIGSERIAL PRIMARY KEY
-);
 
 CREATE TABLE SettlementElement
 (
     id                      BIGSERIAL PRIMARY KEY,
     settlementApplicationId BIGINT        NOT NULL,
     documentNumber          VARCHAR(255)  NOT NULL,
-    value                   DECIMAL(7,2) NOT NULL,
+    value                   DECIMAL(7, 2) NOT NULL,
     comment                 VARCHAR(255)  NOT NULL,
-    scanId                  BIGINT,
-    CONSTRAINT SettlementApplication_se_fk FOREIGN KEY (settlementApplicationId) REFERENCES SettlementApplication (id),
-    CONSTRAINT Images_se_fk FOREIGN KEY(scanId) REFERENCES scanImages(id)
+    scanLoc                 VARCHAR(255),
+    CONSTRAINT SettlementApplication_se_fk FOREIGN KEY (settlementApplicationId) REFERENCES SettlementApplication (id)
 );
 

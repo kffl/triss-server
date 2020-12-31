@@ -5,6 +5,7 @@ import com.pp.trisscore.model.architecture.ApplicationInfo
 import com.pp.trisscore.model.architecture.ErrorsDetails
 import com.pp.trisscore.model.architecture.PageInfo
 import com.pp.trisscore.model.architecture.TokenData
+import com.pp.trisscore.model.classes.SettlementApplication
 import com.pp.trisscore.model.classes.Transport
 import com.pp.trisscore.model.rows.ApplicationRow
 import com.pp.trisscore.service.TokenService
@@ -59,6 +60,12 @@ class UserController(private val userService: UserService,
     ): Mono<Transport>{
         val tokenData = tokenService.getEmployeeDataFromToken(token)
         return userService.createApplication(tokenData, body)
+    }
+
+    @PostMapping("settlement/create")
+    fun createSettlementApplication(@RequestBody body:Long,token: JwtAuthenticationToken) :Mono<SettlementApplication>{
+        val tokenData = tokenService.getEmployeeDataFromToken(token)
+        return userService.createSettlementApplication(tokenData,body)
     }
 
     @ExceptionHandler(value = [InvalidRequestBodyException::class, RequestDataDiffersFromDatabaseDataException::class,
