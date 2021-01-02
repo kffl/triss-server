@@ -5,9 +5,11 @@ import com.pp.trisscore.exceptions.RequestDataDiffersFromDatabaseDataException
 import com.pp.trisscore.exceptions.UnauthorizedException
 import com.pp.trisscore.exceptions.WrongDateException
 import com.pp.trisscore.model.architecture.ApplicationInfo
+import com.pp.trisscore.model.architecture.SettlementInfo
 import com.pp.trisscore.model.classes.*
 import com.pp.trisscore.model.enums.Role
 import com.pp.trisscore.model.enums.StatusEnum
+import com.pp.trisscore.model.rows.FullSettlementElement
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 
@@ -267,13 +269,59 @@ class ValidationService {
         }
     }
 
-    fun validateCreateSettlementApplication(application: Application, user: Employee){
+    fun validateCreateSettlementApplication(application: Application, user: Employee) {
         if (!application.abroadEndDate.isBefore(LocalDate.now()))
             throw(WrongDateException("This trip has not been completed."))
         if (application.status != StatusEnum.Accepted.value)
             throw(InvalidRequestBodyException("Status must be Accepted"))
         if (application.employeeId != user.employeeId)
             throw UnauthorizedException("This is not a user {${user.employeeId},${user.firstName},${user.surname}} application")
+    }
+
+    fun validateCreateSettlementElement(body: SettlementElement, user: Employee, settlement: SettlementApplication) {
+        if (user.employeeId != settlement.creatorId)
+            throw UnauthorizedException("This is not a user {${user.employeeId},${user.firstName},${user.surname}} Settlement")
+        if (settlement.status != StatusEnum.Edit.value && settlement.status != StatusEnum.RejectedByWilda.value)
+            throw(InvalidRequestBodyException("Status must be Edit or RejectedByWilda"))
+        if (body.documentNumber.isBlank())
+            throw(InvalidRequestBodyException("DocumentNumber cannot be blank"))
+        if (body.comment.isBlank())
+            throw(InvalidRequestBodyException("Comment cannot be blank"))
+    }
+
+    fun validateDeleteSettlementElement(fullElement: FullSettlementElement, body: SettlementElement) {
+        if (fullElement.status != StatusEnum.Edit.value && fullElement.status != StatusEnum.RejectedByWilda.value)
+            throw(InvalidRequestBodyException("Status must be Edit or RejectedByWilda"))
+        if (fullElement.scanLoc != body.scanLoc)
+            throw(RequestDataDiffersFromDatabaseDataException("scanLoc"))
+        if (fullElement.value.toFloat() != body.value.toFloat())
+            throw(RequestDataDiffersFromDatabaseDataException("value"))
+        if (fullElement.comment != body.comment)
+            throw(RequestDataDiffersFromDatabaseDataException("comment"))
+        if (fullElement.documentNumber != body.documentNumber)
+            throw(RequestDataDiffersFromDatabaseDataException("documentNumber"))
+    }
+
+    fun validateSettlementSendToWilda(settlement: SettlementApplication, user: Employee) {
+        if (settlement.status != StatusEnum.Edit.value && settlement.status != StatusEnum.RejectedByWilda.value)
+            throw(InvalidRequestBodyException("Status must be Edit or RejectedByWilda"))
+        if (settlement.creatorId != user.employeeId)
+            throw UnauthorizedException("This is not a user {${user.employeeId},${user.firstName},${user.surname}} application")
+    }
+
+    fun validateChangingSettlementApplicationStatus(settlementInfo: SettlementInfo, status: Long) {
+        when (status) {
+            StatusEnum.RejectedByWilda.value -> {
+                if (settlementInfo.fullSettlementApplication.wildaComments == null)
+                    throw(InvalidRequestBodyException("wildaComments cannot be null"))
+            }
+            StatusEnum.WaitingForWilda.value -> {
+                if (settlementInfo.fullSettlementApplication.wildaComments != null)
+                    throw(InvalidRequestBodyException("wildaComments must be null"))
+                if (settlementInfo.settlementElements.isEmpty())
+                    throw(InvalidRequestBodyException("Must exists at least one Settlement Element"))
+            }
+        }
     }
 }
 

@@ -10,11 +10,15 @@ import java.time.LocalDate
 data class SettlementApplication(
     @Id
     @Column("id")
-    val id:Long?,
+    val id: Long?,
     @Column("applicationId")
-    val applicationId:Long,
+    val applicationId: Long,
+    @Column("creatorId")
+    val creatorId: Long,
     @Column("status")
-    val status:Long,
+    val status: Long,
     @Column("lastModifiedDate")
-    val lastModifiedDate:LocalDate
-    )
+    val lastModifiedDate: LocalDate,
+    @Column("wildaComments")
+    val wildaComments: String?
+)

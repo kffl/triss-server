@@ -4,15 +4,19 @@ import com.pp.trisscore.exceptions.InvalidRequestBodyException
 import com.pp.trisscore.exceptions.ObjectNotFoundException
 import com.pp.trisscore.model.architecture.ApplicationInfo
 import com.pp.trisscore.model.architecture.PageInfo
+import com.pp.trisscore.model.architecture.SettlementInfo
 import com.pp.trisscore.model.architecture.TokenData
 import com.pp.trisscore.model.classes.Employee
 import com.pp.trisscore.model.classes.SettlementApplication
+import com.pp.trisscore.model.classes.SettlementElement
 import com.pp.trisscore.model.classes.Transport
+import com.pp.trisscore.model.enums.StatusEnum
 import com.pp.trisscore.model.rows.ApplicationRow
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import java.time.LocalDate
 
 
 @Service
@@ -27,7 +31,9 @@ class UserService(
     private val placeService: PlaceService,
     private val transportService: TransportService,
     private val documentTypeService: DocumentTypeService,
-    private val settlementApplicationService: SettlementApplicationService
+    private val settlementApplicationService: SettlementApplicationService,
+    private val settlementElementService: SettlementElementService,
+    private val fullSettlementService: FullSettlementService
 ) {
 
     fun getMyApplications(tokenData: TokenData, body: PageInfo<ApplicationRow>): Flux<ApplicationRow> {
@@ -89,13 +95,68 @@ class UserService(
     @Transactional
     fun createSettlementApplication(tokenData: TokenData, body: Long): Mono<SettlementApplication> =
         employeeService.findEmployee(tokenData)
+            .switchIfEmpty(Mono.error(ObjectNotFoundException("User")))
             .flatMap { user ->
                 applicationService.findById(body)
+                    .switchIfEmpty(Mono.error(ObjectNotFoundException("Settlement Application")))
                     .flatMap { application ->
                         validationService.validateCreateSettlementApplication(application, user)
-                        settlementApplicationService.createNewSettlement(application)
+                        settlementApplicationService.createNewSettlement(application, user)
                     }
             }
+
+    @Transactional
+    fun sendToWildaSettlementApplication(tokenData: TokenData, body: Long): Mono<SettlementApplication> =
+        employeeService.findEmployee(tokenData)
+            .switchIfEmpty(Mono.error(ObjectNotFoundException("User")))
+            .flatMap { user ->
+                settlementApplicationService.findById(body)
+                    .switchIfEmpty(Mono.error(ObjectNotFoundException("Settlement Application")))
+                    .flatMap { settlement ->
+                        validationService.validateSettlementSendToWilda(settlement, user)
+                        settlementApplicationService.saveSettlement(
+                            settlement.copy(
+                                lastModifiedDate = LocalDate.now(),
+                                status = StatusEnum.WaitingForWilda.value
+                            )
+                        )
+                    }
+            }
+
+
+    @Transactional
+    fun addSettlementElement(tokenData: TokenData, body: SettlementElement): Mono<SettlementApplication> =
+        employeeService.findEmployee(tokenData)
+            .switchIfEmpty(Mono.error(ObjectNotFoundException("User")))
+            .flatMap { user ->
+                settlementApplicationService.findById(body.settlementApplicationId)
+                    .switchIfEmpty(Mono.error(ObjectNotFoundException("Settlement Application")))
+                    .flatMap { settlement ->
+                        validationService.validateCreateSettlementElement(body, user, settlement)
+                        settlementElementService.addNewElement(body)
+                            .flatMap { settlementApplicationService.saveSettlement(settlement.copy(lastModifiedDate = LocalDate.now())) }
+                    }
+            }
+
+    @Transactional
+    fun deleteSettlementElement(tokenData: TokenData, body: SettlementElement): Mono<Void> =
+        employeeService.findEmployee(tokenData)
+            .flatMap { user ->
+                settlementElementService.findBy(body.settlementApplicationId, body.id!!, user.employeeId!!)
+                    .flatMap { fullElement ->
+                        validationService.validateDeleteSettlementElement(fullElement, body)
+                        settlementElementService.deleteById(fullElement.settlementElementId)
+                    }
+            }
+
+    fun getSettlementApplication(tokenData: TokenData, id: Long): Mono<SettlementInfo> =
+        employeeService.findEmployee(tokenData)
+            .switchIfEmpty(Mono.error(ObjectNotFoundException("User")))
+            .flatMap { user ->
+                fullSettlementService.findSettlementInfoByIdAndEmployeeId(id, user.employeeId!!)
+            }
+
+
 }
 
 

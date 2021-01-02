@@ -1,3 +1,5 @@
+DROP VIEW IF EXISTS FullSettlementApplication;
+DROP VIEW IF EXISTS FullSettlementElement;
 DROP TABLE IF EXISTS SettlementElement;
 DROP TABLE IF EXISTS SettlementApplication;
 DROP VIEW IF EXISTS ApplicationFull;
@@ -320,6 +322,16 @@ VALUES ('Jan', 'Kowalczyk', '2000-01-01', '+48 123456789', 'Prof.', 170387, 1, '
         '2020-12-12', '2020-12-15', 'Konferencja', 'AntyCovid2020',
         ' TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą',
         '2020-12-13', '2020-12-14', 1, '2020-12-12', '2020-12-15', FALSE, 3, 3, 'User Comments', NULL,
+        'Director comments', NULL, 7),
+       ('Jan', 'Kowalczyk', '2000-01-01', '+48 123456789', 'Prof.', 170387, 2, 'AB6789000', '2020-12-01', 5, 1,
+        '2020-12-12', '2020-12-15', 'Konferencja', 'AntyCovid2020',
+        ' TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą',
+        '2020-12-13', '2020-12-14', 1, '2020-12-12', '2020-12-15', FALSE, 3, 3, 'User Comments', NULL,
+        'Director comments', NULL, 7),
+       ('Jan', 'Kowalczyk', '2000-01-01', '+48 123456789', 'Prof.', 170387, 2, 'AB6789000', '2020-12-01', 5, 1,
+        '2020-12-12', '2020-12-15', 'Konferencja', 'AntyCovid2020',
+        ' TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą',
+        '2020-12-13', '2020-12-14', 1, '2020-12-12', '2020-12-15', FALSE, 3, 3, 'User Comments', NULL,
         'Director comments', NULL, 7);
 
 CREATE TABLE Transport
@@ -447,13 +459,18 @@ FROM APPLICATION A
 CREATE TABLE SettlementApplication
 (
     id               BIGSERIAL PRIMARY KEY,
-    applicationId    BIGINT       NOT NULL,
-    status           VARCHAR(255) NOT NULL,
-    lastModifiedDate Date         NOT NULL,
+    applicationId    BIGINT NOT NULL,
+    creatorId        BIGINT NOT NULL,
+    status           BIGINT NOT NULL,
+    lastModifiedDate Date   NOT NULL,
+    wildaComments    varchar(255),
     CONSTRAINT application_sa_fk FOREIGN KEY (applicationId) REFERENCES Application (id),
     CONSTRAINT status_sa_fk FOREIGN KEY (status) REFERENCES Status (id)
 );
 
+INSERT INTO SettlementApplication
+values (1, 7, 170387, 0, '2021-01-02', null),
+       (2, 8, 170387, 2, '2021-01-02', null);
 
 CREATE TABLE SettlementElement
 (
@@ -465,4 +482,48 @@ CREATE TABLE SettlementElement
     scanLoc                 VARCHAR(255),
     CONSTRAINT SettlementApplication_se_fk FOREIGN KEY (settlementApplicationId) REFERENCES SettlementApplication (id)
 );
+INSERT INTO SettlementElement
+values (1, 1, 'dokument1', 10.0, 'opłata za dokument nr 1', null),
+       (2, 1, 'dokument2', 20.0, 'opłata za dokument nr 2', null),
+       (3, 2, 'dokument11', 10.0, 'opłata za dokument nr 11', null),
+       (4, 2, 'dokument22', 20.0, 'opłata za dokument nr 22', null);
 
+CREATE VIEW FullSettlementElement AS
+SELECT SA.ID as settlementApplicationId,
+       SA.APPLICATIONID,
+       SA.CREATORID,
+       SA.STATUS,
+       SA.LASTMODIFIEDDATE,
+       SE.ID as settlementElementId,
+       SE.DOCUMENTNUMBER,
+       SE.VALUE,
+       SE.COMMENT,
+       SE.SCANLOC
+FROM SettlementApplication SA
+         JOIN SettlementElement SE on SA.id = SE.settlementApplicationId;
+
+CREATE VIEW FullSettlementApplication AS
+SELECT SA.id,
+       SA.applicationId,
+       SA.creatorId,
+       SA.status,
+       SA.lastModifiedDate,
+       SA.wildaComments,
+       A.firstName,
+       A.surname,
+       A.academicDegree,
+       A.phoneNumber,
+       abroadStartDate,
+       abroadEndDate,
+       purpose,
+       conference,
+       subject,
+       aaAdvanceSum,
+       settlementSum,
+       elementCount,
+       A.aaAdvanceSum - settlementSum as returnSum
+FROM SettlementApplication SA
+         JOIN (Select settlementApplicationId, sum(value) as settlementSum, count(*) as elementCount
+               FROM SettlementElement
+               GROUP BY settlementApplicationId) SE on SA.id = SE.settlementApplicationId
+         JOIN ApplicationFull A on SA.applicationId = A.id;

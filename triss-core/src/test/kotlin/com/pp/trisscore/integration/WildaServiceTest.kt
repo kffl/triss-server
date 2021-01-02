@@ -77,4 +77,28 @@ class WildaServiceTest(@Autowired val wildaService: WildaService,
     fun shouldGetApplicationFull() {
         wildaService.getFullApplication(existingWildaToken, 1).block()
     }
+
+
+
+    //Settlement Application Tests
+
+//    @Test
+//    fun shouldApproveSettlementApplication() {
+////        val x = userService.sendToWildaSettlementApplication(TestData.existingUserToken, 6).block()
+//        print(x)
+//    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
