@@ -13,7 +13,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
 import org.springframework.web.bind.annotation.*
-import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.util.*
 
@@ -35,12 +34,12 @@ class UserController(private val userService: UserService,
     }
 
     @PostMapping("application/count")
-    fun getCountByFilter(
+    fun getCountApplicationsByFilter(
                          @RequestBody body: PageInfo<ApplicationRow>,
                          token: JwtAuthenticationToken
     ): Mono<Long> {
         val tokenData = tokenService.getEmployeeDataFromToken(token)
-        return userService.getCountByFilter(tokenData, body.copy(filter = body.filter.copy(employeeId = tokenData.employeeId)))
+        return userService.getCountApplicationsByFilter(tokenData, body.copy(filter = body.filter.copy(employeeId = tokenData.employeeId)))
     }
 
     @PostMapping("application/getFull")
@@ -74,6 +73,16 @@ class UserController(private val userService: UserService,
         val tokenBody = tokenService.getEmployeeDataFromToken(token)
         return userService.getSettlementApplications(pageInfo, tokenBody).collectList()
     }
+
+    @PostMapping("/settlement/count")
+    fun getCountSettlementApplicationsByFilter(
+        @RequestBody body: PageInfo<SettlementApplicationRow>,
+        token: JwtAuthenticationToken
+    ): Mono<Long> {
+        val tokenBody = tokenService.getEmployeeDataFromToken(token)
+        return userService.getCountSettlementApplicationsByFilter(tokenBody, body)
+    }
+
     @PostMapping("settlement/getFull")
     fun getSettlementApplication(@RequestBody body:Long,token: JwtAuthenticationToken) :Mono<SettlementInfo>{
         val tokenData = tokenService.getEmployeeDataFromToken(token)

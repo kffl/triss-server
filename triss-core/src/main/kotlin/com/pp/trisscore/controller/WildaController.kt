@@ -43,7 +43,7 @@ class WildaController(
         token: JwtAuthenticationToken
     ): Mono<Long> {
         val tokenBody = tokenService.getEmployeeDataFromToken(token)
-        return wildaService.getCountByFilter(tokenBody, body)
+        return wildaService.getCountApplicationsByFilter(tokenBody, body)
     }
 
     @PostMapping("application/getFull")
@@ -81,6 +81,15 @@ class WildaController(
     ): Mono<List<SettlementApplicationRow>>  {
         val tokenBody = tokenService.getEmployeeDataFromToken(token)
         return wildaService.getSettlementApplications(pageInfo, tokenBody).collectList()
+    }
+
+    @PostMapping("/settlement/count")
+    fun getCountSettlementApplicationsByFilter(
+        @RequestBody body: PageInfo<SettlementApplicationRow>,
+        token: JwtAuthenticationToken
+    ): Mono<Long> {
+        val tokenBody = tokenService.getEmployeeDataFromToken(token)
+        return wildaService.getCountSettlementApplicationsByFilter(tokenBody, body)
     }
 
     @PostMapping("settlement/getFull")

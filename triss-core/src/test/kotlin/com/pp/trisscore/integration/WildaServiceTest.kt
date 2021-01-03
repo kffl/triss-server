@@ -54,9 +54,9 @@ class WildaServiceTest(
     @Test
     fun shouldNotGetWildaCountWrongRole() {
         val x = assertThrows<UnauthorizedException> {
-            wildaService.getCountByFilter(existingDirectorToken, pageInfo).block()
+            wildaService.getCountApplicationsByFilter(existingDirectorToken, pageInfo).block()
         }
-        Assertions.assertEquals("User 167711 Andrzej Nowak don't have access to this.", x.message)
+        assertEquals("User 167711 Andrzej Nowak don't have access to this.", x.message)
     }
 
     //Wilda approveApplication
@@ -65,7 +65,7 @@ class WildaServiceTest(
         val x = assertThrows<UnauthorizedException> {
             wildaService.approveApplication(existingDirectorToken, exampleApplicationInfoForWaitingForWilda).block()
         }
-        Assertions.assertEquals("User 167711 Andrzej Nowak don't have access to this.", x.message)
+        assertEquals("User 167711 Andrzej Nowak don't have access to this.", x.message)
     }
 
     @Test
@@ -77,7 +77,7 @@ class WildaServiceTest(
                 )
             ).block()
         }
-        Assertions.assertEquals("Status must be WaitingForWilda", x.message)
+        assertEquals("Status must be WaitingForWilda", x.message)
     }
 
     @Test
@@ -179,10 +179,28 @@ class WildaServiceTest(
     }
 
     @Test
-    fun shouldGetSettlementApplication() {
-        val x = wildaService.getSettlementApplication(existingWildaToken,2).block()
-        assertNotNull(x)
+    fun shouldGetCountSettlementApplications() {
+        val x = wildaService.getCountSettlementApplicationsByFilter(
+            existingWildaToken,
+            PageInfo(
+                SettlementApplicationRow(
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+                ), false, "id", 100, 0
+            )).block()
+        assertEquals(1,x)
     }
-
 
 }

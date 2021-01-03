@@ -38,7 +38,7 @@ class WildaService(
             .flatMapMany { x -> applicationService.getAllByFilter(pageInfo.copy(pageInfo.filter.copy(status = StatusEnum.WaitingForWilda.value))) }
     }
 
-    fun getCountByFilter(tokenBody: TokenData, pageInfo: PageInfo<ApplicationRow>): Mono<Long> {
+    fun getCountApplicationsByFilter(tokenBody: TokenData, pageInfo: PageInfo<ApplicationRow>): Mono<Long> {
         return employeeService.findEmployeeAndCheckRole(tokenBody, role)
             .switchIfEmpty(Mono.error(UnauthorizedException("You do not have permission to perform this action")))
             .flatMap { x -> applicationService.getCountByFilter(pageInfo.copy(pageInfo.filter.copy(status = StatusEnum.WaitingForWilda.value))) }
@@ -64,7 +64,7 @@ class WildaService(
     private fun validateApproveAndSaveApplication(
         dbApplicationInfo: ApplicationInfo,
         reqApplicationInfo: ApplicationInfo
-    ): Mono<Application>? {
+    ): Mono<Application> {
         comparisonService.compareApplicationsInfo(dbApplicationInfo, reqApplicationInfo, role)
         return applicationService.saveApplication(reqApplicationInfo.application.copy(status = StatusEnum.WaitingForRector.value))
     }
@@ -135,7 +135,7 @@ class WildaService(
         status: Long
     ): Mono<SettlementApplication> {
         comparisonService.compareSettlementChangeStatus(dbSettlFull,reqSettlFull)
-        val dbsettl = dbSettlFull.fullSettlementApplication;
+        val dbsettl = dbSettlFull.fullSettlementApplication
         return settlementApplicationService.saveSettlement(
             SettlementApplication(
                 dbsettl.id,
@@ -152,6 +152,15 @@ class WildaService(
         return employeeService.findEmployeeAndCheckRole(tokenBody, role)
             .switchIfEmpty(Mono.error(UnauthorizedException("You do not have permission to perform this action")))
             .flatMapMany { x -> settlementApplicationService.getAllByFilter(pageInfo.copy(pageInfo.filter.copy(status = StatusEnum.WaitingForWilda.value))) }
+    }
+
+    fun getCountSettlementApplicationsByFilter(
+        tokenBody: TokenData,
+        pageInfo: PageInfo<SettlementApplicationRow>
+    ): Mono<Long> {
+        return employeeService.findEmployeeAndCheckRole(tokenBody, role)
+            .switchIfEmpty(Mono.error(UnauthorizedException("You do not have permission to perform this action")))
+            .flatMap{ x -> settlementApplicationService.getCountByFilter(pageInfo.copy(pageInfo.filter.copy(status = StatusEnum.WaitingForWilda.value))) }
     }
 
 }

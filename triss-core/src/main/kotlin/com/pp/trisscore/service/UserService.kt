@@ -44,7 +44,7 @@ class UserService(
             .flatMapMany { x -> applicationService.getAllByFilter(body) }
     }
 
-    fun getCountByFilter(tokenData: TokenData, body: PageInfo<ApplicationRow>): Mono<Long> {
+    fun getCountApplicationsByFilter(tokenData: TokenData, body: PageInfo<ApplicationRow>): Mono<Long> {
         if (tokenData.employeeId != body.filter.employeeId && body.filter.employeeId != null)
             throw InvalidRequestBodyException("Wrong EmployeeId.")
         val searchBody = body.copy(filter = body.filter.copy(employeeId = tokenData.employeeId))
@@ -164,6 +164,13 @@ class UserService(
     ): Flux<SettlementApplicationRow> = employeeService.findEmployee(tokenBody)
         .switchIfEmpty(Mono.error(ObjectNotFoundException("User")))
         .flatMapMany { x -> settlementApplicationService.getAllByFilter(pageInfo.copy(pageInfo.filter.copy(employeeId = x.employeeId))) }
+
+    fun getCountSettlementApplicationsByFilter(
+        tokenBody: TokenData,
+        pageInfo: PageInfo<SettlementApplicationRow>
+    ): Mono<Long> = employeeService.findEmployee(tokenBody)
+        .switchIfEmpty(Mono.error(ObjectNotFoundException("User")))
+        .flatMap { x -> settlementApplicationService.getCountByFilter(pageInfo.copy(pageInfo.filter.copy(employeeId = x.employeeId))) }
 
 
 }

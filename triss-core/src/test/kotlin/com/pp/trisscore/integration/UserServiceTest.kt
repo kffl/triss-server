@@ -1,6 +1,5 @@
 package com.pp.trisscore.integration
 
-import com.pp.trisscore.data.TestData
 import com.pp.trisscore.data.TestData.Companion.correctAdvanceApplication
 import com.pp.trisscore.data.TestData.Companion.correctAdvancePaymentsInfo
 import com.pp.trisscore.data.TestData.Companion.correctInstitute
@@ -65,7 +64,7 @@ class UserServiceTest(
     //Get Application Test
     @Test
     fun shouldGetAllApplicationUser() {
-        val before = userService.getCountByFilter(
+        val before = userService.getCountApplicationsByFilter(
             existingUserToken,
             pageInfo.copy(filter = filter.copy(employeeId = existingUserToken.employeeId))
         ).block()
@@ -74,7 +73,7 @@ class UserServiceTest(
 
     @Test
     fun shouldGetAllApplicationDirector() {
-        val before = userService.getCountByFilter(
+        val before = userService.getCountApplicationsByFilter(
             existingDirectorToken,
             pageInfo.copy(filter = filter.copy(employeeId = existingDirectorToken.employeeId))
         ).block()
@@ -84,7 +83,7 @@ class UserServiceTest(
     @Test
     fun shouldNotGetAllApplicationWrongIdInFilter() {
         val x = assertThrows<InvalidRequestBodyException> {
-            userService.getCountByFilter(
+            userService.getCountApplicationsByFilter(
                 existingDirectorToken,
                 pageInfo.copy(filter = filter.copy(employeeId = existingUserToken.employeeId))
             ).block()
@@ -96,7 +95,7 @@ class UserServiceTest(
     //Create Application Tests
     @Test
     fun shouldCreateNewApplicationUser() {
-        val before = userService.getCountByFilter(
+        val before = userService.getCountApplicationsByFilter(
             existingUserToken,
             pageInfo.copy(filter = filter.copy(employeeId = existingUserToken.employeeId))
         ).block()
@@ -104,7 +103,7 @@ class UserServiceTest(
             existingUserToken,
             exampleApplicationInfo.copy(application = getExampleForUserApplication(existingUserEmployee))
         ).block()!!.applicationID
-        val after = userService.getCountByFilter(
+        val after = userService.getCountApplicationsByFilter(
             existingUserToken,
             pageInfo.copy(filter = filter.copy(employeeId = existingUserToken.employeeId))
         ).block()
@@ -135,7 +134,7 @@ class UserServiceTest(
 
     @Test
     fun shouldCreateNewApplicationDirector() {
-        val before = userService.getCountByFilter(
+        val before = userService.getCountApplicationsByFilter(
             existingDirectorToken,
             pageInfo.copy(filter = filter.copy(employeeId = existingDirectorToken.employeeId))
         ).block()
@@ -143,7 +142,7 @@ class UserServiceTest(
             existingDirectorToken,
             exampleApplicationInfo.copy(application = getExampleForUserApplication(existingDirector))
         ).block()!!.applicationID
-        val after = userService.getCountByFilter(
+        val after = userService.getCountApplicationsByFilter(
             existingDirectorToken,
             pageInfo.copy(filter = filter.copy(employeeId = existingDirectorToken.employeeId))
         ).block()
@@ -174,7 +173,7 @@ class UserServiceTest(
 
     @Test
     fun shouldNotCreateNewApplicationWrongUserDataInApplication() {
-        val before = userService.getCountByFilter(
+        val before = userService.getCountApplicationsByFilter(
             existingDirectorToken,
             pageInfo.copy(filter = filter.copy(employeeId = existingDirectorToken.employeeId))
         ).block()
@@ -185,7 +184,7 @@ class UserServiceTest(
             ).block()!!.applicationID
         }
         assertEquals("FirstName in DB differs from the request's FirstName", x.message)
-        val after = userService.getCountByFilter(
+        val after = userService.getCountApplicationsByFilter(
             existingDirectorToken,
             pageInfo.copy(filter = filter.copy(employeeId = existingDirectorToken.employeeId))
         ).block()
@@ -194,7 +193,7 @@ class UserServiceTest(
 
     @Test
     fun shouldNotCreateNewApplicationWrongFinancialSourceDataInApplication() {
-        val before = userService.getCountByFilter(
+        val before = userService.getCountApplicationsByFilter(
             existingDirectorToken,
             pageInfo.copy(filter = filter.copy(employeeId = existingDirectorToken.employeeId))
         ).block()
@@ -214,7 +213,7 @@ class UserServiceTest(
             ).block()!!.applicationID
         }
         assertEquals("FinancialSource must be null", x.message)
-        val after = userService.getCountByFilter(
+        val after = userService.getCountApplicationsByFilter(
             existingDirectorToken,
             pageInfo.copy(filter = filter.copy(employeeId = existingDirectorToken.employeeId))
         ).block()
@@ -223,7 +222,7 @@ class UserServiceTest(
 
     @Test
     fun shouldNotCreateNewApplicationWrongStatusInApplication() {
-        val before = userService.getCountByFilter(
+        val before = userService.getCountApplicationsByFilter(
             existingDirectorToken,
             pageInfo.copy(filter = filter.copy(employeeId = existingDirectorToken.employeeId))
         ).block()
@@ -234,7 +233,7 @@ class UserServiceTest(
             ).block()!!.applicationID
         }
         assertEquals("Application Status must be WaitingForDirector", x.message)
-        val after = userService.getCountByFilter(
+        val after = userService.getCountApplicationsByFilter(
             existingDirectorToken,
             pageInfo.copy(filter = filter.copy(employeeId = existingDirectorToken.employeeId))
         ).block()
@@ -244,8 +243,9 @@ class UserServiceTest(
 
     //Settlement Application Tests
     @Test
-    fun shouldCreateNewSettlementApplication() =
+    fun shouldCreateNewSettlementApplication() {
         assertDoesNotThrow { userService.createSettlementApplication(existingUserToken, 6).block() }
+    }
 
     @Test
     fun shouldThrowByCreatingNewSettlementApplication_SettlementAllReadyExists() {
@@ -384,6 +384,32 @@ class UserServiceTest(
                 ), false, "id", 100, 0
             ), existingUserToken
         ).collectList().block()
-        assertEquals(2,x!!.size)
+        assertEquals(2, x!!.size)
+    }
+
+    @Test
+    fun shouldGetCountSettlementApplications() {
+        val x = userService.getCountSettlementApplicationsByFilter(
+            existingUserToken,
+            PageInfo(
+                SettlementApplicationRow(
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+                ), false, "id", 100, 0
+            )
+        ).block()
+        assertEquals(2, x)
     }
 }
