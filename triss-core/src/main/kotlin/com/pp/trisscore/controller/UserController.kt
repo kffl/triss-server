@@ -6,6 +6,7 @@ import com.pp.trisscore.model.classes.SettlementApplication
 import com.pp.trisscore.model.classes.SettlementElement
 import com.pp.trisscore.model.classes.Transport
 import com.pp.trisscore.model.rows.ApplicationRow
+import com.pp.trisscore.model.rows.SettlementApplicationRow
 import com.pp.trisscore.service.TokenService
 import com.pp.trisscore.service.UserService
 import org.springframework.http.HttpStatus
@@ -65,7 +66,15 @@ class UserController(private val userService: UserService,
         val tokenData = tokenService.getEmployeeDataFromToken(token)
         return userService.createSettlementApplication(tokenData,body)
     }
-    @PostMapping("settlement/get")
+    @PostMapping("/settlement/get")
+    fun getSettlementApplications(
+        @RequestBody pageInfo: PageInfo<SettlementApplicationRow>,
+        token: JwtAuthenticationToken
+    ): Mono<List<SettlementApplicationRow>> {
+        val tokenBody = tokenService.getEmployeeDataFromToken(token)
+        return userService.getSettlementApplications(pageInfo, tokenBody).collectList()
+    }
+    @PostMapping("settlement/getFull")
     fun getSettlementApplication(@RequestBody body:Long,token: JwtAuthenticationToken) :Mono<SettlementInfo>{
         val tokenData = tokenService.getEmployeeDataFromToken(token)
         return userService.getSettlementApplication(tokenData,body)

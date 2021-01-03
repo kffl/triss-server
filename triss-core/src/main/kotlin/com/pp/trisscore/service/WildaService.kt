@@ -11,6 +11,7 @@ import com.pp.trisscore.model.classes.SettlementApplication
 import com.pp.trisscore.model.enums.Role
 import com.pp.trisscore.model.enums.StatusEnum
 import com.pp.trisscore.model.rows.ApplicationRow
+import com.pp.trisscore.model.rows.SettlementApplicationRow
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import reactor.core.publisher.Flux
@@ -120,7 +121,7 @@ class WildaService(
         settlementInfo: SettlementInfo,
         status: Long
     ): Mono<SettlementApplication> {
-        validationService.validateChangingSettlementApplicationStatus(settlementInfo,status)
+        validationService.validateWildaChangingSettlementApplicationStatus(settlementInfo,status)
         return employeeService.findEmployeeAndCheckRole(tokenBody, role)
             .switchIfEmpty(Mono.error(UnauthorizedException(tokenBody.employeeId.toString(), tokenBody.firstname, tokenBody.surname)))
             .flatMap { fullSettlementService.findSettlementInfoById(settlementInfo.fullSettlementApplication.id!!) }
@@ -147,5 +148,10 @@ class WildaService(
         )
     }
 
+    fun getSettlementApplications(pageInfo: PageInfo<SettlementApplicationRow>, tokenBody: TokenData): Flux<SettlementApplicationRow> {
+        return employeeService.findEmployeeAndCheckRole(tokenBody, role)
+            .switchIfEmpty(Mono.error(UnauthorizedException("You do not have permission to perform this action")))
+            .flatMapMany { x -> settlementApplicationService.getAllByFilter(pageInfo.copy(pageInfo.filter.copy(status = StatusEnum.WaitingForWilda.value))) }
+    }
 
 }

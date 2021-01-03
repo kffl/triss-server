@@ -9,6 +9,7 @@ import com.pp.trisscore.model.classes.Application
 import com.pp.trisscore.model.classes.SettlementApplication
 import com.pp.trisscore.model.enums.StatusEnum
 import com.pp.trisscore.model.rows.ApplicationRow
+import com.pp.trisscore.model.rows.SettlementApplicationRow
 import com.pp.trisscore.service.TokenService
 import com.pp.trisscore.service.WildaService
 import org.springframework.http.HttpStatus
@@ -72,7 +73,17 @@ class WildaController(
         val tokenBody = tokenService.getEmployeeDataFromToken(token)
         return wildaService.approveApplication(tokenBody, body)
     }
-    @PostMapping("settlement/get")
+
+    @PostMapping("/settlement/get")
+    fun getSettlementApplications(
+        @RequestBody pageInfo: PageInfo<SettlementApplicationRow>,
+        token: JwtAuthenticationToken
+    ): Mono<List<SettlementApplicationRow>>  {
+        val tokenBody = tokenService.getEmployeeDataFromToken(token)
+        return wildaService.getSettlementApplications(pageInfo, tokenBody).collectList()
+    }
+
+    @PostMapping("settlement/getFull")
     fun getSettlementApplication(
         @RequestBody id: Long,
         token: JwtAuthenticationToken
@@ -80,8 +91,6 @@ class WildaController(
         val tokenBody = tokenService.getEmployeeDataFromToken(token)
         return wildaService.getSettlementApplication(tokenBody, id)
     }
-
-
 
     @PostMapping("settlement/approve")
     fun approveSettlementApplication(

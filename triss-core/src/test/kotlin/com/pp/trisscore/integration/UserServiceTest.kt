@@ -1,5 +1,6 @@
 package com.pp.trisscore.integration
 
+import com.pp.trisscore.data.TestData
 import com.pp.trisscore.data.TestData.Companion.correctAdvanceApplication
 import com.pp.trisscore.data.TestData.Companion.correctAdvancePaymentsInfo
 import com.pp.trisscore.data.TestData.Companion.correctInstitute
@@ -16,9 +17,11 @@ import com.pp.trisscore.exceptions.InvalidRequestBodyException
 import com.pp.trisscore.exceptions.ObjectNotFoundException
 import com.pp.trisscore.exceptions.RequestDataDiffersFromDatabaseDataException
 import com.pp.trisscore.exceptions.UnauthorizedException
+import com.pp.trisscore.model.architecture.PageInfo
 import com.pp.trisscore.model.classes.FinancialSource
 import com.pp.trisscore.model.classes.SettlementElement
 import com.pp.trisscore.model.enums.StatusEnum
+import com.pp.trisscore.model.rows.SettlementApplicationRow
 import com.pp.trisscore.repository.FullSettlementApplicationRepository
 import com.pp.trisscore.repository.SettlementElementRepository
 import com.pp.trisscore.service.UserService
@@ -244,7 +247,6 @@ class UserServiceTest(
     fun shouldCreateNewSettlementApplication() =
         assertDoesNotThrow { userService.createSettlementApplication(existingUserToken, 6).block() }
 
-
     @Test
     fun shouldThrowByCreatingNewSettlementApplication_SettlementAllReadyExists() {
         val x = assertThrows<InvalidRequestBodyException> {
@@ -259,6 +261,14 @@ class UserServiceTest(
             userService.createSettlementApplication(existingDirectorToken, 6).block()
         }
         assertEquals("This is not a user {167711,Andrzej,Nowak} application", x.message)
+    }
+
+    @Test
+    fun shouldThrowByCreatingNewSettlementApplication_WrongApplicationStatus() {
+        val x = assertThrows<InvalidRequestBodyException> {
+            userService.createSettlementApplication(existingUserToken, 5).block()
+        }
+        assertEquals("Status must be Accepted", x.message)
     }
 
     @Test
@@ -285,7 +295,6 @@ class UserServiceTest(
         }
         assertEquals("Settlement Application not found.", y.message)
     }
-
 
     @Test
     fun shouldAddToSettlementApplicationNewElement() {
@@ -341,24 +350,40 @@ class UserServiceTest(
     }
 
     @Test
-    fun shouldThrowByAddingNewApplicationElement_WrongStatus() {
+    fun shouldThrowByAddingNewApplicationElement_WrongSettlementStatus() {
         val x = assertThrows<InvalidRequestBodyException> {
-        userService.addSettlementElement(
-            existingUserToken, SettlementElement(
-                null, 2, "documentNumber",
-                BigDecimal.valueOf(100).setScale(2), "SOMETHING", null
-            )
-        ).block()
+            userService.addSettlementElement(
+                existingUserToken, SettlementElement(
+                    null, 2, "documentNumber",
+                    BigDecimal.valueOf(100).setScale(2), "SOMETHING", null
+                )
+            ).block()
         }
         assertEquals("Status must be Edit or RejectedByWilda", x.message)
     }
 
     @Test
-    fun shouldThrowByCreatingNewSettlementApplication_WrongApplicationStatus() {
-        val x = assertThrows<InvalidRequestBodyException> {
-            userService.createSettlementApplication(existingUserToken, 5).block()
-        }
-        assertEquals("Status must be Accepted", x.message)
+    fun shouldGetSettlementApplications() {
+        val x = userService.getSettlementApplications(
+            PageInfo(
+                SettlementApplicationRow(
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+                ), false, "id", 100, 0
+            ), existingUserToken
+        ).collectList().block()
+        assertEquals(2,x!!.size)
     }
-
 }

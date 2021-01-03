@@ -12,6 +12,7 @@ import com.pp.trisscore.model.classes.SettlementElement
 import com.pp.trisscore.model.classes.Transport
 import com.pp.trisscore.model.enums.StatusEnum
 import com.pp.trisscore.model.rows.ApplicationRow
+import com.pp.trisscore.model.rows.SettlementApplicationRow
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import reactor.core.publisher.Flux
@@ -155,6 +156,14 @@ class UserService(
             .flatMap { user ->
                 fullSettlementService.findSettlementInfoByIdAndEmployeeId(id, user.employeeId!!)
             }
+            .switchIfEmpty(Mono.error(ObjectNotFoundException("Settlement")))
+
+    fun getSettlementApplications(
+        pageInfo: PageInfo<SettlementApplicationRow>,
+        tokenBody: TokenData
+    ): Flux<SettlementApplicationRow> = employeeService.findEmployee(tokenBody)
+        .switchIfEmpty(Mono.error(ObjectNotFoundException("User")))
+        .flatMapMany { x -> settlementApplicationService.getAllByFilter(pageInfo.copy(pageInfo.filter.copy(employeeId = x.employeeId))) }
 
 
 }

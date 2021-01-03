@@ -309,7 +309,10 @@ class ValidationService {
             throw UnauthorizedException("This is not a user {${user.employeeId},${user.firstName},${user.surname}} application")
     }
 
-    fun validateChangingSettlementApplicationStatus(settlementInfo: SettlementInfo, status: Long) {
+    fun validateWildaChangingSettlementApplicationStatus(settlementInfo: SettlementInfo, status: Long) {
+
+        if(settlementInfo.fullSettlementApplication.status!=StatusEnum.WaitingForWilda.value)
+            throw(InvalidRequestBodyException("Status must Be WaitingForWilda"))
         when (status) {
             StatusEnum.RejectedByWilda.value -> {
                 if (settlementInfo.fullSettlementApplication.wildaComments == null)

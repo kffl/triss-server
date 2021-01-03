@@ -1,3 +1,4 @@
+DROP VIEW IF EXISTS SettlementApplicationRow;
 DROP VIEW IF EXISTS FullSettlementApplication;
 DROP VIEW IF EXISTS FullSettlementElement;
 DROP TABLE IF EXISTS SettlementElement;
@@ -527,3 +528,22 @@ FROM SettlementApplication SA
                FROM SettlementElement
                GROUP BY settlementApplicationId) SE on SA.id = SE.settlementApplicationId
          JOIN ApplicationFull A on SA.applicationId = A.id;
+
+CREATE VIEW SettlementApplicationRow AS
+SELECT SA.id,
+       SA.applicationId,
+       AR.firstName,
+       AR.surname,
+       AR.employeeId,
+       AR.instituteId,
+       AR.instituteName,
+       AR.country,
+       AR.city,
+       AR.abroadStartDate,
+       AR.abroadEndDate,
+       SA.status,
+       S.nameEng as statusEng,
+       S.namePl  as statusPl
+FROM SettlementApplication SA
+         JOIN Status S on SA.status = S.id
+         JOIN ApplicationRow AR on SA.applicationId = AR.id;
