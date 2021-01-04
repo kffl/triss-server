@@ -3,6 +3,7 @@ package com.pp.trisscore.integration
 import com.pp.trisscore.data.TestData.Companion.correctApplicationForWaitingForWilda
 import com.pp.trisscore.data.TestData.Companion.exampleApplicationInfoForWaitingForWilda
 import com.pp.trisscore.data.TestData.Companion.existingDirectorToken
+import com.pp.trisscore.data.TestData.Companion.existingUserToken
 import com.pp.trisscore.data.TestData.Companion.existingWildaToken
 import com.pp.trisscore.data.TestData.Companion.pageInfo
 import com.pp.trisscore.exceptions.InvalidRequestBodyException
@@ -15,7 +16,6 @@ import com.pp.trisscore.service.WildaService
 import io.r2dbc.spi.ConnectionFactory
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNotNull
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
@@ -76,6 +76,24 @@ class WildaServiceTest(
                     application = correctApplicationForWaitingForWilda.copy(status = StatusEnum.WaitingForRector.value)
                 )
             ).block()
+        }
+        assertEquals("Status must be WaitingForWilda", x.message)
+    }
+
+    //Wilda rejectApplication
+    @Test
+    fun shouldNotRejectApplicationWrongRole(){
+        val x = assertThrows<UnauthorizedException>{
+            wildaService.rejectApplication(existingUserToken, exampleApplicationInfoForWaitingForWilda).block()
+        }
+        assertEquals("User 170387 Jan Kowalczyk don't have access to this.", x.message)
+    }
+
+    @Test
+    fun shouldNotRejectApplicationWrongStatus(){
+        val x = assertThrows<InvalidRequestBodyException>{
+            wildaService.rejectApplication(existingWildaToken, exampleApplicationInfoForWaitingForWilda.copy(
+                    application = correctApplicationForWaitingForWilda.copy(status = StatusEnum.WaitingForRector.value))).block()
         }
         assertEquals("Status must be WaitingForWilda", x.message)
     }

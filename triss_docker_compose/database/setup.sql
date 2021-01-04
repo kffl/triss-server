@@ -29,7 +29,7 @@ CREATE TABLE Status
 );
 
 INSERT INTO Status (id, namePl, nameEng)
-VALUES (0, 'Edition', 'Edit'),
+VALUES (0, 'Edycja', 'Edit'),
        (1, 'Oczekuje na dyrektora', 'Waiting for Director'),
        (2, 'Oczekuje na Wildę', 'Waiting for Wilda'),
        (3, 'Oczekuje na rektora', 'Waiting for Rector'),

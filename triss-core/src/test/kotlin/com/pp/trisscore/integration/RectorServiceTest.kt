@@ -4,13 +4,14 @@ import com.pp.trisscore.data.TestData.Companion.correctApplicationForRector
 import com.pp.trisscore.data.TestData.Companion.exampleApplicationInfoForRector
 import com.pp.trisscore.data.TestData.Companion.existingDirectorToken
 import com.pp.trisscore.data.TestData.Companion.existingRectorToken
+import com.pp.trisscore.data.TestData.Companion.existingUserToken
 import com.pp.trisscore.data.TestData.Companion.pageInfo
 import com.pp.trisscore.exceptions.InvalidRequestBodyException
 import com.pp.trisscore.exceptions.UnauthorizedException
 import com.pp.trisscore.model.enums.StatusEnum
 import com.pp.trisscore.service.RectorService
 import io.r2dbc.spi.ConnectionFactory
-import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -40,13 +41,13 @@ class RectorServiceTest(@Autowired val rectorService: RectorService,
     @Test
     fun shouldGetRectorCount() {
         val x = rectorService.getCountByFilter(existingRectorToken, pageInfo).block()
-        Assertions.assertEquals(1, x)
+        assertEquals(1, x)
     }
 
     @Test
     fun shouldNotGetRectorCountWrongRole() {
         val x = assertThrows<UnauthorizedException> { rectorService.getCountByFilter(existingDirectorToken, pageInfo).block() }
-        Assertions.assertEquals("User 167711 Andrzej Nowak don't have access to this.", x.message)
+        assertEquals("User 167711 Andrzej Nowak don't have access to this.", x.message)
     }
 
     //Rector approveApplication
@@ -55,7 +56,7 @@ class RectorServiceTest(@Autowired val rectorService: RectorService,
         val x = assertThrows<UnauthorizedException> {
             rectorService.approveApplication(existingDirectorToken, exampleApplicationInfoForRector).block()
         }
-        Assertions.assertEquals("User 167711 Andrzej Nowak don't have access to this.", x.message)
+        assertEquals("User 167711 Andrzej Nowak don't have access to this.", x.message)
     }
 
     @Test
@@ -64,7 +65,25 @@ class RectorServiceTest(@Autowired val rectorService: RectorService,
             rectorService.approveApplication(existingRectorToken, exampleApplicationInfoForRector.copy(
                     application = correctApplicationForRector.copy(status = StatusEnum.Accepted.value))).block()
         }
-        Assertions.assertEquals("Status must be WaitingForRector", x.message)
+        assertEquals("Status must be WaitingForRector", x.message)
+    }
+
+    //Rector rejectApplication
+    @Test
+    fun shouldNotRejectApplicationWrongRole(){
+        val x = assertThrows<UnauthorizedException>{
+            rectorService.rejectApplication(existingUserToken, exampleApplicationInfoForRector).block()
+        }
+        assertEquals("User 170387 Jan Kowalczyk don't have access to this.", x.message)
+    }
+
+    @Test
+    fun shouldNotRejectApplicationWrongStatus(){
+        val x = assertThrows<InvalidRequestBodyException>{
+            rectorService.rejectApplication(existingRectorToken, exampleApplicationInfoForRector.copy(
+                    application = correctApplicationForRector.copy(status = StatusEnum.Accepted.value))).block()
+        }
+        assertEquals("Status must be WaitingForRector", x.message)
     }
 
     @Test

@@ -79,7 +79,24 @@ class DirectorServiceTest(@Autowired val directorService: DirectorService,
                             .copy(status = StatusEnum.WaitingForWilda.value))).block()
         }
         assertEquals("Status must be WaitingForDirector", x.message)
+    }
 
+    //Director rejectApplication
+    @Test
+    fun shouldNotRejectApplicationWrongRole(){
+        val x = assertThrows<UnauthorizedException>{
+            directorService.rejectApplication(existingUserToken, exampleApplicationInfoForDirector).block()
+        }
+        assertEquals("User 170387 Jan Kowalczyk don't have access to this.", x.message)
+    }
+
+    @Test
+    fun shouldNotRejectApplicationWrongStatus(){
+        val x = assertThrows<InvalidRequestBodyException>{
+            directorService.rejectApplication(existingDirectorToken, exampleApplicationInfoForDirector.copy(
+                    application = correctApplicationForDirector.copy(status = StatusEnum.WaitingForWilda.value))).block()
+        }
+        assertEquals("Status must be WaitingForDirector", x.message)
     }
 
     @Test
