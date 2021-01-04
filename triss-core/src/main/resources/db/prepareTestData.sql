@@ -1,3 +1,8 @@
+DROP VIEW IF EXISTS SettlementApplicationRow;
+DROP VIEW IF EXISTS FullSettlementApplication;
+DROP VIEW IF EXISTS FullSettlementElement;
+DROP TABLE IF EXISTS SettlementElement;
+DROP TABLE IF EXISTS SettlementApplication;
 DROP VIEW IF EXISTS ApplicationFull;
 DROP VIEW IF EXISTS ApplicationRow;
 DROP TABLE IF EXISTS TRANSPORT;
@@ -23,14 +28,15 @@ CREATE TABLE Status
     nameEng varchar(255) UNIQUE NOT NULL
 );
 
-INSERT INTO Status (id,namePl, nameEng)
-VALUES (1,'Oczekuje na dyrektora', 'Waiting for Director'),
-       (2,'Oczekuje na Wildę', 'Waiting for Wilda'),
-       (3,'Oczekuje na rektora', 'Waiting for Rector'),
-       (4,'Odrzucony przez Dyrektora', 'Rejected by Director'),
-       (5,'Odrzucony przez Wilde', 'Rejected by Wilda'),
-       (6,'Odrzucony przez Rectora', 'Rejected by Rector'),
-       (7,'Zaakceptowany', 'Accepted');
+INSERT INTO Status (id, namePl, nameEng)
+VALUES (0, 'Edycja', 'Edit'),
+       (1, 'Oczekuje na dyrektora', 'Waiting for Director'),
+       (2, 'Oczekuje na Wildę', 'Waiting for Wilda'),
+       (3, 'Oczekuje na rektora', 'Waiting for Rector'),
+       (4, 'Odrzucony przez Dyrektora', 'Rejected by Director'),
+       (5, 'Odrzucony przez Wilde', 'Rejected by Wilda'),
+       (6, 'Odrzucony przez Rectora', 'Rejected by Rector'),
+       (7, 'Zaakceptowany', 'Accepted');
 
 CREATE TABLE Vehicle
 (
@@ -164,7 +170,7 @@ CREATE TABLE Employee
     employeeId     BIGINT UNIQUE,
     firstName      varchar(255) NOT NULL,
     surname        varchar(255) NOT NULL,
-    birthDate      DATE        ,
+    birthDate      DATE,
     academicDegree varchar(255),
     phoneNumber    varchar(255),
     employeeType   varchar(255),
@@ -173,11 +179,10 @@ CREATE TABLE Employee
 );
 
 INSERT INTO Employee(employeeId, firstName, surname, birthDate, academicDegree, phoneNumber, employeeType, instituteID)
-VALUES
-(170387, 'Jan', 'Kowalczyk', '2000-01-01', 'Prof.', '+48 123456789', 'USER', 1),
-(2, 'Jan', 'Kowalski', '1990-03-21', 'Prof.', '+48 321456987', 'WILDA', 1),
-(3, 'Jerzy', 'Zbiałowierzy', '1980-05-15', 'Prof.', '+48 541236987', 'RECTOR', 1),
-(167711, 'Andrzej', 'Nowak', '1988-07-16', 'Prof.', '+48 987456321', 'DIRECTOR', 1);
+VALUES (170387, 'Jan', 'Kowalczyk', '2000-01-01', 'Prof.', '+48 123456789', 'USER', 1),
+       (2, 'Jan', 'Kowalski', '1990-03-21', 'Prof.', '+48 321456987', 'WILDA', 1),
+       (3, 'Jerzy', 'Zbiałowierzy', '1980-05-15', 'Prof.', '+48 541236987', 'RECTOR', 1),
+       (167711, 'Andrzej', 'Nowak', '1988-07-16', 'Prof.', '+48 987456321', 'DIRECTOR', 1);
 
 CREATE TABLE IdentityDocument
 (
@@ -258,8 +263,8 @@ CREATE TABLE Application
     conferenceStartDate      DATE         NOT NULL,
     conferenceEndDate        DATE         NOT NULL,
     financialSourceId        BIGINT,
-    abroadStartDateInsurance DATE         ,
-    abroadEndDateInsurance   DATE         ,
+    abroadStartDateInsurance DATE,
+    abroadEndDateInsurance   DATE,
     selfInsured              BOOL         NOT NULL,
     advanceApplicationId     BIGINT       NOT NULL,
     prepaymentId             BIGINT       NOT NULL,
@@ -318,6 +323,16 @@ VALUES ('Jan', 'Kowalczyk', '2000-01-01', '+48 123456789', 'Prof.', 170387, 1, '
         '2020-12-12', '2020-12-15', 'Konferencja', 'AntyCovid2020',
         ' TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą',
         '2020-12-13', '2020-12-14', 1, '2020-12-12', '2020-12-15', FALSE, 3, 3, 'User Comments', NULL,
+        'Director comments', NULL, 7),
+       ('Jan', 'Kowalczyk', '2000-01-01', '+48 123456789', 'Prof.', 170387, 2, 'AB6789000', '2020-12-01', 5, 1,
+        '2020-12-12', '2020-12-15', 'Konferencja', 'AntyCovid2020',
+        ' TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą',
+        '2020-12-13', '2020-12-14', 1, '2020-12-12', '2020-12-15', FALSE, 3, 3, 'User Comments', NULL,
+        'Director comments', NULL, 7),
+       ('Jan', 'Kowalczyk', '2000-01-01', '+48 123456789', 'Prof.', 170387, 2, 'AB6789000', '2020-12-01', 5, 1,
+        '2020-12-12', '2020-12-15', 'Konferencja', 'AntyCovid2020',
+        ' TRISS: Wirtualizacja funkcjonowania Sekcji Współpracy z Zagranicą',
+        '2020-12-13', '2020-12-14', 1, '2020-12-12', '2020-12-15', FALSE, 3, 3, 'User Comments', NULL,
         'Director comments', NULL, 7);
 
 CREATE TABLE Transport
@@ -355,15 +370,15 @@ SELECT Application.id,
        firstName,
        surname,
        employeeId,
-       I.id   as instituteId,
-       I.name as instituteName,
+       I.id      as instituteId,
+       I.name    as instituteName,
        country,
        city,
        abroadStartDate,
        abroadEndDate,
        status,
        S.nameEng as statusEng,
-       S.namePl as statusPl
+       S.namePl  as statusPl
 FROM Application
          JOIN Place
               ON Place.id = Application.placeId
@@ -441,3 +456,94 @@ FROM APPLICATION A
          JOIN Prepayment PR on A.prepaymentId = PR.id
          JOIN PrepaymentFee PA on PR.accommodationFeeId = PA.id
          JOIN PrepaymentFee PC on PR.conferenceFeeId = PC.id;
+
+CREATE TABLE SettlementApplication
+(
+    id               BIGSERIAL PRIMARY KEY,
+    applicationId    BIGINT NOT NULL,
+    creatorId        BIGINT NOT NULL,
+    status           BIGINT NOT NULL,
+    lastModifiedDate Date   NOT NULL,
+    wildaComments    varchar(255),
+    CONSTRAINT application_sa_fk FOREIGN KEY (applicationId) REFERENCES Application (id),
+    CONSTRAINT status_sa_fk FOREIGN KEY (status) REFERENCES Status (id)
+);
+
+INSERT INTO SettlementApplication
+values (1, 7, 170387, 0, '2021-01-02', null),
+       (2, 8, 170387, 2, '2021-01-02', null);
+
+CREATE TABLE SettlementElement
+(
+    id                      BIGSERIAL PRIMARY KEY,
+    settlementApplicationId BIGINT        NOT NULL,
+    documentNumber          VARCHAR(255)  NOT NULL,
+    value                   DECIMAL(7, 2) NOT NULL,
+    comment                 VARCHAR(255)  NOT NULL,
+    scanLoc                 VARCHAR(255),
+    CONSTRAINT SettlementApplication_se_fk FOREIGN KEY (settlementApplicationId) REFERENCES SettlementApplication (id)
+);
+INSERT INTO SettlementElement
+values (1, 1, 'dokument1', 10.0, 'opłata za dokument nr 1', null),
+       (2, 1, 'dokument2', 20.0, 'opłata za dokument nr 2', null),
+       (3, 2, 'dokument11', 10.0, 'opłata za dokument nr 11', null),
+       (4, 2, 'dokument22', 20.0, 'opłata za dokument nr 22', null);
+
+CREATE VIEW FullSettlementElement AS
+SELECT SA.ID as settlementApplicationId,
+       SA.APPLICATIONID,
+       SA.CREATORID,
+       SA.STATUS,
+       SA.LASTMODIFIEDDATE,
+       SE.ID as settlementElementId,
+       SE.DOCUMENTNUMBER,
+       SE.VALUE,
+       SE.COMMENT,
+       SE.SCANLOC
+FROM SettlementApplication SA
+         JOIN SettlementElement SE on SA.id = SE.settlementApplicationId;
+
+CREATE VIEW FullSettlementApplication AS
+SELECT SA.id,
+       SA.applicationId,
+       SA.creatorId,
+       SA.status,
+       SA.lastModifiedDate,
+       SA.wildaComments,
+       A.firstName,
+       A.surname,
+       A.academicDegree,
+       A.phoneNumber,
+       abroadStartDate,
+       abroadEndDate,
+       purpose,
+       conference,
+       subject,
+       aaAdvanceSum,
+       settlementSum,
+       elementCount,
+       A.aaAdvanceSum - settlementSum as returnSum
+FROM SettlementApplication SA
+         JOIN (Select settlementApplicationId, sum(value) as settlementSum, count(*) as elementCount
+               FROM SettlementElement
+               GROUP BY settlementApplicationId) SE on SA.id = SE.settlementApplicationId
+         JOIN ApplicationFull A on SA.applicationId = A.id;
+
+CREATE VIEW SettlementApplicationRow AS
+SELECT SA.id,
+       SA.applicationId,
+       AR.firstName,
+       AR.surname,
+       AR.employeeId,
+       AR.instituteId,
+       AR.instituteName,
+       AR.country,
+       AR.city,
+       AR.abroadStartDate,
+       AR.abroadEndDate,
+       SA.status,
+       S.nameEng as statusEng,
+       S.namePl  as statusPl
+FROM SettlementApplication SA
+         JOIN Status S on SA.status = S.id
+         JOIN ApplicationRow AR on SA.applicationId = AR.id;

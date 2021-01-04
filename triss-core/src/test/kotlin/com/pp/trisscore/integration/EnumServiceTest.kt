@@ -46,7 +46,7 @@ class EnumServiceTest(@Autowired val enumService: EnumService,
     fun shouldGetStatuses(){
         val enumStatuses = enumService.getStatuses().block()
         Assertions.assertNotNull(enumStatuses)
-        Assertions.assertEquals("Oczekuje na dyrektora", enumStatuses?.get(0)?.namePl)
+        Assertions.assertEquals("Edycja", enumStatuses?.get(0)?.namePl)
     }
 
     @Test

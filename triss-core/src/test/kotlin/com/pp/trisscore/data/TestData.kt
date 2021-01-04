@@ -182,7 +182,8 @@ interface TestData {
                 place = correctPlace)
         val filter = ApplicationRow(id = null, firstName = null, surname = null,
                 employeeId = null, instituteName = null, instituteId = null, country = null, abroadEndDate = null, abroadStartDate = null, city = null, status = null,statusEng = null,statusPl = null)
-        val pageInfo = PageInfo(filter = filter,
+        val pageInfo = PageInfo(
+            filter = filter,
                 desc = false, orderBy = "id", pageSize = 100, pageNumber = 0)
         fun getExampleForUserApplication(user: Employee) = correctApplication.copy(firstName = user.firstName, surname = user.surname, birthDate = user.birthDate!!, academicDegree = user.academicDegree!!, phoneNumber = user.phoneNumber!!, employeeId = user.employeeId, instituteId = user.instituteID)
     }
