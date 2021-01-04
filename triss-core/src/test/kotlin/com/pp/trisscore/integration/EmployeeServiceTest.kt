@@ -70,7 +70,7 @@ class EmployeeServiceTest(@Autowired val employeeService: EmployeeService,
     fun shouldUpdateEmployee() {
         val x = employeeService.updateEmployee(existingUserToken, existingUserEmployee.copy(phoneNumber = "+48656565654")).block()
         assertNotEquals(existingUserEmployee, x)
-        val y = employeeService.findEmployee(existingUserToken).block()
+        val y = employeeService.findEmployeeOrCreateNewOne(existingUserToken).block()
         assertEquals(existingUserEmployee.copy(phoneNumber = "+48656565654"), y)
     }
 
@@ -93,13 +93,13 @@ class EmployeeServiceTest(@Autowired val employeeService: EmployeeService,
     //Get Employee Data
     @Test
     fun shouldGetExistingEmployeeData() {
-        val x = employeeService.findEmployee(existingUserToken).block()
+        val x = employeeService.findEmployeeOrCreateNewOne(existingUserToken).block()
         assertEquals(existingUserEmployee, x)
     }
 
     @Test
     fun shouldNotGetNotExistingInDatabaseEmployeeData() {
-        employeeService.findEmployee(newEmployeeTokenData).block()
+        employeeService.findEmployeeOrCreateNewOne(newEmployeeTokenData).block()
         assertEquals(5, employeeRepository.count().block())
     }
 
@@ -121,4 +121,8 @@ class EmployeeServiceTest(@Autowired val employeeService: EmployeeService,
         val x = assertThrows<UnauthorizedException> { employeeService.findEmployeeAndCheckRole(newEmployeeTokenData, Role.DIRECTOR).block()}
         assertEquals("User 1999 Marcel TOLEN don't have access to this.", x.message)
     }
+
+
+
+
 }

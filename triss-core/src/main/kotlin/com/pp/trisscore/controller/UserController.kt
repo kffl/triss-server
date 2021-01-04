@@ -1,19 +1,18 @@
 package com.pp.trisscore.controller
 
 import com.pp.trisscore.exceptions.*
-import com.pp.trisscore.model.architecture.ApplicationInfo
-import com.pp.trisscore.model.architecture.ErrorsDetails
-import com.pp.trisscore.model.architecture.PageInfo
-import com.pp.trisscore.model.architecture.TokenData
+import com.pp.trisscore.model.architecture.*
+import com.pp.trisscore.model.classes.SettlementApplication
+import com.pp.trisscore.model.classes.SettlementElement
 import com.pp.trisscore.model.classes.Transport
 import com.pp.trisscore.model.rows.ApplicationRow
+import com.pp.trisscore.model.rows.SettlementApplicationRow
 import com.pp.trisscore.service.TokenService
 import com.pp.trisscore.service.UserService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
 import org.springframework.web.bind.annotation.*
-import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.util.*
 
@@ -35,12 +34,12 @@ class UserController(private val userService: UserService,
     }
 
     @PostMapping("application/count")
-    fun getCountByFilter(
+    fun getCountApplicationsByFilter(
                          @RequestBody body: PageInfo<ApplicationRow>,
                          token: JwtAuthenticationToken
     ): Mono<Long> {
         val tokenData = tokenService.getEmployeeDataFromToken(token)
-        return userService.getCountByFilter(tokenData, body.copy(filter = body.filter.copy(employeeId = tokenData.employeeId)))
+        return userService.getCountApplicationsByFilter(tokenData, body.copy(filter = body.filter.copy(employeeId = tokenData.employeeId)))
     }
 
     @PostMapping("application/getFull")
@@ -59,6 +58,50 @@ class UserController(private val userService: UserService,
     ): Mono<Transport>{
         val tokenData = tokenService.getEmployeeDataFromToken(token)
         return userService.createApplication(tokenData, body)
+    }
+
+    @PostMapping("settlement/create")
+    fun createSettlementApplication(@RequestBody body:Long,token: JwtAuthenticationToken) :Mono<SettlementApplication>{
+        val tokenData = tokenService.getEmployeeDataFromToken(token)
+        return userService.createSettlementApplication(tokenData,body)
+    }
+    @PostMapping("/settlement/get")
+    fun getSettlementApplications(
+        @RequestBody pageInfo: PageInfo<SettlementApplicationRow>,
+        token: JwtAuthenticationToken
+    ): Mono<List<SettlementApplicationRow>> {
+        val tokenBody = tokenService.getEmployeeDataFromToken(token)
+        return userService.getSettlementApplications(pageInfo, tokenBody).collectList()
+    }
+
+    @PostMapping("/settlement/count")
+    fun getCountSettlementApplicationsByFilter(
+        @RequestBody body: PageInfo<SettlementApplicationRow>,
+        token: JwtAuthenticationToken
+    ): Mono<Long> {
+        val tokenBody = tokenService.getEmployeeDataFromToken(token)
+        return userService.getCountSettlementApplicationsByFilter(tokenBody, body)
+    }
+
+    @PostMapping("settlement/getFull")
+    fun getSettlementApplication(@RequestBody body:Long,token: JwtAuthenticationToken) :Mono<SettlementInfo>{
+        val tokenData = tokenService.getEmployeeDataFromToken(token)
+        return userService.getSettlementApplication(tokenData,body)
+    }
+    @PostMapping("settlement/send")
+    fun sendToWildaSettlementApplication(@RequestBody body:Long,token: JwtAuthenticationToken) :Mono<SettlementApplication>{
+        val tokenData = tokenService.getEmployeeDataFromToken(token)
+        return userService.sendToWildaSettlementApplication(tokenData,body)
+    }
+    @PostMapping("settlement/element/add")
+    fun addSettlementElement(@RequestBody body:SettlementElement,token: JwtAuthenticationToken) :Mono<SettlementApplication>{
+        val tokenData = tokenService.getEmployeeDataFromToken(token)
+        return userService.addSettlementElement(tokenData,body)
+    }
+    @PostMapping("settlement/element/delete")
+    fun deleteSettlementElement(@RequestBody body:SettlementElement,token: JwtAuthenticationToken) : Mono<Void> {
+        val tokenData = tokenService.getEmployeeDataFromToken(token)
+        return userService.deleteSettlementElement(tokenData,body)
     }
 
     @ExceptionHandler(value = [InvalidRequestBodyException::class, RequestDataDiffersFromDatabaseDataException::class,

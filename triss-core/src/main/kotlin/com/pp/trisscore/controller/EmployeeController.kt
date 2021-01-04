@@ -26,7 +26,7 @@ class EmployeeController(private val employeeService: EmployeeService,
                     token: JwtAuthenticationToken
     ): Mono<Employee> {
         val tokenData = tokenService.getEmployeeDataFromToken(token)
-        return employeeService.findEmployee(tokenData)
+        return employeeService.findEmployeeOrCreateNewOne(tokenData)
     }
 
     @PostMapping("/update")

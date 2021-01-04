@@ -18,6 +18,10 @@ class EmployeeService(val employeeRepository: EmployeeRepository,
     }
 
     fun findEmployee(tokenBody: TokenData) =
+        employeeRepository.findByEmployeeId(tokenBody.employeeId)
+            .switchIfEmpty(Mono.error(UserNotFoundException(tokenBody.employeeId,tokenBody.firstname,tokenBody.surname)))
+
+    fun findEmployeeOrCreateNewOne(tokenBody: TokenData) =
             employeeRepository.findByEmployeeId(tokenBody.employeeId)
                     .switchIfEmpty(newEmployee(tokenBody))
 
@@ -35,7 +39,7 @@ class EmployeeService(val employeeRepository: EmployeeRepository,
         return instituteService.findInstituteById(employee.instituteID)
                 .switchIfEmpty(Mono.error(ObjectNotFoundException("Institute")))
                 .flatMap { x -> employeeRepository.findByEmployeeId(tokenData.employeeId) }
-                .switchIfEmpty(Mono.error { UserNotFoundException(tokenData.employeeId.toString(), tokenData.firstname, tokenData.surname) })
+                .switchIfEmpty(Mono.error { UserNotFoundException(tokenData.employeeId, tokenData.firstname, tokenData.surname) })
                 .flatMap { actualEmployee -> updateEmployee2(actualEmployee, employee) }
     }
 
@@ -80,7 +84,7 @@ class EmployeeService(val employeeRepository: EmployeeRepository,
         return employeeRepository.save(employee)
     }
 
-    fun ifUserFoundThrowException(employee: Employee): Mono<Employee> = throw UserAllReadyExistsException(employee.employeeId.toString(), employee.firstName, employee.surname)
+    fun ifUserFoundThrowException(employee: Employee): Mono<Employee> = throw UserAllReadyExistsException(employee.employeeId, employee.firstName, employee.surname)
 
 
 }

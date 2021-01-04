@@ -1,12 +1,13 @@
 package com.pp.trisscore.service
 
-import com.pp.trisscore.exceptions.InvalidRequestBodyException
 import com.pp.trisscore.exceptions.RequestDataDiffersFromDatabaseDataException
 import com.pp.trisscore.exceptions.UnauthorizedException
 import com.pp.trisscore.model.applicationinfoelements.AdvancePaymentsInfo
 import com.pp.trisscore.model.architecture.ApplicationInfo
+import com.pp.trisscore.model.architecture.SettlementInfo
 import com.pp.trisscore.model.classes.*
 import com.pp.trisscore.model.enums.Role
+import com.pp.trisscore.model.enums.StatusEnum
 import org.springframework.stereotype.Service
 
 @Service
@@ -105,5 +106,14 @@ class ComparisonService {
             throw RequestDataDiffersFromDatabaseDataException("AdvancePaymentsAccommodationFeeValue")
         if (dbAdvancePaymentsInfo.accommodationFeePaymentTypeSelect != reqAdvancePaymentsInfo.accommodationFeePaymentTypeSelect)
             throw RequestDataDiffersFromDatabaseDataException("AdvancePaymentsAccommodationFeePaymentTypeSelect")
+    }
+
+    fun compareSettlementChangeStatus(dbSettlFull: SettlementInfo, reqSettlFull: SettlementInfo) {
+        val dbSettl = dbSettlFull.fullSettlementApplication
+        val reqSettl = reqSettlFull.fullSettlementApplication
+        if(dbSettl.copy(wildaComments = reqSettl.wildaComments)!=reqSettl)
+            throw RequestDataDiffersFromDatabaseDataException("SettlementApplication")
+        if(dbSettlFull.settlementElements!=reqSettlFull.settlementElements)
+            throw RequestDataDiffersFromDatabaseDataException("settlementElements")
     }
 }

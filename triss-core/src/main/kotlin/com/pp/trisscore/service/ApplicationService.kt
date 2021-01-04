@@ -1,5 +1,6 @@
 package com.pp.trisscore.service
 
+import com.pp.trisscore.exceptions.ObjectNotFoundException
 import com.pp.trisscore.model.architecture.ApplicationInfo
 import com.pp.trisscore.model.architecture.PageInfo
 import com.pp.trisscore.model.classes.Application
@@ -23,6 +24,9 @@ import java.time.LocalDate
 class ApplicationService(
         val applicationRowRepository: ApplicationRowRepository,
         val applicationRepository: ApplicationRepository) {
+
+    fun findById(id:Long)  = applicationRepository.findById(id)
+        .switchIfEmpty(Mono.error(ObjectNotFoundException("Request Application")))
 
     fun getAllByFilter(pageInfo: PageInfo<ApplicationRow>): Flux<ApplicationRow> = applicationRowRepository.getAllByFilter(pageInfo)
 
