@@ -33,6 +33,6 @@ class InstituteServiceTest(@Autowired val instituteService: InstituteService,
     fun shouldGetAllInstitutesOrderByInstituteName() {
         val ins = instituteService.getAllInstitute().collectList().block()
         assertNotNull(ins)
-        assertEquals("Instytut Analizy Konstrukcji", ins?.get(0)?.name);
+        assertEquals("Instytut Analizy Konstrukcji", ins?.get(0)?.name)
     }
 }
