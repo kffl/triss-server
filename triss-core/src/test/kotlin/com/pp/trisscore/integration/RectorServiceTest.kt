@@ -41,8 +41,6 @@ class RectorServiceTest(@Autowired val rectorService: RectorService,
     @Test
     fun shouldGetRectorCount() {
         val x = rectorService.getCountByFilter(existingRectorToken, pageInfo).block()
-        val y = rectorService.getApplications( pageInfo,existingRectorToken).collectList().block()
-        print(y)
         assertEquals(4, x)
     }
 
