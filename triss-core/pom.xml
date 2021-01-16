@@ -94,6 +94,13 @@
             <scope>compile</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/io.r2dbc/r2dbc-h2 -->
+
+		<!--Swagger - documentation -->
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-webflux-ui</artifactId>
+			<version>1.5.2</version>
+		</dependency>
 	</dependencies>
 
 	<build>
