@@ -10,10 +10,20 @@ import org.springframework.security.web.server.SecurityWebFilterChain
 @EnableWebFluxSecurity
 class SecurityConfig {
 
+    private val WHITE_LIST: Array<String> = arrayOf(
+        "/v3/**",
+        "/configuration/ui",
+        "/swagger-resources/**",
+        "/configuration/security",
+        "/swagger-ui.html",
+        "/webjars/**"
+    )
+
     @Bean
     fun securityFilterChain(http: ServerHttpSecurity): SecurityWebFilterChain? {
         http.csrf().disable()
                 .authorizeExchange()
+                .pathMatchers(* WHITE_LIST).permitAll()
                 .pathMatchers(HttpMethod.OPTIONS).permitAll()
                 .anyExchange().authenticated()
                 .and().oauth2ResourceServer().jwt()
