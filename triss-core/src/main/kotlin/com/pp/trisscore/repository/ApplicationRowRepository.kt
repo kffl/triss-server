@@ -46,7 +46,7 @@ class ApplicationRowRepository(databaseClient: DatabaseClient) {
         if (filter.country != null)
             criteria = criteria.and("country").like("%" + filter.country + "%").ignoreCase(true)
         if (filter.status!=null)
-            criteria = criteria.and("status").`is`(filter.status)
+            criteria = criteria.and("status").greaterThanOrEquals(filter.status)
         if (filter.statusPl != null)
             criteria = criteria.and("statusPl").like("%" + filter.statusPl + "%").ignoreCase(true)
         if (filter.statusEng != null)

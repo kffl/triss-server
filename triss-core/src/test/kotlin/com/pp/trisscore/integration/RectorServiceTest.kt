@@ -41,7 +41,7 @@ class RectorServiceTest(@Autowired val rectorService: RectorService,
     @Test
     fun shouldGetRectorCount() {
         val x = rectorService.getCountByFilter(existingRectorToken, pageInfo).block()
-        assertEquals(1, x)
+        assertEquals(4, x)
     }
 
     @Test
