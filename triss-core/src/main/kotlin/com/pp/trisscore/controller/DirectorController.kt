@@ -76,7 +76,7 @@ class DirectorController(private val directorService: DirectorService,
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDetails)
     }
 
-    @ExceptionHandler(value = [ObjectNotFoundException::class, DirectorNotFoundException::class])
+    @ExceptionHandler(value = [ObjectNotFoundException::class])
     fun catchNotFoundException(ex: RuntimeException): ResponseEntity<ErrorsDetails> {
         val errorDetails = ErrorsDetails(Date(), ex.toString(), ex.message!!)
         return ResponseEntity.status(HttpStatus.GONE).body(errorDetails)

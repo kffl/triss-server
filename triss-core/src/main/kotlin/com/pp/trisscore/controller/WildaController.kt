@@ -129,7 +129,7 @@ class WildaController(
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDetails)
     }
 
-    @ExceptionHandler(value = [ObjectNotFoundException::class, RectorNotFoundException::class])
+    @ExceptionHandler(value = [ObjectNotFoundException::class])
     fun catchObjectNotFoundException(ex: RuntimeException): ResponseEntity<ErrorsDetails> {
         val errorDetails = ErrorsDetails(Date(), ex.toString(), ex.message!!)
         return ResponseEntity.status(HttpStatus.GONE).body(errorDetails)
